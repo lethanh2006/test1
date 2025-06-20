@@ -1,10 +1,11 @@
 import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
-import type { EModuleKey, ESettingKey } from './constant';
+import type { EModuleKey, EScopeFile, ESettingKey, EStorageFile } from './constant';
 
 declare module Login {
 	export interface IUser {
 		sub: string; // SsoId 'b323b6c8-2f1e-4a9b-941b-f1e466b9ba40';
 		ssoId: string;
+		email: string;
 		email_verified: boolean; // true;
 		realm_access: {
 			roles: string[];
@@ -50,3 +51,23 @@ export interface ISetting {
 	key: ESettingKey;
 	value: any;
 }
+
+export interface IFileInfo {
+	_id: string;
+	author: string;
+	authorName: string;
+	mimetype: string;
+	name: string;
+	scope: EScopeFile;
+	size: number;
+	storageType: EStorageFile;
+	url: string;
+
+	updatedAt: Date;
+	createdAt: Date;
+}
+
+export type ColorType = {
+	name: string;
+	hexColor: string;
+};

@@ -1,6 +1,7 @@
-import { Empty, Modal, Steps } from 'antd';
+import { Empty, Steps } from 'antd';
 import { useEffect, useState } from 'react';
-import { useModel } from 'umi';
+import { useIntl, useModel } from 'umi';
+import ModalExpandable from '../ModalExpandable';
 import ChooseFileImport from './ChooseFileImport';
 import MatchColumns from './MatchColumns';
 import PreviewDataImport from './PreviewDataImport';
@@ -8,19 +9,35 @@ import ValidateDataImport from './ValidateDataImport';
 import { type ModalImportProps } from './typing';
 
 const ModalImport = (props: ModalImportProps) => {
-	const { visible, onCancel, onOk, modelName, maskCloseableForm, extendData, getTemplate, titleTemplate } = props;
+	const intl = useIntl();
+	const {
+		visible,
+		onCancel,
+		onOk,
+		modelName,
+		maskCloseableForm,
+		extendData,
+		getTemplate,
+		titleTemplate,
+		dependenciesHeader = [],
+		getHeader,
+	} = props;
 	const { setFileData, setMatchedColumns, setDataImport } = useModel('import');
-	const { getImportHeaderModel, getImportTemplateModel, importHeaders } = useModel(modelName);
+	const { getImportHeaderModel, getImportTemplateModel, importHeaders, setImportHeaders } = useModel(modelName);
 	const [currentStep, setCurrentStep] = useState(0);
 	const [isGetHeader, setIsGetHeader] = useState<boolean>(false);
 
 	const getHeaders = () => {
-		if (getImportHeaderModel) getImportHeaderModel();
+		if (getHeader)
+			getHeader().then((headers) => {
+				setImportHeaders(headers);
+			});
+		else if (getImportHeaderModel) getImportHeaderModel();
 	};
 
 	useEffect(() => {
 		setIsGetHeader(false);
-	}, [modelName]);
+	}, [modelName, ...dependenciesHeader]);
 
 	useEffect(() => {
 		if (visible && !isGetHeader) {
@@ -38,8 +55,8 @@ const ModalImport = (props: ModalImportProps) => {
 	};
 
 	return (
-		<Modal
-			title='Nhập dữ liệu'
+		<ModalExpandable
+			title={intl.formatMessage({ id: 'global.table.import.index.title' })}
 			visible={visible}
 			onCancel={() => onCancelModal()}
 			footer={null}
@@ -50,10 +67,10 @@ const ModalImport = (props: ModalImportProps) => {
 			{!!importHeaders.length ? (
 				<>
 					<Steps current={currentStep} style={{ marginBottom: 18 }}>
-						<Steps.Step title='Chọn tập tin' />
-						<Steps.Step title='Ghép cột dữ liệu' />
-						<Steps.Step title='Xem trước dữ liệu' />
-						<Steps.Step title='Kết quả xử lý' />
+						<Steps.Step title={intl.formatMessage({ id: 'global.table.import.index.step.chontaptin' })} />
+						<Steps.Step title={intl.formatMessage({ id: 'global.table.import.index.step.ghepcotdulieu' })} />
+						<Steps.Step title={intl.formatMessage({ id: 'global.table.import.index.step.xemtruocdulieu' })} />
+						<Steps.Step title={intl.formatMessage({ id: 'global.table.import.index.step.ketquaxuly' })} />
 					</Steps>
 
 					{currentStep === 0 ? (
@@ -85,13 +102,14 @@ const ModalImport = (props: ModalImportProps) => {
 							onCancel={onCancelModal}
 							onBack={() => setCurrentStep(2)}
 							modelName={modelName}
+							importHeaders={importHeaders}
 						/>
 					)}
 				</>
 			) : (
-				<Empty description='Chức năng chưa được hỗ trợ' />
+				<Empty description={intl.formatMessage({ id: 'global.table.import.index.empty' })} />
 			)}
-		</Modal>
+		</ModalExpandable>
 	);
 };
 

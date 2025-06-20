@@ -15,7 +15,8 @@ import NotAccessible from './pages/exception/403';
 import NotFoundContent from './pages/exception/404';
 import type { IInitialState } from './services/base/typing';
 import './styles/global.less';
-import { currentRole } from './utils/ip';
+import { currentRole, replaceRole } from './utils/ip';
+import { AppModules } from './services/base/constant';
 
 /**  loading */
 export const initialStateConfig = {
@@ -82,17 +83,28 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
 		footerRender: () => <Footer />,
 
 		onPageChange: () => {
-			const { location } = history;
-			if (initialState?.currentUser)
+			if (initialState?.currentUser) {
+				const { location } = history;
+				const isUncheckPath = unCheckPermissionPaths.some((path) => window.location.pathname.includes(path));
+
 				if (location.pathname === '/') {
 					history.replace('/dashboard');
 				} else if (
-					!unCheckPermissionPaths.includes(window.location.pathname) &&
+					!isUncheckPath &&
 					currentRole &&
 					initialState?.authorizedPermissions?.length &&
 					!initialState?.authorizedPermissions?.find((item) => item.rsname === currentRole)
-				)
+				) {
+					const hasReplaceRole = initialState.authorizedPermissions.some((item) => item.rsname === replaceRole);
+					const linkReplace = !!replaceRole && AppModules[replaceRole]?.url;
+
+					if (!!linkReplace && hasReplaceRole) {
+						window.location.replace(linkReplace);
+						return;
+					}
 					history.replace('/403');
+				}
+			}
 		},
 
 		menuItemRender: (item: any, dom: any) => (

@@ -1,12 +1,21 @@
-import { ArrowLeftOutlined, CheckCircleOutlined, SaveOutlined } from '@ant-design/icons';
+import { genExcelFile } from '@/utils/utils';
+import { ArrowLeftOutlined, CheckCircleOutlined, DownloadOutlined, SaveOutlined } from '@ant-design/icons';
 import { Button, Col, Collapse, Popconfirm, Row, Space, Spin, Tag } from 'antd';
 import { useEffect, useState } from 'react';
-import { useModel } from 'umi';
+import { useIntl, useModel } from 'umi';
+import ButtonExtend from '../ButtonExtend';
 import TableStaticData from '../TableStaticData';
-import { type IColumn, type TImportResponse, type TImportRowResponse } from '../typing';
+import type { TImportHeader, IColumn, TImportResponse, TImportRowResponse } from '../typing';
 
-const ValidateDataImport = (props: { onOk: () => void; onCancel: () => void; onBack: any; modelName: any }) => {
-	const { onOk, onCancel, onBack, modelName } = props;
+const ValidateDataImport = (props: {
+	onOk?: () => void;
+	onCancel: () => void;
+	onBack: any;
+	modelName: any;
+	importHeaders: TImportHeader[];
+}) => {
+	const intl = useIntl();
+	const { onOk, onCancel, onBack, modelName, importHeaders } = props;
 	const { dataImport, startLine } = useModel('import');
 	const { postValidateModel, postExecuteImpotModel, formSubmiting } = useModel(modelName);
 	const [importResponses, setImportResponses] = useState<TImportRowResponse[]>([]);
@@ -16,20 +25,28 @@ const ValidateDataImport = (props: { onOk: () => void; onCancel: () => void; onB
 
 	const columns: IColumn<TImportRowResponse>[] = [
 		{
-			title: 'Thứ tự hàng',
+			title: intl.formatMessage({ id: 'global.table.import.validate.table.thutuhang' }),
 			dataIndex: 'rowIndex',
 			width: 80,
 			align: 'center',
 		},
 		{
-			title: 'Trạng thái',
+			title: intl.formatMessage({ id: 'global.table.import.validate.table.trangthai' }),
 			width: 120,
 			align: 'center',
 			render: (val, rec) =>
 				!!rec.rowErrors?.length ? (
-					<Tag color='red'>{step === 0 ? 'Không hợp lệ' : 'Không thành công'}</Tag>
+					<Tag color='red'>
+						{step === 0
+							? intl.formatMessage({ id: 'global.table.import.validate.table.khonghople' })
+							: intl.formatMessage({ id: 'global.table.import.validate.table.khongthanhcong' })}
+					</Tag>
 				) : (
-					<Tag color='green'>{step === 0 ? 'Hợp lệ' : 'Thành công'}</Tag>
+					<Tag color='green'>
+						{step === 0
+							? intl.formatMessage({ id: 'global.table.import.validate.table.hople' })
+							: intl.formatMessage({ id: 'global.table.import.validate.table.thanhcong' })}
+					</Tag>
 				),
 		},
 	];
@@ -58,17 +75,43 @@ const ValidateDataImport = (props: { onOk: () => void; onCancel: () => void; onB
 				setIsError(res.error);
 				const temp = res.validate?.map((item) => ({ ...item, rowIndex: item.index + startLine }));
 				setImportResponses(temp ?? []);
-
-				onOk(); // Get data
 			})
 			.catch((err: any) => console.log(err));
+	};
+
+	const transformDataToExcelFormat = () => {
+		const headers = ['TT hàng', ...importHeaders.map((h) => h.label), 'Thông tin lỗi'];
+
+		const dataRows = importResponses.map((item) => {
+			const { row, rowErrors = [] }: { row: Record<string, any>; rowErrors?: string[] } = item;
+
+			return [
+				row.row ?? '',
+				...importHeaders.map((h) => row[h.field] ?? ''),
+				rowErrors.length > 0 ? rowErrors.join(', ') : '',
+			];
+		});
+
+		return [headers, ...dataRows];
 	};
 
 	return (
 		<Row gutter={[12, 12]}>
 			<Col span={24}>
-				<div className='fw500'>Kết quả kiểm tra</div>
-				<i>Dữ liệu đã được kiểm tra trên hệ thống. Vui lòng xem danh sách chi tiết dưới đây.</i>
+				<div className='fw500'>{intl.formatMessage({ id: 'global.table.import.validate.ketqua' })}</div>
+				<i>{intl.formatMessage({ id: 'global.table.import.validate.dulieu' })}</i>
+				<br />
+
+				{importResponses.length ? (
+					<ButtonExtend
+						size='small'
+						icon={<DownloadOutlined />}
+						onClick={() => genExcelFile(transformDataToExcelFormat(), 'Kết quả Import.xlsx')}
+						loading={formSubmiting}
+					>
+						{intl.formatMessage({ id: 'global.table.import.validate.button.taixuong' })}
+					</ButtonExtend>
+				) : null}
 			</Col>
 
 			{!formSubmiting ? (
@@ -76,16 +119,20 @@ const ValidateDataImport = (props: { onOk: () => void; onCancel: () => void; onB
 					<Col span={24}>
 						{step === 0 ? (
 							<>
-								<span className='fw500'>Hiện tại có </span>
-								<Tag color='red'>{errorCount} dòng không hợp lệ</Tag>
+								<span className='fw500'>{intl.formatMessage({ id: 'global.table.import.validate.hientaico' })}</span>
+								<Tag color='red'>
+									{errorCount} {intl.formatMessage({ id: 'global.table.import.validate.dongkhonghople' })}
+								</Tag>
 								<br />
-								Bạn hãy kiểm tra lại dữ liệu hoặc loại bỏ những dòng không hợp lệ để có thể Lưu dữ liệu vào hệ thống.
+								{intl.formatMessage({ id: 'global.table.import.validate.kiemtralaidulieu' })}
 								{/* Bạn có thể kiểm tra lại trước khi Lưu dữ liệu vào hệ thống! */}
 							</>
 						) : (
 							<>
-								<span className='fw500'>Thực hiện lưu </span>
-								<Tag color='red'>{errorCount} dòng không thành công</Tag>
+								<span className='fw500'>{intl.formatMessage({ id: 'global.table.import.validate.thuchienluu' })}</span>
+								<Tag color='red'>
+									{errorCount} {intl.formatMessage({ id: 'global.table.import.validate.dongkhongthanhcong' })}
+								</Tag>
 							</>
 						)}
 					</Col>
@@ -149,7 +196,7 @@ const ValidateDataImport = (props: { onOk: () => void; onCancel: () => void; onB
 			<Col span={24}>
 				<Space style={{ marginTop: 12, justifyContent: 'space-between', width: '100%' }}>
 					<Button onClick={() => onBack()} icon={<ArrowLeftOutlined />}>
-						Quay lại
+						{intl.formatMessage({ id: 'global.table.import.math.button.quaylai' })}
 					</Button>
 
 					{step === 0 ? (
@@ -175,11 +222,18 @@ const ValidateDataImport = (props: { onOk: () => void; onCancel: () => void; onB
 								icon={<SaveOutlined />}
 								// disabled={isError || !!errorCount}
 							>
-								Lưu dữ liệu
+								{intl.formatMessage({ id: 'global.table.import.validate.button.luudulieu' })}
 							</Button>
 						</Popconfirm>
 					) : (
-						<Button onClick={onCancel}>Hoàn thành</Button>
+						<Button
+							onClick={() => {
+								if (onOk) onOk(); // Get data
+								onCancel();
+							}}
+						>
+							{intl.formatMessage({ id: 'global.table.import.validate.button.hoanthanh' })}
+						</Button>
 					)}
 				</Space>
 			</Col>

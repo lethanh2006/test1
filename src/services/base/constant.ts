@@ -1,4 +1,4 @@
-import { type Login } from './typing';
+import type { ColorType, Login } from './typing';
 
 export enum EModuleKey {
 	CONNECT = 'cong-hoc-vien',
@@ -13,6 +13,7 @@ export enum EModuleKey {
 	KT = 'khao-thi',
 	CSVC = 'co-so-vat-chat',
 	THU_VIEN = 'thu-vien',
+	VBCC = 'van-bang-chung-chi',
 }
 
 export const AppModules: Record<EModuleKey, Login.TModule> = {
@@ -88,6 +89,12 @@ export const AppModules: Record<EModuleKey, Login.TModule> = {
 		url: APP_CONFIG_URL_THU_VIEN,
 		icon: EModuleKey.THU_VIEN + '.svg',
 	},
+	[EModuleKey.VBCC]: {
+		title: APP_CONFIG_TITLE_VBCC,
+		clientId: `${APP_CONFIG_PREFIX_OF_KEYCLOAK_CLIENT_ID}vbcc`,
+		url: APP_CONFIG_URL_VBCC,
+		icon: EModuleKey.VBCC + '.svg',
+	},
 };
 
 export const moduleQuanLyVanBan: Partial<Login.TModule> = {
@@ -121,4 +128,64 @@ export const unitPrefix = APP_CONFIG_TIEN_TO_TRUONG;
 export const tenTruongVietTatTiengAnh = APP_CONFIG_TEN_TRUONG_VIET_TAT_TIENG_ANH;
 
 /** Cài đặt hệ thống */
-export enum ESettingKey {}
+export enum ESettingKey {
+	KEY = 'KEY',
+}
+
+/** Định dạng file */
+export enum EDinhDangFile {
+	WORD = 'word',
+	EXCEL = 'excel',
+	POWERPOINT = 'powerpoint',
+	PDF = 'pdf',
+	IMAGE = 'image',
+	VIDEO = 'video',
+	AUDIO = 'audio',
+	TEXT = 'text',
+	UNKNOWN = 'unknown',
+}
+
+export enum EScopeFile {
+	PUBLIC = 'Public',
+	INTERNAL = 'Internal',
+	PRIVATE = 'Private',
+}
+
+export enum EStorageFile {
+	DATABASE = 'Database',
+	S3 = 'S3',
+}
+
+/** Tên các màu mặc định của Tag's antd */
+export enum ETagColor {
+	MAGENTA = 'magenta',
+	RED = 'red',
+	VOLCANO = 'volcano',
+	ORANGE = 'orange',
+	GOLD = 'gold',
+	YELLOW = 'yellow',
+	LIME = 'lime',
+	GREEN = 'green',
+	CYAN = 'cyan',
+	BLUE = 'blue',
+	GEEKBLUE = 'geekblue',
+	PURPLE = 'purple',
+	DEFAULT = 'default',
+}
+
+/** Mapping từ màu tag antd sang color code */
+export const colorList: { [key in keyof typeof ETagColor]: ColorType } = {
+	MAGENTA: { name: 'magenta', hexColor: '#eb2f96' },
+	RED: { name: 'red', hexColor: '#f5222d' },
+	VOLCANO: { name: 'volcano', hexColor: '#fa541c' },
+	ORANGE: { name: 'orange', hexColor: '#fa8c16' },
+	GOLD: { name: 'gold', hexColor: '#faad14' },
+	YELLOW: { name: 'yellow', hexColor: '#fadb14' },
+	LIME: { name: 'lime', hexColor: '#a0d911' },
+	GREEN: { name: 'green', hexColor: '#52c41a' },
+	CYAN: { name: 'cyan', hexColor: '#13c2c2' },
+	BLUE: { name: 'blue', hexColor: '#1890ff' },
+	GEEKBLUE: { name: 'geekblue', hexColor: '#2f54eb' },
+	PURPLE: { name: 'purple', hexColor: '#722ed1' },
+	DEFAULT: { name: 'default', hexColor: '#bfbfbf' },
+};

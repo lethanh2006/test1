@@ -2,10 +2,11 @@ import { AppModules, EModuleKey, moduleCongThongTin, moduleQuanLyVanBan } from '
 import type { Login } from '@/services/base/typing';
 import { UserSwitchOutlined } from '@ant-design/icons';
 import { Col, Row } from 'antd';
-import { useModel } from 'umi';
+import { useIntl, useModel } from 'umi';
 import './style.less';
 
 const ModuleView = () => {
+	const intl = useIntl();
 	const { initialState } = useModel('@@initialState');
 	const permissions = initialState?.authorizedPermissions?.map((item) => item.rsname);
 	const isCanBo = initialState?.authorizedPermissions?.some(
@@ -17,7 +18,7 @@ const ModuleView = () => {
 
 	return (
 		<div className='module-view'>
-			<div className='module-header'>Danh sách chức năng</div>
+			<div className='module-header'>{intl.formatMessage({ id: 'global.rightcontent.moduleswitch.dschungnang' })}</div>
 
 			<Row gutter={[5, 5]}>
 				{Object.entries(AppModules)

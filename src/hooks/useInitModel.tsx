@@ -76,6 +76,7 @@ const useInitModel = <T,>(
 		isSetDanhSach?: boolean,
 		isAbsolutePath?: boolean,
 		selectParams?: string[],
+		config?: { dataPartitionCode?: string },
 	): Promise<T[]> => {
 		setLoading(true);
 		const payload = {
@@ -86,16 +87,20 @@ const useInitModel = <T,>(
 				...condition,
 				...paramCondition,
 			},
-			filters: [
-				...(filters?.filter((item) => item.active !== false)?.map(({ active, ...item }) => item) || []),
-				...(filterParams || []),
-			],
+			filters: [...(filters ?? []), ...(filterParams || [])]
+				.filter((item) => item.active !== false)
+				.map(({ active, ...item }) => item),
 			select: selectParams?.join(' '),
 			...(otherQuery ?? {}),
 		};
 
 		try {
-			const response = await getService(payload, path ?? 'page', isAbsolutePath ?? false);
+			const response = await getService(
+				payload,
+				path ?? 'page',
+				isAbsolutePath ?? false,
+				config?.dataPartitionCode ? { 'x-data-partition-code': config.dataPartitionCode } : undefined,
+			);
 			const tempData: T[] = response?.data?.data?.result ?? [];
 			const tempTotal: number = response?.data?.data?.total ?? 0;
 
@@ -125,6 +130,7 @@ const useInitModel = <T,>(
 		isSetDanhSach?: boolean,
 		selectParams?: string[],
 		otherQuery?: Record<string, any>,
+		config?: { dataPartitionCode?: string },
 	): Promise<T[]> => {
 		setLoading(true);
 		try {
@@ -135,7 +141,11 @@ const useInitModel = <T,>(
 				select: selectParams?.join(' '),
 				...(otherQuery ?? {}),
 			};
-			const response = await getAllService(payload, pathParam);
+			const response = await getAllService(
+				payload,
+				pathParam,
+				config?.dataPartitionCode ? { 'x-data-partition-code': config.dataPartitionCode } : undefined,
+			);
 			const data: T[] = response?.data?.data ?? [];
 			// if (sortParam) data.sort(sortParam);
 			if (isSetDanhSach !== false) setDanhSach(data);
@@ -182,11 +192,15 @@ const useInitModel = <T,>(
 		getData?: any,
 		closeModal?: boolean,
 		messageText?: string,
+		config?: { dataPartitionCode?: string },
 	): Promise<T> => {
 		if (formSubmiting) Promise.reject('Form submiting');
 		setFormSubmiting(true);
 		try {
-			const res = await postService(chuanHoaObject(payload));
+			const res = await postService(
+				chuanHoaObject(payload),
+				config?.dataPartitionCode ? { 'x-data-partition-code': config.dataPartitionCode } : undefined,
+			);
 			message.success(messageText ?? 'Thêm mới thành công');
 			setLoading(false);
 			if (getData) getData();
@@ -310,6 +324,14 @@ const useInitModel = <T,>(
 		setEdit(false);
 		setIsView(true);
 		setVisibleForm(true);
+	};
+
+	/** Xóa dữ liệu model: `danhSach, record, page, total` */
+	const clearModel = () => {
+		setRecord(undefined);
+		setDanhSach([]);
+		setPage(1);
+		setTotal(0);
 	};
 
 	//#region BASE IMPORT
@@ -485,6 +507,8 @@ const useInitModel = <T,>(
 		postExportModel,
 		selectedIds,
 		setSelectedIds,
+		initFilter,
+		clearModel,
 	};
 };
 

@@ -1,11 +1,11 @@
+import ExpandText from '@/components/ExpandText';
 import { ArrowLeftOutlined, QuestionOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Col, Row, Space } from 'antd';
-import { useEffect, useState } from 'react';
-import { useModel } from 'umi';
-import TableStaticData from '../TableStaticData';
-import { type TImportHeader, type IColumn } from '../typing';
 import moment from 'moment';
-import ExpandText from '@/components/ExpandText';
+import { useEffect, useState } from 'react';
+import { useIntl, useModel } from 'umi';
+import TableStaticData from '../TableStaticData';
+import type { IColumn, TImportHeader } from '../typing';
 
 const PreviewDataImport = (props: {
 	onChange: () => void;
@@ -13,23 +13,25 @@ const PreviewDataImport = (props: {
 	importHeaders: TImportHeader[];
 	extendData?: Record<string, string | number>;
 }) => {
+	const intl = useIntl();
 	const { onChange, onBack, importHeaders, extendData } = props;
 	const { matchedColumns, fileData, setDataImport, dataImport, startLine } = useModel('import');
-	const [hasInvalid, setHasInvalid] = useState(false);
+	const [invalidRows, setInvalidRows] = useState<Set<number>>();
 	const [loading, setLoading] = useState(false);
-	const invalidText = 'Dữ liệu không hợp lệ';
+	const invalidText = intl.formatMessage({ id: 'global.table.import.preview.table.invalidText' });
 
 	const columns: IColumn<any>[] = [
 		{
 			dataIndex: 'row',
-			title: 'Thứ tự hàng',
+			title: intl.formatMessage({ id: 'global.table.import.preview.table.tthang' }),
 			width: 80,
 			align: 'center',
+			onCell: (row) => ({ style: { backgroundColor: row.invalid ? '#ffdada94' : undefined } }),
 		},
 		...importHeaders?.map((item) => ({
 			dataIndex: item.field,
 			title: item.label,
-			width: item.type === 'String' ? 120 : 90,
+			width: item.type === 'String' ? 140 : 90,
 			align: (item.type === 'String' ? 'left' : 'center') as any,
 			render: (val: any) =>
 				val === invalidText ? (
@@ -43,6 +45,7 @@ const PreviewDataImport = (props: {
 				) : (
 					val
 				),
+			onCell: (row: any) => ({ style: { backgroundColor: row.invalid ? '#ffdada94' : undefined } }),
 		})),
 	];
 
@@ -51,11 +54,11 @@ const PreviewDataImport = (props: {
 			setLoading(true);
 			const tempData: any = [];
 			let tmp;
-			let invalid = false;
+			const invalids: Set<number> = new Set<number>();
 
 			fileData?.forEach((row, index) => {
 				const temp: any = { ...(extendData ?? {}), row: index + startLine };
-				const valid = true;
+				let valid = true;
 
 				importHeaders?.every((col) => {
 					const content = row[matchedColumns[col.field]]?.toString()?.trim();
@@ -72,14 +75,15 @@ const PreviewDataImport = (props: {
 									break;
 								case 'Number':
 									tmp = content ? Number.parseFloat(content.replace(',', '.')) : null;
+									if (Number.isNaN(tmp)) {
+										temp[col.field] = invalidText;
+										valid = false;
+									}
 									// Với kiểu số thì làm tròn đến 2 chữ số thập phân ???
-									temp[col.field] = Number.isNaN(tmp) ? invalidText : tmp === null ? tmp : Math.round(tmp * 100) / 100;
-									if (!invalid) invalid = Number.isNaN(tmp);
+									else temp[col.field] = tmp === null ? tmp : Math.round(tmp * 100) / 100;
 									break;
-								// case 'String':
-								//   temp[col.field] = content?.toString();
-								//   break;
 								case 'Date':
+									// Thử xử lý convert text người dùng nhập thành dạng ISOString
 									tmp =
 										moment(content, 'DD/MM/YYYY').toISOString() ||
 										moment(content, 'D/M/YYYY').toISOString() ||
@@ -87,24 +91,28 @@ const PreviewDataImport = (props: {
 										moment(content).toISOString() ||
 										invalidText;
 									temp[col.field] = tmp;
-									if (!invalid) invalid = tmp === invalidText;
+									valid = tmp !== invalidText;
 									break;
 								default:
-									temp[col.field] = content;
+									temp[col.field] = content?.toString();
 									break;
 							}
 						} catch {
 							temp[col.field] = invalidText;
-							if (!invalid) invalid = true;
+							valid = false;
 						}
 					}
 					return true;
 				});
 
-				if (valid) tempData.push(temp);
+				tempData.push(temp);
+				if (!valid) {
+					temp.invalid = true;
+					invalids.add(temp.row);
+				}
 			});
 			setDataImport(tempData);
-			setHasInvalid(invalid);
+			setInvalidRows(invalids);
 			setLoading(false);
 		}
 	};
@@ -116,10 +124,11 @@ const PreviewDataImport = (props: {
 	return (
 		<Row gutter={[12, 12]}>
 			<Col span={24}>
-				<div className='fw500'>Danh sách dữ liệu từ tập tin</div>
-				{hasInvalid ? (
+				<div className='fw500'>{intl.formatMessage({ id: 'global.table.import.preview.danhsacdulieu' })}</div>
+				{invalidRows?.size ? (
 					<i style={{ color: 'red' }}>
-						Có ô dữ liệu không hợp lệ (đã được đánh dấu trong bảng), vui lòng kiểm tra lại!
+						Có ô chứa dữ liệu không hợp lệ tại các dòng {Array.from(invalidRows).join(', ')} (đã được đánh dấu trong
+						bảng), vui lòng kiểm tra lại!
 					</i>
 				) : null}
 			</Col>
@@ -138,16 +147,16 @@ const PreviewDataImport = (props: {
 			<Col span={24}>
 				<Space style={{ marginTop: 12, justifyContent: 'space-between', width: '100%' }}>
 					<Button onClick={() => onBack()} icon={<ArrowLeftOutlined />}>
-						Quay lại
+						{intl.formatMessage({ id: 'global.table.import.preview.button.quaylai' })}
 					</Button>
 					<Button
 						htmlType='submit'
 						type='primary'
 						onClick={() => onChange()}
 						icon={<QuestionOutlined />}
-						disabled={!dataImport?.length || hasInvalid}
+						disabled={!dataImport?.length || !!invalidRows?.size}
 					>
-						Kiểm tra dữ liệu
+						{intl.formatMessage({ id: 'global.table.import.preview.button.kiemtra' })}
 					</Button>
 				</Space>
 			</Col>
