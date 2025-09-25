@@ -16,14 +16,20 @@ const ModuleView = () => {
 	if (moduleQuanLyVanBan.url && isCanBo) extendModules.push(moduleQuanLyVanBan);
 	if (moduleCongThongTin.url) extendModules.push(moduleCongThongTin);
 
+	const allowedModules = Object.entries(AppModules).filter(
+		([name, value]) => permissions?.includes(name as EModuleKey) && !!value.url,
+	);
+	const cntModules = allowedModules.length + extendModules.length;
+
 	return (
 		<div className='module-view'>
-			<div className='module-header'>{intl.formatMessage({ id: 'global.rightcontent.moduleswitch.dschungnang' })}</div>
+			<div className='module-header'>
+				{intl.formatMessage({ id: 'global.rightcontent.moduleswitch.dschungnang' })} ({cntModules})
+			</div>
 
-			<Row gutter={[5, 5]}>
-				{Object.entries(AppModules)
-					.filter(([name, value]) => permissions?.includes(name as EModuleKey) && !!value.url)
-					.map(([name, value]) => (
+			<div className='module-container' style={{ padding: '0 12px 12px' }}>
+				<Row gutter={[5, 5]}>
+					{allowedModules.map(([name, value]) => (
 						<Col span={8} key={name}>
 							<a href={value?.url} target='_blank' rel='noreferrer'>
 								<div className='module-item'>
@@ -38,21 +44,22 @@ const ModuleView = () => {
 						</Col>
 					))}
 
-				{extendModules.map((mod) => (
-					<Col span={8} key={mod.url}>
-						<a href={mod.url} target='_blank' rel='noreferrer'>
-							<div className='module-item'>
-								{mod.icon ? (
-									<img src={`${AppModules[EModuleKey.QLDT].url}modules/${mod.icon}`} />
-								) : (
-									<UserSwitchOutlined />
-								)}
-								<span className='module-name'>{mod.title}</span>
-							</div>
-						</a>
-					</Col>
-				))}
-			</Row>
+					{extendModules.map((mod) => (
+						<Col span={8} key={mod.url}>
+							<a href={mod.url} target='_blank' rel='noreferrer'>
+								<div className='module-item'>
+									{mod.icon ? (
+										<img src={`${AppModules[EModuleKey.CORE].url}modules/${mod.icon}`} />
+									) : (
+										<UserSwitchOutlined />
+									)}
+									<span className='module-name'>{mod.title}</span>
+								</div>
+							</a>
+						</Col>
+					))}
+				</Row>
+			</div>
 		</div>
 	);
 };

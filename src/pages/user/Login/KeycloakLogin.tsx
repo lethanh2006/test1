@@ -11,7 +11,7 @@ const LoginWithKeycloak = () => {
 	const onClearCache = () => {
 		localStorage.clear();
 		sessionStorage.clear();
-		auth.removeUser();
+		auth?.removeUser();
 		window.location.href = '/';
 		// window.location.reload();
 	};
@@ -20,7 +20,7 @@ const LoginWithKeycloak = () => {
 		return <div>Đang chuyển tới trang đăng nhập...</div>;
 	}
 
-	if (auth.error) {
+	if (auth?.error) {
 		return (
 			<div>
 				Có lỗi xảy ra... <pre>{auth.error.message}</pre>
@@ -32,7 +32,7 @@ const LoginWithKeycloak = () => {
 	}
 
 	return (
-		<div>
+		<>
 			<Button
 				onClick={dangNhap}
 				type='primary'
@@ -45,7 +45,7 @@ const LoginWithKeycloak = () => {
 				Đăng nhập bằng Slink ID
 				{/* {tenTruongVietTatTiengAnh.toUpperCase()} Connect */}
 			</Button>
-		</div>
+		</>
 	);
 };
 

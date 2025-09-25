@@ -1,3 +1,5 @@
+import { type ViewerProps } from '@react-pdf-viewer/core';
+
 export type TPreviewFileProps = {
 	/** Đường dẫn file (hoặc idFile) */
 	file: string | string[];

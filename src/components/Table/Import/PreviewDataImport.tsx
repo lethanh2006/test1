@@ -1,7 +1,7 @@
 import ExpandText from '@/components/ExpandText';
+import dayjs from '@/utils/dayjs';
 import { ArrowLeftOutlined, QuestionOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Col, Row, Space } from 'antd';
-import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { useIntl, useModel } from 'umi';
 import TableStaticData from '../TableStaticData';
@@ -39,7 +39,7 @@ const PreviewDataImport = (props: {
 				) : item.type === 'Boolean' ? (
 					<Checkbox checked={!!val} />
 				) : item.type === 'Date' && val ? (
-					moment(val).format('DD/MM/YYYY')
+					dayjs(val).format('DD/MM/YYYY')
 				) : item.type === 'String' ? (
 					<ExpandText>{val}</ExpandText>
 				) : (
@@ -83,16 +83,25 @@ const PreviewDataImport = (props: {
 									else temp[col.field] = tmp === null ? tmp : Math.round(tmp * 100) / 100;
 									break;
 								case 'Date':
-									// Thử xử lý convert text người dùng nhập thành dạng ISOString
-									tmp =
-										moment(content, 'DD/MM/YYYY').toISOString() ||
-										moment(content, 'D/M/YYYY').toISOString() ||
-										moment.unix((Number.parseInt(content) - 25569) * 86400).toISOString() ||
-										moment(content).toISOString() ||
-										invalidText;
-									temp[col.field] = tmp;
-									valid = tmp !== invalidText;
+									let parsedDate: string;
+
+									if (dayjs(content, 'DD/MM/YYYY', true).isValid()) {
+										parsedDate = dayjs(content, 'DD/MM/YYYY').toISOString();
+									} else if (dayjs(content, 'D/M/YYYY', true).isValid()) {
+										parsedDate = dayjs(content, 'D/M/YYYY').toISOString();
+									} else if (!isNaN(Number(content))) {
+										// Excel serial date → Unix timestamp
+										parsedDate = dayjs.unix((Number(content) - 25569) * 86400).toISOString();
+									} else if (dayjs(content).isValid()) {
+										parsedDate = dayjs(content).toISOString();
+									} else {
+										parsedDate = invalidText;
+									}
+
+									temp[col.field] = parsedDate;
+									valid = parsedDate !== invalidText;
 									break;
+
 								default:
 									temp[col.field] = content?.toString();
 									break;

@@ -1,42 +1,28 @@
 import { type ThongBao } from '@/services/ThongBao/typing';
-import { Avatar, List, Skeleton } from 'antd';
+import dayjs from '@/utils/dayjs';
+import { ArrowDownOutlined } from '@ant-design/icons';
+import { Avatar, Divider, List, Skeleton } from 'antd';
 import classNames from 'classnames';
-import moment from 'moment';
+
 import React from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { useModel } from 'umi';
-import styles from './NoticeList.less';
+import { Link, useModel } from 'umi';
+import styles from './index.less';
 
 export type NoticeIconTabProps = {
-	count?: number;
-	showClear?: boolean;
-	showViewMore?: boolean;
-	style?: React.CSSProperties;
-	title: string;
-	tabKey: string;
 	onClick?: (item: ThongBao.IRecord) => void;
-	onClear?: () => void;
 	emptyText?: string;
-	clearText?: string;
 	viewMoreText?: string;
-	list: ThongBao.IRecord[];
-	onViewMore?: () => void;
 };
 
 const NoticeList: React.FC<NoticeIconTabProps> = ({
-	list = [],
 	onClick,
-	onClear,
-	onViewMore,
-	emptyText,
-	showClear = true,
-	clearText,
-	viewMoreText,
-	showViewMore = false,
+	emptyText = 'Bạn đã xem tất cả thông báo',
+	viewMoreText = 'Tải thêm',
 }) => {
-	const { total, readNotificationModel } = useModel('thongbao.noticeicon');
+	const { total, readNotificationModel, danhSach, loading, setPage } = useModel('thongbao.noticeicon');
 
-	if (!list || list.length === 0) {
+	if (!danhSach || danhSach.length === 0) {
 		return (
 			<div className={styles.notFound}>
 				<img src='https://gw.alipayobjects.com/zos/rmsportal/sAuJeJzSKbUmHfBQRzmZ.svg' alt='not found' />
@@ -50,36 +36,25 @@ const NoticeList: React.FC<NoticeIconTabProps> = ({
 		onClick?.(item);
 	};
 
+	const onViewMore = () => {
+		if (loading) return;
+		setPage((p) => p + 1);
+	};
+
 	return (
 		<div>
-			{/* <Scrollbars
-        // autoHide
-        // ref="scrollbars"
-        id="scrollableDiv"
-        style={{ height: '400px' }}
-      > */}
-			<div
-				id='scrollableDiv'
-				style={{
-					height: 400,
-					overflow: 'auto',
-				}}
-			>
+			<div id='scrollableDiv' style={{ height: 460, overflow: 'auto' }}>
 				<InfiniteScroll
-					style={{ overflow: 'unset' }}
-					dataLength={list.length}
-					next={() => onViewMore?.()}
-					hasMore={list.length < total}
-					loader={
-						<div style={{ padding: '12px 24px' }}>
-							<Skeleton paragraph={{ rows: 1 }} active />
-						</div>
-					}
+					dataLength={danhSach.length}
+					next={onViewMore}
+					hasMore={danhSach.length < total}
+					loader={<Skeleton paragraph={{ rows: 2 }} active style={{ padding: 12 }} />}
+					endMessage={<Divider plain>{emptyText}</Divider>}
 					scrollableTarget='scrollableDiv'
 				>
 					<List<ThongBao.IRecord>
 						className={styles.list}
-						dataSource={list}
+						dataSource={danhSach}
 						renderItem={(item) => {
 							const itemCls = classNames(styles.item, { [styles.read]: !item.read });
 							const leftIcon = item.imageUrl ? <Avatar className={styles.avatar} src={item.imageUrl} /> : null;
@@ -89,16 +64,11 @@ const NoticeList: React.FC<NoticeIconTabProps> = ({
 									<List.Item.Meta
 										className={styles.meta}
 										avatar={leftIcon}
-										title={
-											<div className={styles.title}>
-												{item.title}
-												{/* <div className={styles.extra}>{item.extra}</div> */}
-											</div>
-										}
+										title={<div className={styles.title}>{item.title}</div>}
 										description={
 											<>
 												<div className={styles.description}>{item.description}</div>
-												<div className={styles.datetime}>{moment(item.createdAt).fromNow()}</div>
+												<div className={styles.datetime}>{dayjs(item.createdAt).fromNow()}</div>
 											</>
 										}
 									/>
@@ -107,13 +77,19 @@ const NoticeList: React.FC<NoticeIconTabProps> = ({
 						}}
 					/>
 				</InfiniteScroll>
-				{/* </Scrollbars> */}
 			</div>
 
-			{showClear || showViewMore ? (
+			{danhSach.length < total ? (
 				<div className={styles.bottomBar}>
-					{showClear ? <div onClick={onClear}>{clearText}</div> : null}
-					{showViewMore ? <div onClick={() => onViewMore?.()}>{viewMoreText}</div> : null}
+					<Link
+						to='#!'
+						onClick={(e) => {
+							e.preventDefault();
+							onViewMore?.();
+						}}
+					>
+						<ArrowDownOutlined /> {viewMoreText}
+					</Link>
 				</div>
 			) : null}
 		</div>

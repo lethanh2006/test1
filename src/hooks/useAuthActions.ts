@@ -1,4 +1,3 @@
-import { deleteOneSignal } from '@/services/base/api';
 import { currentRole, oneSignalRole } from '@/utils/ip';
 import { useAuth } from 'react-oidc-context';
 import OneSignal from 'react-onesignal';
@@ -10,8 +9,10 @@ export const useAuthActions = () => {
 
 	const handleLogout = () => {
 		if (oneSignalRole.valueOf() === currentRole.valueOf()) {
-			OneSignal.getUserId((playerId) => deleteOneSignal({ playerId }));
-			OneSignal.setSubscription(false);
+			// FIXME: Update
+			OneSignal.logout();
+			// OneSignal.getUserId((playerId) => deleteOneSignal({ playerId }));
+			// OneSignal.setSubscription(false);
 		}
 
 		auth
@@ -27,12 +28,12 @@ export const useAuthActions = () => {
 	};
 
 	const handleLogin = () => {
-		auth.signinRedirect();
+		auth?.signinRedirect();
 	};
 
 	return {
 		dangXuat: handleLogout,
 		dangNhap: handleLogin,
-		isLoading: auth.isLoading,
+		isLoading: auth?.isLoading || false,
 	};
 };

@@ -1,7 +1,7 @@
 import { DownOutlined } from '@ant-design/icons';
 import { Button, Card, Space, Tree } from 'antd';
-import { type TExportField } from '../typing';
 import { useIntl } from 'umi';
+import { type TExportField } from '../typing';
 
 const CardChooseFields = (props: {
 	allFields: TExportField[];
@@ -28,9 +28,8 @@ const CardChooseFields = (props: {
 	return (
 		<Card
 			title={intl.formatMessage({ id: 'global.table.export.khadung' })}
-			bordered={false}
-			bodyStyle={{ padding: '8px 0 0' }}
-			headStyle={{ padding: 0 }}
+			variant='borderless'
+			className='card-borderless'
 		>
 			<Space style={{ marginBottom: 8 }} wrap>
 				<Button size='small' onClick={onCheckAll}>
@@ -44,7 +43,6 @@ const CardChooseFields = (props: {
 			<div style={{ maxHeight: 385, overflowY: 'scroll', border: '1px solid #f0f0f0' }}>
 				<Tree
 					treeData={treeData}
-					defaultExpandAll
 					switcherIcon={<DownOutlined />}
 					checkable
 					checkedKeys={fields.filter((item) => item.selected).map((item) => item._id)}

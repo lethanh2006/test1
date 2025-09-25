@@ -9,14 +9,18 @@
 				name: 'login',
 				component: './user/Login',
 			},
-			{
-				path: '/user',
-				redirect: '/user/login',
-			},
 		],
 	},
 
+	// GROUP TITLE
+	// {
+	// 	name: 'DashboardGroup',
+	// 	path: '/__group__/dashboard',
+	// 	disabled: true,
+	// },
+
 	///////////////////////////////////
+
 	// DEFAULT MENU
 	{
 		path: '/dashboard',
@@ -81,6 +85,8 @@
 		layout: false,
 	},
 	{
+		path: '/*',
 		component: './exception/404',
+		layout: false,
 	},
 ];

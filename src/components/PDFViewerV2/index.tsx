@@ -35,7 +35,7 @@ const PDFViewerV2 = ({
 	base64,
 	height: heightProps,
 	plugins,
-	defaultScale = SpecialZoomLevel.PageFit,
+	defaultScale = SpecialZoomLevel.PageWidth,
 	...viewerProps
 }: PDFViewerProps) => {
 	const defaultLayoutPluginInstance = defaultLayoutPlugin();
@@ -79,7 +79,7 @@ const PDFViewerV2 = ({
 
 	return (
 		<div ref={viewerRef} style={{ height: heightProps ?? height }}>
-			<Worker workerUrl='/pdf.worker.min.js'>
+			<Worker workerUrl='https://unpkg.com/@react-pdf-viewer/pdfjs-dist-signature@2.5.207/build/pdf.worker.js'>
 				<Viewer
 					fileUrl={fileUrl}
 					defaultScale={defaultScale}

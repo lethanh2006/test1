@@ -1,115 +1,75 @@
-import { type ThongBao } from '@/services/ThongBao/typing';
-import { BellOutlined } from '@ant-design/icons';
-import { Badge, Spin, Tabs, Tooltip } from 'antd';
+import readAll from '@/assets/read-all.svg';
+import { Link, useIntl } from '@umijs/max';
+import { Badge, Tooltip } from 'antd';
 import useMergedState from 'rc-util/es/hooks/useMergedState';
 import React from 'react';
-import { useIntl } from 'umi';
+import { useMediaQuery } from 'react-responsive';
 import HeaderDropdown from '../HeaderDropdown';
-import type { NoticeIconTabProps } from './NoticeList';
-import NoticeList from './NoticeList';
 import styles from './index.less';
-const { TabPane } = Tabs;
 
 export type NoticeIconProps = {
 	count?: number;
-	bell?: React.ReactNode;
-	className?: string;
-	loading?: boolean;
-	onClear?: (tabName: string, tabKey: string) => void;
-	onItemClick?: (item: ThongBao.IRecord, tabProps: NoticeIconTabProps) => void;
-	onViewMore?: (tabProps: NoticeIconTabProps) => void;
-	onTabChange?: (tabTile: string) => void;
-	style?: React.CSSProperties;
+	total?: number;
 	onPopupVisibleChange?: (visible: boolean) => void;
 	popupVisible?: boolean;
-	clearText?: string;
-	viewMoreText?: string;
-	clearClose?: boolean;
-	emptyImage?: string;
-	children?: React.ReactElement<NoticeIconTabProps>;
+	children?: React.ReactNode;
+	allowClear?: boolean;
+	onClear?: () => void;
 };
 
-const NoticeIcon: React.FC<NoticeIconProps> & {
-	Tab: typeof NoticeList;
-} = (props) => {
+const NoticeIcon: React.FC<NoticeIconProps> = ({
+	count,
+	total,
+	children,
+	allowClear,
+	onClear,
+	popupVisible,
+	onPopupVisibleChange,
+}) => {
 	const intl = useIntl();
-
-	const getNotificationBox = (): React.ReactNode => {
-		const { children, loading, onClear, onTabChange, onItemClick, onViewMore, clearText, viewMoreText } = props;
-		if (!children) {
-			return null;
-		}
-		const panes: React.ReactNode[] = [];
-		React.Children.forEach(children, (child: React.ReactElement<NoticeIconTabProps>): void => {
-			if (!child) {
-				return;
-			}
-			const { list, title, count, tabKey, showClear, showViewMore } = child.props;
-			const len = list && list.length ? list.length : 0;
-			const msgCount = count || count === 0 ? count : len;
-			const tabTitle: string = msgCount > 0 ? `${title} (${msgCount})` : title;
-			panes.push(
-				<TabPane closable={false} tab={tabTitle} key={tabKey}>
-					<NoticeList
-						clearText={clearText}
-						viewMoreText={viewMoreText}
-						list={list}
-						tabKey={tabKey}
-						onClear={() => onClear && onClear(title, tabKey)}
-						onClick={(item) => onItemClick && onItemClick(item, child.props)}
-						onViewMore={() => onViewMore && onViewMore(child.props)}
-						showClear={showClear}
-						showViewMore={showViewMore}
-						title={title}
-					/>
-				</TabPane>,
-			);
-		});
-		return (
-			<>
-				<Spin spinning={loading} delay={300}>
-					<Tabs className={styles.tabs} onChange={onTabChange}>
-						{panes}
-					</Tabs>
-				</Spin>
-			</>
-		);
-	};
-
-	const { count, bell } = props;
+	const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
 	const [visible, setVisible] = useMergedState<boolean>(false, {
-		value: props.popupVisible,
-		onChange: props.onPopupVisibleChange,
+		value: popupVisible,
+		onChange: onPopupVisibleChange,
 	});
-
-	const notificationBox = getNotificationBox();
-	if (!notificationBox) return <></>;
 
 	return (
 		<HeaderDropdown
-			placement='bottomRight'
-			overlay={notificationBox}
-			overlayClassName={styles.popover}
+			placement={isMobile ? 'bottom' : 'bottomRight'}
+			content={
+				<div className='module-view'>
+					<div className='module-header'>
+						Thông báo của tôi ({total ?? 0})
+						<Tooltip title='Đánh dấu tất cả là đã đọc'>
+							<Link
+								to='#!'
+								onClick={(e) => {
+									e.preventDefault();
+									if (allowClear && onClear) onClear();
+								}}
+							>
+								<img src={readAll} />
+							</Link>
+						</Tooltip>
+					</div>
+					<div className='module-container' style={{ paddingBottom: 2, overflow: 'hidden' }}>
+						{children}
+					</div>
+				</div>
+			}
 			trigger={['click']}
-			visible={visible}
-			onVisibleChange={setVisible}
-			arrow
+			open={visible}
+			onOpenChange={(open) => setVisible(open)}
 		>
 			<Tooltip title={intl.formatMessage({ id: 'app.header.notice', defaultMessage: 'Thông báo' })} placement='bottom'>
-				<a className={styles.badge}>
-					<Badge count={count ? (count < 100 ? count : '99+') : undefined} style={{ boxShadow: 'none' }}>
-						{bell || <BellOutlined />}
+				<div className='header-menu-item'>
+					<Badge count={count ? (count < 100 ? count : '99+') : undefined} className={styles.noti_badge}>
+						<img src='/icons/notification.svg' alt='notif' />
 					</Badge>
-				</a>
+				</div>
 			</Tooltip>
 		</HeaderDropdown>
 	);
 };
-
-NoticeIcon.defaultProps = {
-	emptyImage: 'https://gw.alipayobjects.com/zos/rmsportal/wAhyIChODzsoKIOBHcBk.svg',
-};
-
-NoticeIcon.Tab = NoticeList;
 
 export default NoticeIcon;

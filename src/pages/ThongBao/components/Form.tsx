@@ -72,7 +72,7 @@ const FormThongBao = (props: any) => {
 					email365: item.email365,
 				}));
 				if (!values.userList?.length) {
-					message.warn('Vui lòng chọn người nhận');
+					message.warning('Vui lòng chọn người nhận');
 					return;
 				}
 			}
@@ -181,8 +181,8 @@ const FormThongBao = (props: any) => {
 									[EReceiverType.KhoaSinhVien, EReceiverType.Nganh].includes(receiverType)
 										? [EVaiTroKhaoSat.SINH_VIEN]
 										: receiverType === EReceiverType.Khoa
-										? [EVaiTroKhaoSat.NHAN_VIEN]
-										: undefined
+											? [EVaiTroKhaoSat.NHAN_VIEN]
+											: undefined
 								}
 							/>
 						</Form.Item>

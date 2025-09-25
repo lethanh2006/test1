@@ -89,7 +89,7 @@ const PreviewFile: React.FC<TPreviewFileProps> = (props) => {
 
 				// Mapping { mimetype : "application/vnd.openxmlformats-officedocument.wordprocessingml.document"} sang EDinhDangFile
 				frame.type =
-					getFileType(fileInfo?.mimetype ? fileInfo.mimetype : getFileExtension(frame.url) ?? '') ||
+					getFileType(fileInfo?.mimetype ? fileInfo.mimetype : (getFileExtension(frame.url) ?? '')) ||
 					EDinhDangFile.UNKNOWN;
 			} else {
 				frame.type = getFileType(getFileExtension(srcUrl) ?? '') || EDinhDangFile.UNKNOWN;

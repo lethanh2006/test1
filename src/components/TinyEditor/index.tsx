@@ -72,8 +72,8 @@ const TinyEditor = (props: {
 				// apiKey='vrh3rpim05kai51zg4tcenfbzwhl243use11yolfq6d9ufvw'
 				value={value}
 				disabled={disabled}
+				licenseKey='gpl'
 				init={{
-					license_key: 'gpl',
 					language_url: '/lang/vi_VN.js',
 					language: 'vi_VN',
 					max_height: height,
@@ -121,11 +121,11 @@ const TinyEditor = (props: {
 					toolbar: disabled
 						? ''
 						: tinyToolbar
-						? 'undo redo | bold italic | forecolor backcolor | emoticons'
-						: miniToolbar
-						? 'undo redo | fontfamily fontsize | bold italic underline | forecolor backcolor removeformat | alignleft aligncenter alignright alignjustify | numlist bullist | emoticons'
-						: // Full toolbar
-						  'undo redo | styles fontfamily fontsize | bold italic underline strikethrough | forecolor backcolor removeformat | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | table image media link | charmap emoticons | fullscreen preview print',
+							? 'undo redo | bold italic | forecolor backcolor | emoticons'
+							: miniToolbar
+								? 'undo redo | fontfamily fontsize | bold italic underline | forecolor backcolor removeformat | alignleft aligncenter alignright alignjustify | numlist bullist | emoticons'
+								: // Full toolbar
+									'undo redo | styles fontfamily fontsize | bold italic underline strikethrough | forecolor backcolor removeformat | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | table image media link | charmap emoticons | fullscreen preview print',
 					toolbar_sticky: stickyToolbar,
 					autosave_ask_before_unload: true,
 					image_advtab: true,

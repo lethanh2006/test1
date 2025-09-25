@@ -22,7 +22,7 @@ const CardFormThongBaoTuyChinh = (props: { getData: () => void; type: Notificati
 	return (
 		<ModalExpandable
 			title='Gửi thông báo tùy chỉnh'
-			visible={visibleThongBaoDanhSach}
+			open={visibleThongBaoDanhSach}
 			onCancel={() => setVisibleThongBaoDanhSach(false)}
 			footer={null}
 			width={900}

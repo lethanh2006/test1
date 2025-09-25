@@ -23,7 +23,7 @@ const ModalImport = (props: ModalImportProps) => {
 		getHeader,
 	} = props;
 	const { setFileData, setMatchedColumns, setDataImport } = useModel('import');
-	const { getImportHeaderModel, getImportTemplateModel, importHeaders, setImportHeaders } = useModel(modelName);
+	const { getImportHeaderModel, getImportTemplateModel, importHeaders, setImportHeaders } = useModel(modelName) as any;
 	const [currentStep, setCurrentStep] = useState(0);
 	const [isGetHeader, setIsGetHeader] = useState<boolean>(false);
 
@@ -57,7 +57,7 @@ const ModalImport = (props: ModalImportProps) => {
 	return (
 		<ModalExpandable
 			title={intl.formatMessage({ id: 'global.table.import.index.title' })}
-			visible={visible}
+			open={visible}
 			onCancel={() => onCancelModal()}
 			footer={null}
 			width={800}

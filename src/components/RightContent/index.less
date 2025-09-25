@@ -1,48 +1,38 @@
-@import '~antd/es/style/themes/default.less';
-
 @pro-header-hover-bg: rgba(122, 127, 141, 0.1);
 
-.menu {
-	:global(.anticon) {
-		margin-right: 8px;
-	}
-
-	:global(.ant-dropdown-menu-item) {
-		min-width: 160px;
-	}
-}
-
-.right {
+.menu_right {
 	display: flex;
-	gap: 5px;
+	gap: 8px;
 	align-items: center;
 	float: right;
 	margin-left: auto;
-	overflow: hidden;
+	font-size: 14px;
 
-	:global(.anticon),
-	a>img {
+	:global(.header-menu-item) {
+		height: 36px;
+		width: 36px;
+		background-color: white;
+		border-radius: 4px;
+		padding: 8px;
+		// box-shadow: var(--box-shadow-tertiary);
+		box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03),
+			0 1px 6px -1px rgba(0, 0, 0, 0.02),
+			0 2px 4px 0 rgba(0, 0, 0, 0.02);
+
+		cursor: pointer;
+		transition: .3s;
 		display: flex;
-		align-items: center;
-		height: 48px;
-		padding: 0 8px;
-		font-size: 20px;
 
-		&:hover,
-		&:focus {
-			background: @pro-header-hover-bg;
+		&:hover {
+			background-color: @pro-header-hover-bg;
+			transition: .3s;
 		}
-	}
-
-	a>img {
-		padding: 12px 8px;
 	}
 
 	.action {
 		display: flex;
 		align-items: center;
-		height: 48px;
-		padding: 0 8px;
+		gap: 8px;
 		cursor: pointer;
 		transition: all 0.3s;
 
@@ -59,13 +49,10 @@
 		}
 	}
 
-	.name {
-		color: #fff;
-	}
-
 	.account {
+		padding: 0 5px;
+
 		.avatar {
-			margin-right: 8px;
 			height: 42px;
 			width: 42px;
 			line-height: 42px;
@@ -104,19 +91,12 @@
 		display: none;
 	}
 
-	.right {
+	.menu_right {
 		position: absolute;
-		top: 0;
-		right: 12px;
+		right: 0;
 
 		.account {
-			.avatar {
-				margin-right: 0;
-			}
-		}
-
-		.search {
-			display: none;
+			padding: 0;
 		}
 	}
 }

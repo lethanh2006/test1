@@ -2,15 +2,18 @@
 import { defineConfig } from 'umi';
 import defaultSettings from './defaultSettings';
 import routes from './routes';
-// import proxy from './proxy';
-// const { REACT_APP_ENV } = process.env;
 
 export default defineConfig({
 	hash: true,
-	antd: {},
-	dva: {
-		hmr: true,
+	antd: {
+		import: false,
+		// Transform DayJS to MomentJS
+		momentPicker: false,
 	},
+	access: {},
+	model: {},
+	initialState: {},
+	request: {},
 	layout: {
 		// https://umijs.org/zh-CN/plugins/plugin-layout
 		locale: true,
@@ -28,36 +31,27 @@ export default defineConfig({
 		// Default: '-' => 'vi-VN'
 		// baseSeparator: '_',
 	},
-	dynamicImport: {
-		loading: '@ant-design/pro-layout/es/PageLoading',
-	},
-	targets: {
-		ie: 11,
-	},
+	targets: { ie: 11 },
 	routes,
-	// Theme for antd: https://ant.design/docs/react/customize-theme-cn
-	theme: {
-		'primary-color': defaultSettings.primaryColor,
-		'border-radius-base': defaultSettings.borderRadiusBase,
-	},
-	// esbuild is father build tools
-	// https://umijs.org/plugins/plugin-esbuild
-	esbuild: {},
-	title: false,
+
 	ignoreMomentLocale: true,
 	// proxy: proxy[REACT_APP_ENV || 'dev'],
+	// base: '/qldt', 		// Sub-path
 	manifest: {
 		basePath: '/',
 	},
 	// Fast Refresh 热更新
-	fastRefresh: {},
+	fastRefresh: true,
 
-	nodeModulesTransform: {
-		type: 'none',
+	// plugins: ['@react-dev-inspector/umi4-plugin'],
+
+	alias: {
+		'pdfjs-dist': require.resolve('@react-pdf-viewer/pdfjs-dist-signature'),
 	},
-	// mfsu: {},
-	webpack5: {},
+
+	jsMinifier: 'terser',
 	exportStatic: {},
+
 	define: Object.entries(process.env).reduce((result, [key, value]) => {
 		if (key.startsWith('APP_CONFIG_')) {
 			return {

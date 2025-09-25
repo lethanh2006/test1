@@ -15,17 +15,14 @@ export default () => {
 	const getThongBaoModel = async (): Promise<ThongBao.IRecord[]> => {
 		setLoading(true);
 		try {
-			const response = await getThongBao({
-				page,
-				limit,
-				condition: undefined,
-				sort: { createdAt: -1 },
-			});
-			setDanhSach(response?.data?.data?.result ?? []);
+			const response = await getThongBao({ page, limit });
+			const list = response?.data?.data?.result ?? [];
+			if (page === 1) setDanhSach(list);
+			else setDanhSach([...danhSach, ...list]);
 			setUnread(response?.data?.data?.unread ?? 0);
 			setTotal(response?.data?.data?.total ?? 0);
 
-			return response?.data?.data?.result;
+			return list;
 		} catch (er) {
 			return Promise.reject(er);
 		} finally {
@@ -37,7 +34,8 @@ export default () => {
 		setLoading(true);
 		try {
 			const response = await readNotification({ type, notificationId });
-			getThongBaoModel();
+			if (page !== 1) setPage(1);
+			else getThongBaoModel();
 			if (type === 'ALL') message.success('Đã đọc tất cả thông báo');
 
 			return response?.data?.data;

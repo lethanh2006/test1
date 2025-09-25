@@ -1,11 +1,11 @@
 import { EModuleKey } from '@/services/base/constant';
 import { type ESourceTypeNotification, mapModuleKey } from '@/services/ThongBao/constant';
 import { type ThongBao } from '@/services/ThongBao/typing';
+import dayjs from '@/utils/dayjs';
 import { currentRole } from '@/utils/ip';
 import { getNameFile } from '@/utils/utils';
 import { CalendarOutlined, UserOutlined } from '@ant-design/icons';
 import { Avatar, Button, Card, Col, Divider, Row } from 'antd';
-import moment from 'moment';
 import { history } from 'umi';
 import './style.less';
 
@@ -26,6 +26,7 @@ const ViewThongBao = (props: { record?: ThongBao.IRecord; afterViewDetail?: () =
 			[EModuleKey.KT]: APP_CONFIG_URL_KHAO_THI,
 			[EModuleKey.CSVC]: APP_CONFIG_URL_CSVC,
 			[EModuleKey.VBCC]: '',
+			[EModuleKey.THU_VIEN]: '',
 		};
 
 		const sourceType = mapModuleKey[record?.metadata?.sourceType as ESourceTypeNotification];
@@ -36,12 +37,13 @@ const ViewThongBao = (props: { record?: ThongBao.IRecord; afterViewDetail?: () =
 		if (sourceType === currentRole) {
 			if (afterViewDetail) afterViewDetail();
 			if (record?.metadata?.pathWeb) {
-				history.push(`${pathWeb}`);
+				history.push(`${record.metadata.pathWeb.replace(/^\/+/, '')}`);
 			}
 		} else {
 			const baseUrl = urlMap[sourceModule as EModuleKey];
 			if (baseUrl && record?.metadata?.pathWeb) {
-				window.location.href = `${baseUrl}${pathWeb}`;
+				const pathWeb = record.metadata.pathWeb.replace(/^\/+/, '');
+				window.location.href = `${baseUrl}/${pathWeb}`;
 			}
 		}
 	};
@@ -54,7 +56,7 @@ const ViewThongBao = (props: { record?: ThongBao.IRecord; afterViewDetail?: () =
 					<>
 						<div style={{ marginBottom: 8 }}>{record?.description}</div>
 						<UserOutlined /> {record?.senderName ?? ''} <Divider type='vertical' />
-						<CalendarOutlined /> {moment(record?.createdAt).format('HH:mm DD/MM/YYYY')}
+						<CalendarOutlined /> {dayjs(record?.createdAt).format('HH:mm DD/MM/YYYY')}
 					</>
 				}
 			/>
@@ -76,7 +78,8 @@ const ViewThongBao = (props: { record?: ThongBao.IRecord; afterViewDetail?: () =
 
 				{record?.thoiGianHieuLuc ? (
 					<Col span={24}>
-						Hiệu lực thông báo: <b style={{ color: 'red' }}>{moment(record?.thoiGianHieuLuc).format('DD/MM/YYYY')}</b>{' '}
+						Hiệu lực thông báo:{' '}
+						<b style={{ color: 'red' }}>{dayjs(record?.thoiGianHieuLuc).format('DD/MM/YYYY')}</b>{' '}
 					</Col>
 				) : null}
 

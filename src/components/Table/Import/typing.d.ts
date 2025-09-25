@@ -1,3 +1,5 @@
+import { Namespaces } from '@/pages/TienIch/AuditLog/Modal';
+
 export type ModalImportProps = {
 	/** Modal có hiện ko? */
 	visible: boolean;
@@ -9,7 +11,7 @@ export type ModalImportProps = {
 	onOk?: () => void;
 
 	/** Tên model kế thừa initModel */
-	modelName: any;
+	modelName: Namespaces;
 
 	/** Ấn ra ngoài để đóng, mặc định KHÔNG */
 	maskCloseableForm?: boolean;

@@ -6,7 +6,7 @@ const ViewThongBaoCard = (props: { record?: ThongBao.IRecord; afterViewDetail?: 
 	const { record, afterViewDetail } = props;
 
 	return (
-		<Card title={record?.title} bodyStyle={{ paddingTop: 5 }}>
+		<Card title={record?.title} styles={{ body: { paddingTop: 5 } }}>
 			<ViewThongBao record={record} afterViewDetail={afterViewDetail} hideCard />
 		</Card>
 	);

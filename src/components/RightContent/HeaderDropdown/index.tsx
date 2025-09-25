@@ -1,17 +1,20 @@
-import type { DropDownProps } from 'antd/es/dropdown';
-import { Dropdown } from 'antd';
-import React from 'react';
+import { Popover, PopoverProps } from 'antd';
 import classNames from 'classnames';
+import React from 'react';
 import styles from './index.less';
 
 export type HeaderDropdownProps = {
-  overlayClassName?: string;
-  overlay: React.ReactNode | (() => React.ReactNode) | any;
-  placement?: 'bottomLeft' | 'bottomRight' | 'topLeft' | 'topCenter' | 'topRight' | 'bottomCenter';
-} & Omit<DropDownProps, 'overlay'>;
+	overlayClassName?: string;
+} & PopoverProps;
 
 const HeaderDropdown: React.FC<HeaderDropdownProps> = ({ overlayClassName: cls, ...restProps }) => (
-  <Dropdown overlayClassName={classNames(styles.container, cls)} {...restProps} />
+	<Popover
+		classNames={{ body: classNames(styles.dropdown_container, cls) }}
+		arrow
+		trigger='click'
+		styles={{ body: { padding: 0 } }}
+		{...restProps}
+	/>
 );
 
 export default HeaderDropdown;

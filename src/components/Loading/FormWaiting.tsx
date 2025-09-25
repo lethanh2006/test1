@@ -1,5 +1,5 @@
+import { primaryColor } from '@/services/base/constant';
 import { Modal, Progress } from 'antd';
-import defaultSettings from '../../../config/defaultSettings';
 
 const FormWaiting = (s: string, intl?: any) => {
 	Modal.info({
@@ -9,7 +9,7 @@ const FormWaiting = (s: string, intl?: any) => {
 		okButtonProps: { hidden: true },
 		content: (
 			<div style={{ textAlign: 'center' }}>
-				<Progress percent={100} status='active' showInfo={false} strokeColor={defaultSettings.primaryColor} />
+				<Progress percent={100} status='active' showInfo={false} strokeColor={primaryColor} />
 				<span>{s ?? intl?.formatMessage({ id: 'global.formWaiting.title' }) ?? 'Thông báo'}</span>
 				<br />
 				<small>

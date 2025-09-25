@@ -1,10 +1,11 @@
-import { DeleteOutlined, HomeOutlined } from '@ant-design/icons';
-import { Button, Spin } from 'antd';
-import './style.less';
+import { DeleteOutlined } from '@ant-design/icons';
+import { Button } from 'antd';
 import { useIntl } from 'umi';
+import './style.less';
 
 const LoadingPage = () => {
 	const intl = useIntl();
+
 	const onClearCache = () => {
 		localStorage.clear();
 		sessionStorage.clear();
@@ -14,7 +15,10 @@ const LoadingPage = () => {
 
 	return (
 		<div className='loading-content'>
-			<Spin spinning size='large' />
+			{/* <img src='/images/app/book-loading.gif' alt='Loading...' /> */}
+			{/* <Spin spinning size='large' /> */}
+			{/* <div className='progress-loader' /> */}
+			<div className='circle-loader' />
 
 			<h2>{intl.formatMessage({ id: 'global.loading.thongbao1' })}</h2>
 			<h3>{intl.formatMessage({ id: 'global.loading.thongbao2' })}</h3>

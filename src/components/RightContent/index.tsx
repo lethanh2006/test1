@@ -1,14 +1,10 @@
-import { InfoCircleOutlined } from '@ant-design/icons';
-import { Tooltip } from 'antd';
 import React from 'react';
-import { history, useIntl, useModel } from 'umi';
+import { useIntl, useModel } from 'umi';
 import AvatarDropdown from './AvatarDropdown';
 import styles from './index.less';
 import LocaleSwitch from './LocaleSwitch';
 import ModuleSwitch from './ModuleSwitch';
 import NoticeIconView from './NoticeIcon';
-
-export type SiderTheme = 'light' | 'dark';
 
 const GlobalHeaderRight: React.FC = () => {
 	const intl = useIntl();
@@ -19,24 +15,26 @@ const GlobalHeaderRight: React.FC = () => {
 	}
 
 	return (
-		<div className={styles.right}>
-			<ModuleSwitch />
+		<>
+			<div style={{ height: '100%', width: '100%', display: 'flex', alignItems: 'center' }}>
+				<div className={styles.menu_right}>
+					<ModuleSwitch />
 
-			<NoticeIconView />
+					<NoticeIconView />
 
-			<Tooltip
-				title={intl.formatMessage({ id: 'app.header.introduce', defaultMessage: 'Giới thiệu chung' })}
-				placement='bottom'
-			>
-				<a onClick={() => history.push('/gioi-thieu')}>
-					<InfoCircleOutlined />
-				</a>
-			</Tooltip>
+					{/* <Tooltip
+						title={intl.formatMessage({ id: 'app.header.introduce', defaultMessage: 'Giới thiệu chung' })}
+						placement='bottom'
+					>
+						<Button onClick={() => history.push('/gioi-thieu')} icon={<InfoCircleOutlined />} />
+					</Tooltip> */}
 
-			<LocaleSwitch />
+					<LocaleSwitch />
 
-			<AvatarDropdown />
-		</div>
+					<AvatarDropdown />
+				</div>
+			</div>
+		</>
 	);
 };
 

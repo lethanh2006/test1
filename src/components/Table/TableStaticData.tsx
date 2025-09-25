@@ -1,17 +1,18 @@
 import { MenuOutlined, PlusCircleOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { closestCenter, DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { AutoComplete, ConfigProvider, Drawer, Empty, Input, Table, Tooltip, type InputRef } from 'antd';
 import classNames from 'classnames';
 import _ from 'lodash';
 import { useEffect, useRef, useState } from 'react';
 import Highlighter from 'react-highlight-words';
-import type { SortEnd, SortableContainerProps } from 'react-sortable-hoc';
-import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 import { useIntl } from 'umi';
 import ButtonExtend from './ButtonExtend';
 import { updateSearchStorage } from './function';
 import ModalExpandable from './ModalExpandable';
 import './style.less';
-import type { IColumn, TDataOption, TableStaticProps } from './typing';
+import type { IColumn, TableStaticProps, TDataOption } from './typing';
 
 const TableStaticData = (props: TableStaticProps) => {
 	const intl = useIntl();
@@ -20,6 +21,19 @@ const TableStaticData = (props: TableStaticProps) => {
 	const [searchedColumn, setSearchedColumn] = useState();
 	const [total, setTotal] = useState<number>();
 	const searchInputRef = useRef<InputRef>(null);
+	// dnd-kit: sensors
+	const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
+
+	// State cho tableData để sortable
+	const tableData = (props?.data ?? []).map((item, index) => ({
+		...item,
+		key: String(index),
+		index: index + 1,
+		children:
+			!props.hideChildrenRows && item?.children && Array.isArray(item.children) && item.children.length
+				? item.children
+				: undefined,
+	}));
 
 	useEffect(() => {
 		setTotal(data?.length);
@@ -75,8 +89,8 @@ const TableStaticData = (props: TableStaticProps) => {
 			typeof dataIndex === 'string'
 				? record[dataIndex]?.toString()?.toLowerCase()?.includes(value.toLowerCase())
 				: typeof dataIndex === 'object'
-				? record[dataIndex[0]][dataIndex?.[1]]?.toString()?.toLowerCase()?.includes(value.toLowerCase())
-				: '',
+					? record[dataIndex[0]][dataIndex?.[1]]?.toString()?.toLowerCase()?.includes(value.toLowerCase())
+					: '',
 		onFilterDropdownVisibleChange: (vis) => vis && setTimeout(() => searchInputRef?.current?.select(), 100),
 		render: (text: any, record: any) =>
 			render ? (
@@ -112,8 +126,8 @@ const TableStaticData = (props: TableStaticProps) => {
 			...(item?.filterType === 'string'
 				? getColumnSearchProps(item.dataIndex, item.title, item.render)
 				: item?.filterType === 'select'
-				? getFilterColumnProps(item.dataIndex, item.filterData)
-				: undefined),
+					? getFilterColumnProps(item.dataIndex, item.filterData)
+					: undefined),
 			...(item?.sortable && {
 				sorter: (a: any, b: any) => {
 					const aValue = _.get(a, item?.dataIndex ?? '', undefined);
@@ -127,15 +141,15 @@ const TableStaticData = (props: TableStaticProps) => {
 				...(child?.filterType === 'string'
 					? getColumnSearchProps(child.dataIndex, item.title, item.render)
 					: child?.filterType === 'select'
-					? getFilterColumnProps(child.dataIndex, child.filterData)
-					: undefined),
+						? getFilterColumnProps(child.dataIndex, child.filterData)
+						: undefined),
 				...(child?.sortable && {
 					sorter: (a: any, b: any) =>
 						child.customSort
 							? child.customSort(a[child.dataIndex as string], b[child.dataIndex as string])
 							: a[child.dataIndex as string] > b[child.dataIndex as string]
-							? 1
-							: -1,
+								? 1
+								: -1,
 				}),
 			})),
 		}));
@@ -150,39 +164,57 @@ const TableStaticData = (props: TableStaticProps) => {
 		});
 
 	//#region Get Drag Sortable column
-	const DragHandle = SortableHandle(() => <MenuOutlined style={{ cursor: 'grab', color: '#999' }} />);
-
-	const SortableItem = SortableElement((props1: React.HTMLAttributes<HTMLTableRowElement>) => <tr {...props1} />);
-	const SortableBody = SortableContainer((props1: React.HTMLAttributes<HTMLTableSectionElement>) => (
-		<tbody {...props1} />
-	));
-
 	if (rowSortable)
 		columns.unshift({
-			title: '',
 			width: 30,
 			align: 'center',
 			children: undefined,
-			render: () => <DragHandle />,
+			render: () => <MenuOutlined style={{ cursor: 'grab', color: '#999' }} />,
 		});
 
-	const onSortEnd = ({ oldIndex, newIndex }: SortEnd) => {
-		if (oldIndex !== newIndex) {
-			const record = props.data?.[oldIndex];
-			if (props.onSortEnd) props.onSortEnd(record, newIndex);
+	const handleDragEnd = (event: any) => {
+		const { active, over } = event;
+		if (active && over && active.id !== over.id) {
+			const oldIndex = tableData.findIndex((i) => i.key === active.id);
+			const newIndex = tableData.findIndex((i) => i.key === over.id);
+			if (props.onSortEnd) props.onSortEnd(tableData[oldIndex], newIndex);
 		}
 	};
 
-	const DraggableContainer = (props1: SortableContainerProps) => (
-		<SortableBody useDragHandle disableAutoscroll helperClass='row-dragging' onSortEnd={onSortEnd} {...props1} />
-	);
-
-	const DraggableBodyRow: React.FC<any> = ({ className, style, ...restProps }) => {
-		// function findIndex base on Table rowKey props and should always be a right array index
-		const index = restProps['data-row-key'];
-		return <SortableItem index={index ?? 0} {...restProps} />;
+	// dnd-kit: SortableRow component
+	const SortableRow = (props: any) => {
+		const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+			id: props['data-row-key'],
+		});
+		const style = {
+			...props.style,
+			transform: CSS.Transform.toString(transform),
+			transition,
+			cursor: 'grab',
+			...(isDragging ? { background: '#fafafa' } : {}),
+		};
+		return <tr {...props} ref={setNodeRef} style={style} {...attributes} {...listeners} />;
 	};
 	//#endregion
+
+	const renderTable = () => {
+		return (
+			<Table
+				columns={columns as any[]}
+				dataSource={tableData}
+				rowKey='key'
+				onChange={(pagination, filters, sorter, extra) => {
+					setTotal(extra.currentDataSource.length ?? pagination.total);
+				}}
+				loading={props?.loading}
+				size={props.size}
+				scroll={{ x: _.sum(columns.map((item) => item.width ?? 80)) }}
+				bordered
+				components={rowSortable ? { body: { row: SortableRow } } : undefined}
+				{...props?.otherProps}
+			/>
+		);
+	};
 
 	return (
 		<div className='table-base'>
@@ -241,36 +273,15 @@ const TableStaticData = (props: TableStaticProps) => {
 					/>
 				)}
 			>
-				<Table
-					columns={columns as any[]}
-					dataSource={(props?.data ?? []).map((item, index) => ({
-						...item,
-						index: index + 1,
-						key: index,
-						children:
-							!props.hideChildrenRows && item?.children && Array.isArray(item.children) && item.children.length
-								? item.children
-								: undefined,
-					}))}
-					onChange={(pagination, filters, sorter, extra) => {
-						setTotal(extra.currentDataSource.length ?? pagination.total);
-					}}
-					loading={props?.loading}
-					size={props.size}
-					scroll={{ x: _.sum(columns.map((item) => item.width ?? 80)) }}
-					bordered
-					components={
-						rowSortable
-							? {
-									body: {
-										wrapper: DraggableContainer,
-										row: DraggableBodyRow,
-									},
-							  }
-							: undefined
-					}
-					{...props?.otherProps}
-				/>
+				{rowSortable ? (
+					<DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+						<SortableContext items={tableData.map((item) => item.key)} strategy={verticalListSortingStrategy}>
+							{renderTable()}
+						</SortableContext>
+					</DndContext>
+				) : (
+					renderTable()
+				)}
 			</ConfigProvider>
 
 			{Form && (
@@ -283,7 +294,7 @@ const TableStaticData = (props: TableStaticProps) => {
 							}}
 							destroyOnClose
 							footer={false}
-							visible={showEdit}
+							open={showEdit}
 						>
 							<Form
 								onCancel={() => {
@@ -300,8 +311,8 @@ const TableStaticData = (props: TableStaticProps) => {
 							}}
 							destroyOnClose
 							footer={false}
-							bodyStyle={{ padding: 0 }}
-							visible={showEdit}
+							styles={{ body: { padding: 0 } }}
+							open={showEdit}
 						>
 							<Form
 								onCancel={() => {

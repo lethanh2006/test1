@@ -1,6 +1,4 @@
-import { currentRole, sentryDSN } from '@/utils/ip';
 import { HomeOutlined, ReloadOutlined } from '@ant-design/icons';
-import * as Sentry from '@sentry/react';
 import { Button, Result } from 'antd';
 import React from 'react';
 import { history } from 'umi';
@@ -13,13 +11,14 @@ class ErrorBoundary extends React.Component<MyProps, MyState> {
 	}
 
 	componentDidMount(): void {
-		if (process.env.NODE_ENV !== 'development' && !!sentryDSN)
-			Sentry.init({
-				dsn: sentryDSN,
-				integrations: [new Sentry.BrowserTracing()],
-				tracesSampleRate: 0.2,
-				release: currentRole,
-			});
+		// FIXME: Fix sentry
+		// if (process.env.NODE_ENV !== 'development' && !!sentryDSN)
+		// 	Sentry.init({
+		// 		dsn: sentryDSN,
+		// 		integrations: [new Sentry.BrowserTracing()],
+		// 		tracesSampleRate: 0.2,
+		// 		release: currentRole,
+		// 	});
 	}
 
 	componentDidCatch(error: any, errorInfo: any) {

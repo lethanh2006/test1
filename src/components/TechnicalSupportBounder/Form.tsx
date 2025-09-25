@@ -1,11 +1,11 @@
 import { ELoaiPhanHoi } from '@/services/TienIch/PhanHoi/constant';
 import { buildUpLoadFile } from '@/services/uploadFile';
 import rules from '@/utils/rules';
-import { Button, Card, Form, Input } from 'antd';
+import { resetFieldsForm } from '@/utils/utils';
+import { Button, Form, Input } from 'antd';
+import { useEffect } from 'react';
 import { useIntl, useModel } from 'umi';
 import FormItemUrlOrUpload from '../Upload/FormItemUrlOrUpload';
-import { useEffect } from 'react';
-import { resetFieldsForm } from '@/utils/utils';
 
 const FormPostIssue = (props: { visible: boolean; setVisible: (val: boolean) => void }) => {
 	const intl = useIntl();
@@ -37,7 +37,7 @@ const FormPostIssue = (props: { visible: boolean; setVisible: (val: boolean) => 
 	};
 
 	return (
-		<Card title={intl.formatMessage({ id: 'global.technical.title' })}>
+		<>
 			<Form layout='vertical' onFinish={onFinish} form={form}>
 				<Form.Item
 					rules={[...rules.required, ...rules.length(5000), ...rules.text]}
@@ -59,7 +59,7 @@ const FormPostIssue = (props: { visible: boolean; setVisible: (val: boolean) => 
 					<Button onClick={() => setVisible(false)}>{intl.formatMessage({ id: 'global.technical.button.huy' })}</Button>
 				</div>
 			</Form>
-		</Card>
+		</>
 	);
 };
 

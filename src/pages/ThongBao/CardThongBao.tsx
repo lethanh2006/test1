@@ -6,10 +6,10 @@ import ModalExpandable from '@/components/Table/ModalExpandable';
 import { type IColumn } from '@/components/Table/typing';
 import { type ESourceTypeNotification, mapModuleKeyToSourceType, NotificationType } from '@/services/ThongBao/constant';
 import { type ThongBao } from '@/services/ThongBao/typing';
+import dayjs from '@/utils/dayjs';
 import { currentRole } from '@/utils/ip';
 import { DeleteOutlined, EyeOutlined, LeftOutlined, PlusCircleOutlined, RightOutlined } from '@ant-design/icons';
 import { Button, DatePicker, Popconfirm, Segmented, Space } from 'antd';
-import moment from 'moment';
 import { useState } from 'react';
 import { useModel } from 'umi';
 import news from '../../assets/new6.gif';
@@ -36,7 +36,7 @@ const CardThongBao = (props: { notiType: NotificationType; activeKey: string }) 
 	} = useModel('thongbao.thongbao');
 	const [visible, setVisible] = useState<boolean>(false);
 	const [type, setType] = useState<string>('MONTH');
-	const [startDate, setStartDate] = useState<any>(moment());
+	const [startDate, setStartDate] = useState<any>(dayjs());
 	const startDay = startDate?.format('DD/MM');
 	const endDay = startDate.clone()?.add(6, 'day')?.format('DD/MM');
 	const [visibleNguoiNhan, setVisibleNguoiNhan] = useState<boolean>(false);
@@ -52,16 +52,17 @@ const CardThongBao = (props: { notiType: NotificationType; activeKey: string }) 
 	const getData = () => {
 		const value =
 			type === 'DAY'
-				? [moment(startDate)?.startOf('days').toISOString(), moment(startDate)?.endOf('days').toISOString()]
+				? [startDate.startOf('day').toISOString(), startDate.endOf('day').toISOString()]
 				: type === 'WEEK'
-				? [
-						moment(startDate)?.startOf('weeks')?.startOf('days').toISOString(),
-						moment(startDate)?.startOf('weeks')?.add(6, 'days')?.endOf('days').toISOString(),
-				  ]
-				: [
-						moment(startDate)?.startOf('months')?.startOf('days').toISOString(),
-						moment(startDate)?.startOf('months')?.add(1, 'month')?.endOf('days').toISOString(),
-				  ];
+					? [
+							startDate.startOf('week').startOf('day').toISOString(),
+							startDate.startOf('week').add(6, 'day').endOf('day').toISOString(),
+						]
+					: [
+							startDate.startOf('month').startOf('day').toISOString(),
+							startDate.startOf('month').add(1, 'month').endOf('day').toISOString(),
+						];
+
 		setSortTime([{ field: 'createdAt', operator: 'between', values: value }]);
 
 		//@ts-ignore
@@ -93,7 +94,7 @@ const CardThongBao = (props: { notiType: NotificationType; activeKey: string }) 
 				<>
 					<ExpandText>
 						{val}{' '}
-						{moment().diff(moment(recordVal?.createdAt), 'days') < 3 ? (
+						{dayjs().diff(dayjs(recordVal?.createdAt), 'days') < 3 ? (
 							<img style={{ width: 30, height: 20 }} src={news} />
 						) : (
 							''
@@ -141,7 +142,7 @@ const CardThongBao = (props: { notiType: NotificationType; activeKey: string }) 
 			filterType: 'datetime',
 			sortable: true,
 			onCell,
-			render: (val) => moment(val).format('HH:mm DD/MM/YYYY'),
+			render: (val) => dayjs(val).format('HH:mm DD/MM/YYYY'),
 		},
 		{
 			title: 'Thao tác',
@@ -188,15 +189,9 @@ const CardThongBao = (props: { notiType: NotificationType; activeKey: string }) 
 				<Segmented
 					value={type}
 					onChange={(key: any) => {
-						if (key === 'WEEK') {
-							setStartDate(moment().startOf('week'));
-						}
-						if (key === 'DAY') {
-							setStartDate(moment());
-						}
-						if (key === 'MONTH') {
-							setStartDate(moment());
-						}
+						if (key === 'WEEK') setStartDate(dayjs().startOf('week'));
+						if (key === 'DAY') setStartDate(dayjs());
+						if (key === 'MONTH') setStartDate(dayjs());
 						setType(key);
 					}}
 					options={[
@@ -208,16 +203,16 @@ const CardThongBao = (props: { notiType: NotificationType; activeKey: string }) 
 
 				{type === 'WEEK' && (
 					<Space>
-						<Button onClick={() => setStartDate(startDate.clone().subtract(7, 'day'))}>
+						<Button onClick={() => setStartDate(startDate.subtract(7, 'day'))}>
 							<LeftOutlined /> Tuần trước
 						</Button>
 						<span>
 							Tuần: {startDay} - {endDay}
 						</span>
-						<Button onClick={() => setStartDate(startDate.clone().add(7, 'day'))}>
+						<Button onClick={() => setStartDate(startDate.add(7, 'day'))}>
 							Tuần sau <RightOutlined />
 						</Button>
-						<a onClick={() => setStartDate(moment().startOf('week'))}>Tuần này</a>
+						<a onClick={() => setStartDate(dayjs().startOf('week'))}>Tuần này</a>
 					</Space>
 				)}
 				{type === 'DAY' && (
@@ -225,7 +220,7 @@ const CardThongBao = (props: { notiType: NotificationType; activeKey: string }) 
 						allowClear={false}
 						format={'DD/MM/YYYY'}
 						style={{ width: 150 }}
-						value={moment(startDate)}
+						value={startDate}
 						onChange={(val) => {
 							setStartDate(val);
 						}}
@@ -237,7 +232,7 @@ const CardThongBao = (props: { notiType: NotificationType; activeKey: string }) 
 						picker={'month'}
 						format={'MM/YYYY'}
 						style={{ width: 150 }}
-						value={moment(startDate)}
+						value={startDate}
 						onChange={(val) => {
 							setStartDate(val);
 						}}
@@ -292,10 +287,10 @@ const CardThongBao = (props: { notiType: NotificationType; activeKey: string }) 
 
 			<ModalExpandable
 				width={800}
-				bodyStyle={{ padding: 0 }}
+				styles={{ body: { padding: 0 } }}
 				okButtonProps={{ hidden: true }}
 				cancelText='Đóng'
-				visible={visible}
+				open={visible}
 				onCancel={() => setVisible(false)}
 				destroyOnClose
 			>
@@ -307,7 +302,7 @@ const CardThongBao = (props: { notiType: NotificationType; activeKey: string }) 
 				width={800}
 				okButtonProps={{ hidden: true }}
 				cancelText='Đóng'
-				visible={visibleNguoiNhan}
+				open={visibleNguoiNhan}
 				onCancel={() => setVisibleNguoiNhan(false)}
 				destroyOnClose
 			>

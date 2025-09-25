@@ -1,6 +1,6 @@
 import { coQuanChuQuan, unitName } from '@/services/base/constant';
+import dayjs from '@/utils/dayjs';
 import { Col, Row } from 'antd';
-import moment from 'moment';
 import React from 'react';
 import './style.less';
 
@@ -77,7 +77,7 @@ const PrintTemplate = React.forwardRef(
 								Số: ....................
 							</Col>
 							<Col span={12} className='date'>
-								...................., {moment().format('ngà\\y DD t\\háng MM nă\\m YYYY')}
+								...................., {dayjs().format('ngà\\y DD t\\háng MM nă\\m YYYY')}
 							</Col>
 						</Row>
 					) : null}

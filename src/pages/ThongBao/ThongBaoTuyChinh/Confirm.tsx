@@ -4,9 +4,9 @@ import type { IColumn } from '@/components/Table/typing';
 import { AppModules } from '@/services/base/constant';
 import type { NotificationType } from '@/services/ThongBao/constant';
 import type { ThongBao } from '@/services/ThongBao/typing';
+import dayjs from '@/utils/dayjs';
 import { currentRole } from '@/utils/ip';
 import { Button } from 'antd';
-import moment from 'moment';
 import { useModel } from 'umi';
 
 const ConfirmThongBaoTuyChinh = (props: { getData: () => void; type: NotificationType }) => {
@@ -61,7 +61,7 @@ const ConfirmThongBaoTuyChinh = (props: { getData: () => void; type: Notificatio
 			dataIndex: 'createdAt',
 			width: 120,
 			align: 'center',
-			render: (val) => moment(val).format('HH:mm DD/MM/YYYY'),
+			render: (val) => dayjs(val).format('HH:mm DD/MM/YYYY'),
 		},
 	];
 

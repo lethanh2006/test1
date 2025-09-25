@@ -1,5 +1,5 @@
 # 1. For build React app
-FROM node:16-alpine AS development
+FROM node:22-alpine AS development
 
 
 # Set environment variables

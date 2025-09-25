@@ -1,7 +1,7 @@
 import { AppModules } from '@/services/base/constant';
 import { currentRole } from '@/utils/ip';
-import './style.less';
 import { Link, history, useIntl } from 'umi';
+import './style.less';
 
 const HeaderContentPage = () => {
 	const intl = useIntl();

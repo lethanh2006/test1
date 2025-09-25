@@ -18,36 +18,38 @@ const NotAccessible = () => {
 	const onLogout = (): void => OIDCBounder?.getActions()?.dangXuat();
 
 	return (
-		<div
-			style={{
-				minHeight: '100vh',
-				display: 'flex',
-				alignItems: 'center',
-				justifyContent: 'space-between',
-				flexDirection: 'column',
-			}}
-		>
-			<Result
-				status='403'
-				title='Truy cập bị từ chối'
+		<OIDCBounder>
+			<div
 				style={{
-					background: 'none',
+					minHeight: '100vh',
+					display: 'flex',
+					alignItems: 'center',
+					justifyContent: 'space-between',
+					flexDirection: 'column',
 				}}
-				subTitle='Xin lỗi, bạn không có quyền truy cập trang này.'
-				extra={
-					<div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-						<Button type='primary' onClick={() => (window.location.href = landingUrl)} icon={<GlobalOutlined />}>
-							Tới trang Cổng thông tin
-						</Button>
-						<Button icon={<LogoutOutlined />} onClick={onLogout}>
-							Đăng xuất
-						</Button>
-					</div>
-				}
-			/>
+			>
+				<Result
+					status='403'
+					title='Truy cập bị từ chối'
+					style={{
+						background: 'none',
+					}}
+					subTitle='Xin lỗi, bạn không có quyền truy cập trang này.'
+					extra={
+						<div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+							<Button type='primary' onClick={() => (window.location.href = landingUrl)} icon={<GlobalOutlined />}>
+								Tới trang Cổng thông tin
+							</Button>
+							<Button icon={<LogoutOutlined />} onClick={onLogout}>
+								Đăng xuất
+							</Button>
+						</div>
+					}
+				/>
 
-			<Footer />
-		</div>
+				<Footer />
+			</div>
+		</OIDCBounder>
 	);
 };
 export default NotAccessible;

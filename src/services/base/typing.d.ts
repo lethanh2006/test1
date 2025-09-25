@@ -1,4 +1,4 @@
-import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
+import { ProSettings } from '@ant-design/pro-layout';
 import type { EModuleKey, EScopeFile, ESettingKey, EStorageFile } from './constant';
 
 declare module Login {
@@ -41,7 +41,7 @@ declare module Login {
 }
 
 export interface IInitialState {
-	settings?: Partial<LayoutSettings>;
+	settings?: Partial<ProSettings>;
 	currentUser?: Login.IUser;
 	authorizedPermissions?: Login.IPermission[];
 	permissionLoading?: boolean;

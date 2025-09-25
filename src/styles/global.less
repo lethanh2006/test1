@@ -1,8 +1,6 @@
-@import '~antd/es/style/themes/default.less';
-@import '~antd/dist/antd.variable.min.css';
-@import '_variable.less';
 @import 'layout.less';
 @import 'split-panel.less';
+@import 'custom-antd.less';
 
 html,
 body,
@@ -11,6 +9,18 @@ body,
 	text-rendering: optimizeLegibility;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+
+	--border-radius: 4px;
+
+	/* Replace all color */
+	// --primary-color => --color-primary
+	/* Background selected */
+	// --primary-1 => --color-primary-bg
+
+	--ant-success-color: @green-6;
+	--ant-warning-color: @gold-6;
+	--ant-error-color: @red-5;
+	--ant-info-color: @blue-6;
 }
 
 a {
@@ -23,7 +33,7 @@ a {
 		left: 50%;
 		width: 0;
 		height: 1px;
-		background-color: var(--primary-color);
+		background-color: var(--color-primary);
 		transform: translateX(-50%);
 		opacity: 0;
 		transition: 0.3s;
@@ -41,31 +51,15 @@ a {
 	}
 }
 
+::selection {
+	background-color: var(--color-primary);
+	/* Change the color to your preferred choice */
+	color: #fff;
+	/* Optional: Set the text color for selected text */
+}
+
 .fw500 {
 	font-weight: 600 !important;
-}
-
-.ant-checkbox {
-	.ant-checkbox-inner {
-		border-radius: @border-radius;
-	}
-}
-
-.ant-tag {
-	margin-right: 0 !important;
-}
-
-.ant-form {
-	.ant-tag-checkable {
-		padding: 2px 7px;
-		font-size: 14px;
-		border: 1px solid #f0f0f0;
-		border-radius: @border-radius;
-
-		.ant-tag-checkable-checked {
-			border: none;
-		}
-	}
 }
 
 .form-footer {
@@ -91,14 +85,6 @@ a {
 	.ant-btn+.ant-btn {
 		margin-left: 0 !important;
 	}
-}
-
-.ant-badge-status {
-	margin-right: 8px;
-}
-
-.ant-drawer-header {
-	display: none !important;
 }
 
 .sum-table {
@@ -139,70 +125,54 @@ a {
 	filter: invert(80%);
 }
 
-.ant-menu-item {
-	margin-top: 0 !important;
-}
-
-.ant-input:hover {
-	border-color: var(--primary-color);
-}
-
-.ant-input:focus {
-	border-color: var(--primary-color);
-}
-
 .btn-success {
-	border-color: var(--ant-success-color);
+	border-color: @green-6;
 
 	&.ant-btn-primary:not(:disabled) {
-		background-color: var(--ant-success-color);
+		background-color: @green-6;
 
 		&:hover {
-			background-color: var(--ant-success-color-hover);
+			background-color: @green-5;
 		}
 	}
 
 	&.ant-btn-link {
-		color: var(--ant-success-color);
+		color: @green-6;
 		border: none;
 	}
 
 	&:hover {
-		border-color: var(--ant-success-color-hover);
+		border-color: @green-5;
 
 		&:not(.ant-btn-primary) {
-			color: var(--ant-success-color-hover);
+			color: @green-5;
 		}
 	}
 }
 
 .btn-warning {
-	border-color: var(--ant-warning-color);
+	border-color: @gold-6;
 
 	&.ant-btn-primary:not(:disabled) {
-		background-color: var(--ant-warning-color);
+		background-color: @gold-6;
 
 		&:hover {
-			background-color: var(--ant-warning-color-hover);
+			background-color: @gold-5;
 		}
 	}
 
 	&.ant-btn-link {
-		color: var(--ant-warning-color);
+		color: @gold-6;
 		border: none;
 	}
 
 	&:hover {
-		border-color: var(--ant-warning-color-hover);
+		border-color: @gold-5;
 
 		&:not(.ant-btn-primary) {
-			color: var(--ant-warning-color-hover);
+			color: @gold-5;
 		}
 	}
-}
-
-.ant-table-cell .ant-btn {
-	height: 30px;
 }
 
 canvas {
@@ -210,7 +180,7 @@ canvas {
 }
 
 .filter-node {
-	color: var(--primary-color);
+	color: var(--color-primary);
 }
 
 // style select
@@ -238,6 +208,7 @@ canvas {
 		overflow: hidden;
 
 		>.ant-modal-content,
+		>div .ant-modal-content,
 		.ant-modal-body>.ant-card {
 			border-radius: 0;
 			height: 100vh;
@@ -254,180 +225,7 @@ canvas {
 	}
 }
 
-.ant-tabs-card>.ant-tabs-nav {
-	&>.ant-tabs-nav-wrap>.ant-tabs-nav-list {
-		&>.ant-tabs-tab {
-			border-radius: 4px 4px 0 0;
-
-			// >.ant-tabs-tab-btn {
-			// 	text-wrap-mode: nowrap;
-			// }
-		}
-	}
-}
-
-.ant-divider-horizontal {
-	font-weight: 600;
-
-	&.ant-divider-with-text-center {
-
-		&::before,
-		&::after {
-			flex: 1;
-		}
-	}
-
-	.ant-divider-inner-text {
-		white-space: break-spaces;
-	}
-
-	&.ant-divider-with-text-left {
-		&::before {
-			width: 0;
-			flex: 0;
-		}
-
-		&::after {
-			flex: 1;
-		}
-
-		.ant-divider-inner-text {
-			padding: 0 1em 0 0;
-		}
-	}
-}
-
-.ant-descriptions-title {
-	font-weight: 600 !important;
-}
-
-.ant-descriptions {
-
-	.ant-descriptions-item-label,
-	.ant-descriptions-title {
-		font-weight: 600 !important;
-	}
-
-	&.ant-descriptions-bordered .ant-descriptions-item-label,
-	&.ant-descriptions-bordered .ant-descriptions-item-content {
-		padding: 13px 20px !important;
-		word-break: normal;
-	}
-
-	// Layout = vertical
-	&.highlight {
-		background-color: #f9f9f9;
-		padding: 16px 16px 4px 16px;
-		border-radius: 8px;
-
-		.ant-descriptions-item-label {
-			font-weight: 400 !important;
-			color: #666;
-		}
-
-		.ant-descriptions-row:nth-child(odd) {
-			.ant-descriptions-item {
-				padding-bottom: 0;
-			}
-		}
-
-		.ant-descriptions-row:nth-child(even) {
-			.ant-descriptions-item {
-				padding-bottom: 12px;
-
-				.ant-descriptions-item-content {
-					font-size: 16px;
-					font-weight: 600;
-				}
-			}
-		}
-	}
-}
-
-.ant-form-item-label>label {
-	height: auto;
-	margin: 4px 0 !important;
-}
-
-.ant-form-vertical {
-	.ant-form-item {
-		margin-bottom: 10px !important;
-
-		.ant-form-item-label {
-			padding: 0 !important;
-		}
-	}
-}
-
-.ant-card {
-	height: 100%;
-
-	.ant-card-head-title {
-		white-space: pre-wrap;
-	}
-
-	.ant-card-head {
-		padding: 0 18px;
-
-		@media (max-width: @screen-xs) {
-			padding: 0 12px;
-		}
-	}
-
-	.ant-card-body {
-		padding: 18px;
-
-		@media (max-width: @screen-xs) {
-			padding: 12px;
-		}
-	}
-
-	.ant-drawer .ant-card-body,
-	.ant-modal .ant-card-body {
-		padding-top: 12px;
-	}
-}
-
-.ant-modal-content {
-	.ant-modal-header {
-		padding: 16px 24px 16px 18px;
-
-		@media (max-width: @screen-xs) {
-			padding: 16px 24px 16px 12px;
-		}
-	}
-
-	.ant-modal-body {
-		padding: 18px;
-
-		@media (max-width: @screen-xs) {
-			padding: 12px;
-		}
-	}
-}
-
-.ant-modal .ant-card-body,
-.ant-drawer .ant-card-body {
-	@media (min-width: @screen-xl) {
-		.ant-tabs-left>.ant-tabs-nav {
-			.ant-tabs-tab+.ant-tabs-tab {
-				margin: 10px 0 0 0;
-			}
-		}
-
-		.ant-tabs-left>.ant-tabs-content-holder>.ant-tabs-content>.ant-tabs-tabpane {
-			padding-left: 18px;
-		}
-	}
-
-	.button-section {
-		display: flex;
-		gap: 8px;
-		margin-bottom: 12px;
-	}
-}
-
-// Card Statistics Small
+// Card Statistics Small: Number on the left, text on the right
 .card-stat-small {
 	&.pointer {
 		cursor: pointer;
@@ -437,7 +235,7 @@ canvas {
 		background-color: #f2fce1bf;
 
 		.text {
-			color: var(--primary-color);
+			color: var(--color-primary);
 			font-weight: 600;
 		}
 	}
@@ -458,64 +256,34 @@ canvas {
 	}
 
 	.num {
-		color: var(--primary-color);
+		color: var(--color-primary);
 		font-weight: 700;
 		font-size: 1.25rem;
 	}
 }
 
-@media screen {
-	.ant-table.ant-table-bordered {
-		.ant-table-cell {
-			border-color: #e9e9e9 !important;
-		}
-	}
-}
-
-.ant-table-cell {
-	height: 48px;
-	padding: 8px !important;
-
-	p,
-	.ant-typography {
-		margin-bottom: 0 !important;
-	}
-}
-
-.ant-table-thead {
-	.ant-table-cell {
-		font-weight: 600;
-		text-align: center !important;
-	}
-}
-
-.ant-table-small .ant-table-cell {
-	height: 36px;
-	padding: 3px 5px !important;
-}
-
 .bg-primary-selected {
-	background-color: var(--primary-1) !important;
+	background-color: var(--color-primary-bg) !important;
 }
 
 .text-primary {
-	color: var(--primary-color) !important;
+	color: var(--color-primary) !important;
 }
 
 .text-info {
-	color: var(--ant-info-color) !important;
+	color: @blue-6 !important;
 }
 
 .text-success {
-	color: var(--ant-success-color) !important;
+	color: @green-6 !important;
 }
 
 .text-warning {
-	color: var(--ant-warning-color) !important;
+	color: @gold-6 !important;
 }
 
 .text-error {
-	color: var(--ant-error-color) !important;
+	color: @red-5 !important;
 }
 
 .bg-success {
@@ -538,28 +306,21 @@ canvas {
 	background-color: #ffc069;
 }
 
-.ant-alert {
-	flex-wrap: wrap;
-	gap: 8px;
-	align-items: center;
-
-	.ant-alert-content {
-		flex: auto;
-	}
-
-	.ant-alert-action,
-	.ant-alert-close-icon {
-		margin-left: 0;
-	}
+.text-line {
+	text-decoration: line-through;
 }
 
 // Hiệu ứng chuyển đổi cho mmodal và drawer khi nhấn Expand Button
 .ant-modal {
-	transition: top .3s ease, width .3s ease;
+	transition:
+		top 0.3s ease,
+		width 0.3s ease;
 }
 
 .ant-drawer-content-wrapper {
-	transition: top .3s ease, width .3s ease;
+	transition:
+		top 0.3s ease,
+		width 0.3s ease;
 }
 
 // Big calendar
@@ -574,14 +335,14 @@ canvas {
 
 		button {
 			padding: 4px 15px;
-			border-radius: @border-radius;
+			border-radius: var(--border-radius);
 			font-size: 14px;
 			height: 32px;
 
-			box-shadow: 0 2px 0 rgba(0, 0, 0, .015);
+			box-shadow: 0 2px 0 rgba(0, 0, 0, 0.015);
 			cursor: pointer;
-			transition: all .3s cubic-bezier(.645, .045, .355, 1);
-			color: rgba(0, 0, 0, .85);
+			transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+			color: rgba(0, 0, 0, 0.85);
 			border: 1px solid #d9d9d9;
 
 			line-height: 1.5715;
@@ -589,41 +350,9 @@ canvas {
 	}
 }
 
-@media (max-width: @screen-xs) {
-	.ant-drawer-content-wrapper {
-		width: 100% !important;
-	}
-
-	.ant-drawer-left .ant-drawer-content-wrapper {
-		width: 220px !important;
-	}
-
-	.ant-table {
-		width: 100%;
-		overflow-x: auto;
-
-		&-thead>tr,
-		&-tbody>tr {
-
-			>th,
-			>td {
-
-				// white-space: pre;
-				>span {
-					display: block;
-				}
-			}
-		}
-	}
-}
-
-.ant-card-small>.ant-card-head>.ant-card-head-wrapper>.ant-card-extra {
-	padding: 3px 0 !important;
-}
-
 .card-highlight {
 	.ant-card-head {
-		background-color: var(--primary-color);
+		background-color: var(--color-primary);
 		color: white;
 
 		.ant-btn-link,
@@ -633,27 +362,22 @@ canvas {
 	}
 }
 
-.ant-collapse-item-active>.ant-collapse-header>.ant-collapse-header-text {
-	font-weight: 600;
-	color: var(--primary-color);
-}
+.xem-tat-ca-link {
+	cursor: pointer;
+	display: inline-block;
 
-.ant-image {
-	height: 100%;
-	overflow: hidden;
+	.inner {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
+		padding: 2px 8px;
+		border-radius: var(--border-radius);
+		background-color: var(--color-primary-bg, #e6f7ff);
 
-	display: flex;
-	align-items: center;
-
-	img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
+		span {
+			color: var(--color-primary, #1890ff);
+			font-size: 14px;
+			font-weight: 400;
+		}
 	}
-}
-
-.ant-picker-ranges {
-	display: flex;
-	gap: 5px;
-	flex-wrap: wrap;
 }

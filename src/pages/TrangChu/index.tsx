@@ -1,10 +1,10 @@
+import { unitName } from '@/services/base/constant';
 import { Card } from 'antd';
 import './components/style.less';
-import { unitName } from '@/services/base/constant';
 
 const TrangChu = () => {
 	return (
-		<Card bodyStyle={{ height: '100%' }}>
+		<Card styles={{ body: { height: '100%' } }} variant='borderless'>
 			<div className='home-welcome'>
 				<h1 className='title'>PHÂN HỆ QUẢN LÝ ĐÀO TẠO</h1>
 				<h2 className='sub-title'>HỆ THỐNG CHUYỂN ĐỔI SỐ - {unitName.toUpperCase()}</h2>

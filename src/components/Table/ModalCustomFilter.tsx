@@ -1,10 +1,10 @@
 import { CloseOutlined, FilterFilled, PlusOutlined } from '@ant-design/icons';
-import { Button, Form, Modal, Space } from 'antd';
+import { Button, Form, Modal } from 'antd';
 import { useEffect, useState } from 'react';
+import { useIntl } from 'umi';
 import { findFiltersInColumns } from './function';
 import RowFilter from './RowFilter';
 import { type IColumn, type TFilter } from './typing';
-import { useIntl } from 'umi';
 
 const ModalCustomFilter = (props: {
 	visible: boolean;
@@ -42,13 +42,34 @@ const ModalCustomFilter = (props: {
 
 	return (
 		<Modal
-			visible={visible}
+			open={visible}
 			onCancel={() => setVisible(false)}
-			footer={null}
+			footer={[
+				<Button key='submit' htmlType='submit' type='primary' icon={<FilterFilled />} form='custom-filter-form'>
+					{intl.formatMessage({ id: 'global.table.customfilter.button.apdung' })}
+				</Button>,
+				<Button
+					key='reset'
+					danger
+					icon={<CloseOutlined />}
+					onClick={() => {
+						form.resetFields();
+						setFiltersTemp([]);
+						setFilters(undefined);
+						setVisible(false);
+					}}
+				>
+					{intl.formatMessage({ id: 'global.table.customfilter.button.xoa' })}
+				</Button>,
+				<Button key='cancel' onClick={() => setVisible(false)}>
+					{intl.formatMessage({ id: 'global.table.customfilter.button.huy' })}
+				</Button>,
+			]}
 			title={intl.formatMessage({ id: 'global.table.customfilter.title' })}
 		>
 			<p>{intl.formatMessage({ id: 'global.table.customfilter.dieukien' })}:</p>
-			<Form form={form} layout='vertical' onFinish={onFinish}>
+
+			<Form form={form} layout='vertical' onFinish={onFinish} id='custom-filter-form'>
 				{filtersTemp.map((filter, index) => (
 					<RowFilter
 						index={index}
@@ -84,27 +105,6 @@ const ModalCustomFilter = (props: {
 						{intl.formatMessage({ id: 'global.table.customfilter.button.them' })}
 					</Button>
 				</Form.Item>
-
-				<Space size={8} wrap style={{ marginTop: 24, justifyContent: 'center', width: '100%' }}>
-					<Button htmlType='submit' type='primary' icon={<FilterFilled />}>
-						{intl.formatMessage({ id: 'global.table.customfilter.button.apdung' })}
-					</Button>
-					<Button
-						danger
-						icon={<CloseOutlined />}
-						onClick={() => {
-							form.resetFields();
-							setFiltersTemp([]);
-							setFilters(undefined);
-							setVisible(false);
-						}}
-					>
-						{intl.formatMessage({ id: 'global.table.customfilter.button.xoa' })}
-					</Button>
-					<Button onClick={() => setVisible(false)}>
-						{intl.formatMessage({ id: 'global.table.customfilter.button.huy' })}
-					</Button>
-				</Space>
 			</Form>
 		</Modal>
 	);

@@ -1,6 +1,3 @@
-@import '~antd/es/style/themes/default.less';
-@import '../../styles/_variable.less';
-
 .table-base {
 	.header {
 		display: flex;
@@ -27,17 +24,19 @@
 				line-height: 1.5715;
 				white-space: nowrap;
 				border: 1px solid #d9d9d9;
-				border-radius: @border-radius;
+				border-radius: var(--border-radius);
 				transition: 0.3s;
+				display: flex;
+				align-items: center;
 
 				&:hover {
-					border-color: var(--primary-color);
+					border-color: var(--color-primary);
 					transition: 0.3s;
 				}
 
 				span {
 					margin-left: 8px;
-					color: var(--primary-color);
+					color: var(--color-primary);
 					font-weight: 700;
 					font-size: 1.1rem;
 				}
@@ -54,14 +53,14 @@
 	/* Phân biệt columns có sort */
 	.ant-table-column-sort {
 		.ant-table-column-title {
-			color: var(--primary-color);
+			color: var(--color-primary);
 			text-decoration: underline;
 		}
 	}
 
 	/* Phân biệt columns có filter */
 	.ant-table-column-title:has(+ .active) {
-		color: var(--primary-color);
+		color: var(--color-primary);
 		text-decoration: underline;
 	}
 
@@ -108,9 +107,9 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	gap: 12px;
+	gap: 2px;
 	height: 56px;
-	padding: 18px;
+	padding: 12px;
 
 	@media (max-width: @screen-xs) {
 		padding: 12px;
@@ -128,8 +127,14 @@
 		font-size: 16px;
 		padding: 0;
 
+		border-radius: var(--border-radius-sm);
+		width: var(--control-height);
+		height: var(--control-height);
+		transition: color var(--motion-duration-mid), background-color var(--motion-duration-mid);
+
 		&:hover {
-			color: rgba(0, 0, 0, .75);
+			color: var(--color-icon-hover) rgba(0, 0, 0, 0.88);
+			background-color: var(--color-bg-text-hover);
 		}
 	}
 }

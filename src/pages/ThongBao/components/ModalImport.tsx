@@ -47,7 +47,7 @@ const ModalImport = (props: {
 	return (
 		<Modal
 			title='Nhập dữ liệu'
-			visible={visible}
+			open={visible}
 			onCancel={() => setVisible(false)}
 			footer={null}
 			width={600}

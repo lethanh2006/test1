@@ -1,7 +1,9 @@
 // import { refreshAccesssToken } from '@/services/ant-design-pro/api';
+import '@ant-design/v5-patch-for-react-19';
 import { message, notification } from 'antd';
-import axios from 'axios';
+import axios1 from 'axios';
 // import { history } from 'umi';
+import qs from 'qs';
 import data from './data';
 
 // function routeLogin(errorCode: string) {
@@ -47,6 +49,33 @@ import data from './data';
 //   (error) => Promise.reject(error),
 // );
 
+const axios = axios1.create({
+	/**
+	 *
+	 * Trong Axios v0.21.x,
+	 * việc serialize params (đặc biệt là object và array) sử dụng một logic đơn giản, nội bộ Axios tự động flatten object thành query string giống qs.
+	 *
+	 * Từ Axios v1.0+,
+	 * họ bỏ cách serialize cũ và ủy thác toàn bộ cho URLSearchParams, theo chuẩn của trình duyệt – nhưng điều này không hỗ trợ lồng mảng hoặc object phức tạp, dẫn tới sort=%5Bobject%20Object%5D.
+	 */
+	paramsSerializer: (params) => {
+		const cleanedParams: Record<string, any> = {};
+		Object.entries(params || {}).forEach(([key, value]) => {
+			const isEmptyObject = typeof value === 'object' && !Array.isArray(value) && Object.keys(value).length === 0;
+			const isEmptyArray = Array.isArray(value) && value.length === 0;
+			if (value === undefined || value === null || isEmptyObject || isEmptyArray) return;
+
+			cleanedParams[key] = Array.isArray(value)
+				? value.map((item) => JSON.stringify(item))
+				: typeof value === 'object'
+					? JSON.stringify(value)
+					: value;
+		});
+
+		return qs.stringify(cleanedParams, { encode: false, arrayFormat: 'brackets' });
+	},
+});
+
 // Add a response interceptor
 axios.interceptors.response.use(
 	(response) =>
@@ -59,20 +88,21 @@ axios.interceptors.response.use(
 			const decoder = new TextDecoder('utf-8');
 			er = JSON.parse(decoder.decode(er));
 		}
-		const descriptionError = Array.isArray(er?.detail?.exception?.response?.message)
-			? er?.detail?.exception?.response?.message?.join(', ')
-			: // Sequelize validation Errors
-			Array.isArray(er?.detail?.exception?.errors)
-			? er?.detail?.exception?.errors?.map((e: any) => e?.message)?.join(', ')
-			: data.error[er?.detail?.errorCode || er?.errorCode] ||
-			  er?.detail?.message ||
-			  er?.message ||
-			  er?.errorDescription;
 
 		const originalRequest = error.config;
 		let originData = originalRequest?.data;
 		if (typeof originData === 'string') originData = JSON.parse(originData);
-		if (typeof originData !== 'object' || !Object.keys(originData ?? {}).includes('silent') || !originData?.silent)
+		if (typeof originData !== 'object' || !Object.keys(originData ?? {}).includes('silent') || !originData?.silent) {
+			const descriptionError = Array.isArray(er?.detail?.exception?.response?.message)
+				? er?.detail?.exception?.response?.message?.join(', ')
+				: // Sequelize validation Errors
+					Array.isArray(er?.detail?.exception?.errors)
+					? er?.detail?.exception?.errors?.map((e: any) => e?.message)?.join(', ')
+					: data.error[er?.detail?.errorCode || er?.errorCode] ||
+						er?.detail?.message ||
+						er?.message ||
+						er?.errorDescription;
+
 			switch (error?.response?.status) {
 				case 400:
 					notification.error({
@@ -152,7 +182,7 @@ axios.interceptors.response.use(
 
 				case 404:
 					notification.error({
-						message: 'Không tìm thấy dữ liệu (040)',
+						message: 'Không tìm thấy (040)',
 						description: descriptionError,
 					});
 					break;
@@ -166,16 +196,17 @@ axios.interceptors.response.use(
 
 				case 500:
 				case 502:
-					notification.error({
-						message: 'Hệ thống đang cập nhật (005)',
+					notification.warning({
+						message: 'Máy chủ gặp lỗi (005)',
 						description: descriptionError,
 					});
 					break;
 
 				default:
-					message.error('Hệ thống đang cập nhật. Vui lòng thử lại sau');
+					message.error('Có lỗi xảy ra. Vui lòng thử lại sau!');
 					break;
 			}
+		}
 		// Do something with response error
 		return Promise.reject(error);
 	},

@@ -16,8 +16,9 @@ const OneSignalBounder = (props: { children: React.ReactNode }) => {
 			await OneSignal.init({
 				appId: oneSignalClient,
 			});
-			const id = await OneSignal.getUserId();
-			setOneSignalId(id);
+			// TODO: Update oneSignal Id
+			// const id = await OneSignal.getUserId();
+			// setOneSignalId(id);
 		}
 	};
 
@@ -30,13 +31,13 @@ const OneSignalBounder = (props: { children: React.ReactNode }) => {
 		const width = window.innerWidth
 			? window.innerWidth
 			: document.documentElement.clientWidth
-			? document.documentElement.clientWidth
-			: screen.width;
+				? document.documentElement.clientWidth
+				: screen.width;
 		const height = window.innerHeight
 			? window.innerHeight
 			: document.documentElement.clientHeight
-			? document.documentElement.clientHeight
-			: screen.height;
+				? document.documentElement.clientHeight
+				: screen.height;
 
 		const systemZoom = width / window.screen.availWidth;
 		const left = (width - w) / 2 / systemZoom + dualScreenLeft;

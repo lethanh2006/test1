@@ -1,8 +1,8 @@
 import { DeleteOutlined } from '@ant-design/icons';
 import { Button, Card } from 'antd';
+import { useIntl } from 'umi';
 import TableStaticData from '../TableStaticData';
 import { type IColumn, type TExportField } from '../typing';
-import { useIntl } from 'umi';
 
 const CardExportFields = (props: { fields: TExportField[]; setFields: (val: TExportField[]) => void }) => {
 	const intl = useIntl();
@@ -40,9 +40,8 @@ const CardExportFields = (props: { fields: TExportField[]; setFields: (val: TExp
 	return (
 		<Card
 			title={intl.formatMessage({ id: 'global.table.export.field.title' })}
-			bordered={false}
-			bodyStyle={{ padding: 0 }}
-			headStyle={{ padding: 0 }}
+			variant='borderless'
+			className='card-borderless'
 		>
 			<TableStaticData
 				columns={columns}

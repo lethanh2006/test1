@@ -1,5 +1,5 @@
 import { Menu } from 'antd';
-import { type ItemType } from 'antd/lib/menu/hooks/useItems';
+import { ItemType } from 'antd/es/menu/interface';
 import { getLocale, setLocale, useIntl } from 'umi';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from '../index.less';
@@ -36,7 +36,7 @@ const LocaleSwitch = () => {
 	// Nếu ko cho đổi ngôn ngữ thì return null, đồng thời ở config sửa baseNavigator thành false
 	return null;
 	return (
-		<HeaderDropdown overlay={<Menu items={items} className={styles.menu} />}>
+		<HeaderDropdown content={<Menu items={items} />} trigger='hover'>
 			<span className={styles.action}>
 				<img
 					src={`/images/locales/${intl.formatMessage({ id: 'app.locale.image', defaultMessage: 'vi-VN.svg' })}`}

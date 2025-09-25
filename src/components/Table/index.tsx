@@ -11,6 +11,9 @@ import {
 	ReloadOutlined,
 	SearchOutlined,
 } from '@ant-design/icons';
+import { closestCenter, DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import {
 	AutoComplete,
 	Button,
@@ -29,9 +32,7 @@ import {
 import type { FilterValue, SortOrder } from 'antd/lib/table/interface';
 import classNames from 'classnames';
 import _ from 'lodash';
-import React, { useEffect, useRef, useState } from 'react';
-import type { SortEnd, SortableContainerProps } from 'react-sortable-hoc';
-import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
+import React, { JSX, useEffect, useRef, useState } from 'react';
 import { useIntl, useModel } from 'umi';
 import ButtonExtend from './ButtonExtend';
 import ModalExport from './Export';
@@ -41,12 +42,12 @@ import ModalExpandable from './ModalExpandable';
 import { EOperatorType } from './constant';
 import { findFiltersInColumns, updateSearchStorage } from './function';
 import './style.less';
-import type { IColumn, TDataOption, TFilter, TableBaseProps } from './typing';
+import type { IColumn, TableBaseProps, TDataOption, TFilter } from './typing';
 
 const TableBase = (props: TableBaseProps) => {
 	const intl = useIntl();
-	const { modelName, Form, title, dependencies = [], params, buttons, widthDrawer, destroyModal } = props;
-	const model = useModel(modelName);
+	const { modelName, Form, title, dependencies = [], params, buttons, widthDrawer, destroyModal, rowSortable } = props;
+	const model = useModel(modelName) as any;
 	const {
 		visibleForm,
 		setVisibleForm,
@@ -67,6 +68,8 @@ const TableBase = (props: TableBaseProps) => {
 		setFilters,
 		deleteManyModel,
 		initFilter,
+		isView,
+		edit,
 	} = model;
 	const filters: TFilter<any>[] = model?.filters;
 	const getData = props.getData ?? model?.getModel;
@@ -76,6 +79,19 @@ const TableBase = (props: TableBaseProps) => {
 	const [visibleImport, setVisibleImport] = useState(false);
 	const [visibleExport, setVisibleExport] = useState(false);
 	const searchInputRef = useRef<InputRef>(null);
+	// dnd-kit: sensors
+	const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
+
+	// State cho tableData để sortable
+	const tableData: any[] = model?.[props.dataState || 'danhSach']?.map((item: any, index: number) => ({
+		...item,
+		index: index + 1 + (page - 1) * limit * (props.pageable === false ? 0 : 1),
+		key: item?._id ?? index,
+		children:
+			!props.hideChildrenRows && item?.children && Array.isArray(item.children) && item.children.length
+				? item.children
+				: undefined,
+	}));
 
 	useEffect(() => {
 		setPage(1);
@@ -217,7 +233,9 @@ const TableBase = (props: TableBaseProps) => {
 				const filtered = values && values[0];
 				return <SearchOutlined className={filtered ? 'text-primary' : undefined} />;
 			},
-			onFilterDropdownVisibleChange: (vis) => vis && setTimeout(() => searchInputRef?.current?.select(), 100),
+			filterDropdownProps: {
+				onOpenChange: (vis) => vis && setTimeout(() => searchInputRef?.current?.select(), 100),
+			},
 		};
 	};
 	//#endregion
@@ -316,20 +334,20 @@ const TableBase = (props: TableBaseProps) => {
 			...(item.filterType === 'string'
 				? getColumnSearchProps(item.dataIndex, item.title)
 				: item.filterType === 'select'
-				? getFilterColumnProps(item.dataIndex, item.filterData)
-				: item.filterType === 'customselect'
-				? getColumnSelectProps(item.dataIndex, item.filterCustomSelect)
-				: undefined),
+					? getFilterColumnProps(item.dataIndex, item.filterData)
+					: item.filterType === 'customselect'
+						? getColumnSelectProps(item.dataIndex, item.filterCustomSelect)
+						: undefined),
 			children: item.children?.map((child) => ({
 				...child,
 				...(child.sortable && getSort(child.dataIndex)),
 				...(child.filterType === 'string'
 					? getColumnSearchProps(child.dataIndex, child.title)
 					: child.filterType === 'select'
-					? getFilterColumnProps(child.dataIndex, child.filterData)
-					: child.filterType === 'customselect'
-					? getColumnSelectProps(child.dataIndex, child.filterCustomSelect)
-					: undefined),
+						? getFilterColumnProps(child.dataIndex, child.filterData)
+						: child.filterType === 'customselect'
+							? getColumnSelectProps(child.dataIndex, child.filterCustomSelect)
+							: undefined),
 			})),
 		}));
 
@@ -350,36 +368,35 @@ const TableBase = (props: TableBaseProps) => {
 	}, [JSON.stringify(filters), sort, ...props.columns]);
 
 	//#region Get Drag Sortable column
-	const DragHandle = SortableHandle(() => <MenuOutlined style={{ cursor: 'grab', color: '#999' }} />);
-
-	const SortableItem = SortableElement((props1: React.HTMLAttributes<HTMLTableRowElement>) => <tr {...props1} />);
-	const SortableBody = SortableContainer((props1: React.HTMLAttributes<HTMLTableSectionElement>) => (
-		<tbody {...props1} />
-	));
-
-	if (props.rowSortable)
+	if (rowSortable)
 		finalColumns.unshift({
-			title: '',
 			width: 30,
 			align: 'center',
-			render: () => <DragHandle />,
+			render: () => <MenuOutlined style={{ cursor: 'grab', color: '#999' }} />,
 		});
 
-	const onSortEnd = ({ oldIndex, newIndex }: SortEnd) => {
-		if (oldIndex !== newIndex) {
-			const record = model?.[props.dataState || 'danhSach']?.[oldIndex];
-			if (props.onSortEnd) props.onSortEnd(record, newIndex);
+	const handleDragEnd = (event: any) => {
+		const { active, over } = event;
+		if (active && over && active.id !== over.id) {
+			const oldIndex = tableData.findIndex((i) => i.key === active.id);
+			const newIndex = tableData.findIndex((i) => i.key === over.id);
+			if (props.onSortEnd) props.onSortEnd(tableData[oldIndex], newIndex);
 		}
 	};
 
-	const DraggableContainer = (props1: SortableContainerProps) => (
-		<SortableBody useDragHandle disableAutoscroll helperClass='row-dragging' onSortEnd={onSortEnd} {...props1} />
-	);
-
-	const DraggableBodyRow: React.FC<any> = ({ className, style, ...restProps }) => {
-		// function findIndex base on Table rowKey props and should always be a right array index
-		const index = restProps['data-row-key'];
-		return <SortableItem index={index ?? 0} {...restProps} />;
+	// dnd-kit: SortableRow component
+	const SortableRow = (props: any) => {
+		const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+			id: props['data-row-key'],
+		});
+		const style = {
+			...props.style,
+			transform: CSS.Transform.toString(transform),
+			transition,
+			cursor: 'grab',
+			...(isDragging ? { background: '#fafafa' } : {}),
+		};
+		return <tr {...props} ref={setNodeRef} style={style} {...attributes} {...listeners} />;
 	};
 	//#endregion
 
@@ -421,6 +438,64 @@ const TableBase = (props: TableBaseProps) => {
 			deleteManyModel(selectedIds, () => getData(params))
 				.then(() => setSelectedIds(undefined))
 				.catch((er: any) => console.log(er));
+	};
+
+	const renderTable = () => {
+		return (
+			<Table
+				scroll={{ x: _.sum(finalColumns.map((item) => item.width ?? 80)), ...props.scroll }}
+				rowSelection={
+					props?.rowSelection
+						? {
+								type: 'checkbox',
+								selectedRowKeys: selectedIds ?? [],
+								preserveSelectedRowKeys: true,
+								onChange: (selectedRowKeys) => setSelectedIds(selectedRowKeys),
+								columnWidth: 40,
+								...props.detailRow,
+							}
+						: undefined
+				}
+				loading={loading}
+				bordered={props.border || true}
+				pagination={{
+					current: page,
+					pageSize: limit,
+					position: ['bottomRight'],
+					total,
+					showSizeChanger: true,
+					pageSizeOptions: ['5', '10', '25', '50', '100'],
+					showTotal: (tongSo: number) => (
+						<Space>
+							{props?.rowSelection ? (
+								<>
+									<span>
+										{intl.formatMessage({ id: 'global.table.index.dachon' })}: {selectedIds?.length ?? 0}
+									</span>
+									{selectedIds?.length > 0 ? (
+										<span>
+											(
+											<a href='#!' onClick={() => setSelectedIds(undefined)}>
+												{intl.formatMessage({ id: 'global.table.index.bochon' })}
+											</a>
+											)
+										</span>
+									) : null}
+								</>
+							) : null}
+							<span>
+								{intl.formatMessage({ id: 'global.table.index.tongso' })}: {tongSo}
+							</span>
+						</Space>
+					),
+				}}
+				onChange={onChange}
+				dataSource={tableData}
+				columns={finalColumns as any[]}
+				components={rowSortable ? { body: { row: SortableRow } } : undefined}
+				{...props.otherProps}
+			/>
+		);
 	};
 
 	const mainContent = (
@@ -530,76 +605,15 @@ const TableBase = (props: TableBaseProps) => {
 					/>
 				)}
 			>
-				<Table
-					scroll={{ x: _.sum(finalColumns.map((item) => item.width ?? 80)), ...props.scroll }}
-					rowSelection={
-						props?.rowSelection
-							? {
-									type: 'checkbox',
-									selectedRowKeys: selectedIds ?? [],
-									preserveSelectedRowKeys: true,
-									onChange: (selectedRowKeys) => setSelectedIds(selectedRowKeys),
-									columnWidth: 40,
-									...props.detailRow,
-							  }
-							: undefined
-					}
-					loading={loading}
-					bordered={props.border || true}
-					pagination={{
-						current: page,
-						pageSize: limit,
-						position: ['bottomRight'],
-						total,
-						showSizeChanger: true,
-						pageSizeOptions: ['5', '10', '25', '50', '100'],
-						showTotal: (tongSo: number) => (
-							<Space>
-								{props?.rowSelection ? (
-									<>
-										<span>
-											{intl.formatMessage({ id: 'global.table.index.dachon' })}: {selectedIds?.length ?? 0}
-										</span>
-										{selectedIds?.length > 0 ? (
-											<span>
-												(
-												<a href='#!' onClick={() => setSelectedIds(undefined)}>
-													{intl.formatMessage({ id: 'global.table.index.bochon' })}
-												</a>
-												)
-											</span>
-										) : null}
-									</>
-								) : null}
-								<span>
-									{intl.formatMessage({ id: 'global.table.index.tongso' })}: {tongSo}
-								</span>
-							</Space>
-						),
-					}}
-					onChange={onChange}
-					dataSource={model?.[props.dataState || 'danhSach']?.map((item: any, index: number) => ({
-						...item,
-						index: index + 1 + (page - 1) * limit * (props.pageable === false ? 0 : 1),
-						key: item?._id ?? index,
-						children:
-							!props.hideChildrenRows && item?.children && Array.isArray(item.children) && item.children.length
-								? item.children
-								: undefined,
-					}))}
-					columns={finalColumns as any[]}
-					components={
-						props.rowSortable
-							? {
-									body: {
-										wrapper: DraggableContainer,
-										row: DraggableBodyRow,
-									},
-							  }
-							: undefined
-					}
-					{...props.otherProps}
-				/>
+				{rowSortable ? (
+					<DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+						<SortableContext items={tableData.map((item) => item.key)} strategy={verticalListSortingStrategy}>
+							{renderTable()}
+						</SortableContext>
+					</DndContext>
+				) : (
+					renderTable()
+				)}
 			</ConfigProvider>
 		</div>
 	);
@@ -609,7 +623,7 @@ const TableBase = (props: TableBaseProps) => {
 			{props.hideCard ? (
 				mainContent
 			) : (
-				<Card title={title || false} bordered={props.border || false}>
+				<Card title={title || false} variant={props.border ? 'outlined' : 'borderless'}>
 					{mainContent}
 				</Card>
 			)}
@@ -622,8 +636,8 @@ const TableBase = (props: TableBaseProps) => {
 							maskClosable={props.maskCloseableForm || false}
 							width={widthDrawer !== 'full' ? widthDrawer : undefined}
 							footer={false}
-							bodyStyle={{ padding: 0 }}
-							visible={visibleForm}
+							styles={{ body: { padding: 0 } }}
+							open={visibleForm}
 							destroyOnClose={destroyModal || false}
 						>
 							<Form title={title ?? ''} {...props.formProps} />
@@ -636,15 +650,21 @@ const TableBase = (props: TableBaseProps) => {
 						</Drawer>
 					) : (
 						<ModalExpandable
+							title={
+								props.showModalTitle
+									? (props.modalTitle ?? title)
+										? `${isView ? 'Chi tiết' : edit ? 'Chỉnh sửa' : 'Thêm mới'} ${title?.toString().toLocaleLowerCase()}`
+										: undefined
+									: undefined
+							}
 							fullScreen={widthDrawer === 'full'}
 							maskClosable={props.maskCloseableForm || false}
 							width={widthDrawer !== 'full' ? widthDrawer : undefined}
 							onCancel={() => setVisibleForm(false)}
-							footer={false}
-							bodyStyle={{ padding: 0 }}
-							visible={visibleForm}
+							footer={null}
+							styles={!props.showModalTitle ? { body: { padding: 0 } } : undefined}
+							open={visibleForm}
 							destroyOnClose={destroyModal || false}
-							title={props.modalTitle}
 						>
 							<Form title={title ?? ''} {...props.formProps} />
 						</ModalExpandable>
