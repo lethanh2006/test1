@@ -25,19 +25,23 @@ const ViewThongBao = (props: { record?: ThongBao.IRecord; afterViewDetail?: () =
 			[EModuleKey.QLKH]: APP_CONFIG_URL_QLKH,
 			[EModuleKey.KT]: APP_CONFIG_URL_KHAO_THI,
 			[EModuleKey.CSVC]: APP_CONFIG_URL_CSVC,
+			[EModuleKey.VBCC]: '',
 		};
 
-		const sourceType = mapModuleKey[record?.sourceType as ESourceTypeNotification];
+		const sourceType = mapModuleKey[record?.metadata?.sourceType as ESourceTypeNotification];
 		const sourceModule = mapModuleKey[record?.metadata?.phanHe as ESourceTypeNotification];
+
+		const pathWeb = record?.metadata?.pathWeb?.replace(/^\/+/, '');
 
 		if (sourceType === currentRole) {
 			if (afterViewDetail) afterViewDetail();
-			history.push(`/${record?.metadata?.pathWeb}`);
+			if (record?.metadata?.pathWeb) {
+				history.push(`${pathWeb}`);
+			}
 		} else {
 			const baseUrl = urlMap[sourceModule as EModuleKey];
 			if (baseUrl && record?.metadata?.pathWeb) {
-				const pathWeb = record.metadata.pathWeb.replace(/^\/+/, ''); // Loại bỏ dấu '/' ở đầu chuỗi pathWeb nếu có
-				window.open(baseUrl + pathWeb, '_blank');
+				window.location.href = `${baseUrl}${pathWeb}`;
 			}
 		}
 	};

@@ -44,7 +44,7 @@ const ModalImport = (props: ModalImportProps) => {
 			getHeaders();
 			setIsGetHeader(true);
 		}
-	}, [visible]);
+	}, [visible, isGetHeader]);
 
 	const onCancelModal = () => {
 		onCancel();

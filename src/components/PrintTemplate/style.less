@@ -7,8 +7,8 @@
 		color: black;
 		font-size: 14px;
 		font-family: 'Times New Roman';
-		-webkit-print-color-adjust: exact;
 		line-height: 1.5;
+		-webkit-print-color-adjust: exact;
 
 		.to-print {
 			display: block;
@@ -74,12 +74,12 @@
 		thead {
 			display: table-header-group;
 
-			tr>th {
+			tr > th {
 				border-right: 1px solid black !important;
 				border-bottom: 1px solid black !important;
 			}
 
-			tr:first-child>th {
+			tr:first-child > th {
 				border-top: 1px solid black !important;
 
 				&:first-child {
@@ -114,7 +114,6 @@
 		@page {
 			margin: 15mm 15mm 15mm 20mm;
 		}
-
 	}
 
 	&.compact {
@@ -122,22 +121,22 @@
 			font-size: 12px;
 
 			.title {
-				font-size: 14px;
 				margin-top: 8px;
 				margin-bottom: 2px;
+				font-size: 14px;
 			}
 
 			.sub-title {
-				font-size: 12px;
 				margin-bottom: 4px;
+				font-size: 12px;
 			}
 		}
 
 		.ant-table .ant-table-thead th,
 		.ant-table .ant-table-tbody td {
+			height: auto;
 			padding: 2px 4px !important;
 			font-size: 12px !important;
-			height: auto;
 		}
 
 		@media print {

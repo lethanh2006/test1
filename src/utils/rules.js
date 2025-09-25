@@ -16,6 +16,64 @@ const allCharacters =
 // CMND
 
 const rules = {
+	json: [
+		{
+			validator: (__, value, callback) => {
+				try {
+					if (value) {
+						JSON.parse(value);
+					}
+					callback();
+				} catch {
+					callback('');
+				}
+			},
+			message: 'Json không hợp lệ',
+		},
+	],
+	arrNumber: (max, min) => [
+		{
+			validator: (__, value, callback) => {
+				let isArrNumber = true;
+				if (value && value.length) {
+					value.map((item) => {
+						const isNumber = !isNaN(item) && !isNaN(parseFloat(item));
+						if (isNumber !== true) isArrNumber = false;
+					});
+				}
+				if (!isArrNumber) callback('');
+				callback();
+			},
+			message: 'Chỉ được nhập số, ngăn cách giữa phần nguyên và phần thập phân bởi dấu chấm',
+		},
+		{
+			validator: (__, value, callback) => {
+				let isValidArrNumber = true;
+				if (value && value.length) {
+					value.map((item) => {
+						if (parseFloat(item) > max) isValidArrNumber = false;
+					});
+				}
+				if (!isValidArrNumber) callback('');
+				callback();
+			},
+			message: `Giá trị tối đa: ${max}`,
+		},
+		{
+			validator: (__, value, callback) => {
+				let isValidArrNumber = true;
+				if (value && value.length) {
+					value.map((item) => {
+						if (parseFloat(item) < min) isValidArrNumber = false;
+					});
+				}
+				if (!isValidArrNumber) callback('');
+				callback();
+			},
+			message: `Giá trị nhỏ nhất: ${min}`,
+		},
+	],
+
 	dacbiet: [
 		{
 			pattern: new RegExp(`^[0-9${allCharacters} \n]+$`),
@@ -235,7 +293,7 @@ const rules = {
 		{
 			max: len,
 			min: len,
-			message: `Text phải có ${len} kí tự`,
+			message: `Chuỗi phải có ${len} kí tự`,
 		},
 	],
 
@@ -319,6 +377,16 @@ const rules = {
 				callback();
 			},
 			message: `Chỉ được ${sauDauPhay} số sau dấu phẩy`,
+		},
+	],
+
+	notEqual: (text, label) => [
+		{
+			validator: (__, value, callback) => {
+				if (value === text) callback('');
+				callback();
+			},
+			message: `Giá trị không được bằng: ${label ?? text}`,
 		},
 	],
 };

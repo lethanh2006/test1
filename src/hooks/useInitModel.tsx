@@ -1,4 +1,4 @@
-import { type TExportField, type TFilter, type TImportHeader, type TImportResponse } from '@/components/Table/typing';
+import { type TExportField, type TFilter, type TImportHeader, type TImportResponse, type QueryCondition } from '@/components/Table/typing';
 import { chuanHoaObject } from '@/utils/utils';
 import { message } from 'antd';
 import { useState } from 'react';
@@ -12,10 +12,10 @@ import useInitService from './useInitService';
  * @param upService Ip của dịch vụ bên thứ 3
  * @returns
  */
-const useInitModel = <T,>(
+const useInitModel = <T extends object>(
 	url: string,
 	fieldNameCondtion?: 'condition' | 'cond',
-	initCondition?: Partial<T>,
+	initCondition?: QueryCondition<T>,
 	ipService?: string,
 	initSort?: { [k in keyof T]?: 1 | -1 },
 	initFilter?: TFilter<T>[],
@@ -27,7 +27,7 @@ const useInitModel = <T,>(
 	const [loading, setLoading] = useState<boolean>(false);
 	const [formSubmiting, setFormSubmiting] = useState<boolean>(false);
 	const [filters, setFilters] = useState<TFilter<T>[]>(initFilter ?? []);
-	const [condition, setCondition] = useState<{ [k in keyof T]?: any } | any>(initCondition);
+	const [condition, setCondition] = useState<QueryCondition<T>>(initCondition ?? {});
 	const [sort, setSort] = useState<{ [k in keyof T]?: 1 | -1 } | undefined>(initSort);
 	const [edit, setEdit] = useState<boolean>(false);
 	const [isView, setIsView] = useState<boolean>(true);
@@ -66,7 +66,7 @@ const useInitModel = <T,>(
 	 * @returns {any} Các IRecord
 	 */
 	const getModel = async (
-		paramCondition?: Partial<T>,
+		paramCondition?: QueryCondition<T>,
 		filterParams?: TFilter<T>[],
 		sortParam?: { [k in keyof T]?: 1 | -1 },
 		paramPage?: number,
@@ -115,6 +115,12 @@ const useInitModel = <T,>(
 				return tempData;
 			}
 		} catch (er) {
+			if (isSetDanhSach !== false) {
+				setDanhSach([]);
+				setTotal(0);
+				setPage(1);
+			}
+
 			return Promise.reject(er);
 		} finally {
 			setLoading(false);
@@ -124,7 +130,7 @@ const useInitModel = <T,>(
 	const getAllModel = async (
 		isSetRecord?: boolean,
 		sortParam?: { [k in keyof T]?: 1 | -1 },
-		conditionParam?: Partial<T>,
+		conditionParam?: QueryCondition<T>,
 		filterParam?: TFilter<T>[],
 		pathParam?: string,
 		isSetDanhSach?: boolean,
@@ -153,6 +159,11 @@ const useInitModel = <T,>(
 
 			return data;
 		} catch (er) {
+			if (isSetDanhSach !== false) {
+				setDanhSach([]);
+				setTotal(0);
+			}
+
 			return Promise.reject(er);
 		} finally {
 			setLoading(false);
@@ -167,13 +178,14 @@ const useInitModel = <T,>(
 			if (isSetRecord !== false) setRecord(response?.data?.data ?? null);
 			return response?.data?.data;
 		} catch (er) {
+			if (isSetRecord !== false) setRecord(undefined);
 			return Promise.reject(er);
 		} finally {
 			setLoading(false);
 		}
 	};
 
-	const getOneModel = async (conditionParam: Partial<T>): Promise<T> => {
+	const getOneModel = async (conditionParam: QueryCondition<T>): Promise<T> => {
 		if (!conditionParam) return Promise.reject('condition is required');
 		setLoading(true);
 		try {
@@ -181,6 +193,7 @@ const useInitModel = <T,>(
 			setRecord(response?.data?.data ?? null);
 			return response?.data?.data;
 		} catch (er) {
+			setRecord(undefined);
 			return Promise.reject(er);
 		} finally {
 			setLoading(false);
@@ -345,6 +358,7 @@ const useInitModel = <T,>(
 			setImportHeaders(res.data?.data ?? []);
 			return res.data?.data ?? [];
 		} catch (err) {
+			setImportHeaders([]);
 			return Promise.reject(err);
 		}
 	};
@@ -353,9 +367,9 @@ const useInitModel = <T,>(
 	 * Lấy file excel mẫu cho chức năng import
 	 * @returns {any}
 	 */
-	const getImportTemplateModel = async (): Promise<any> => {
+	const getImportTemplateModel = async (params?: any): Promise<any> => {
 		try {
-			const res = await getImportTemplate();
+			const res = await getImportTemplate(params);
 			return res.data;
 		} catch (err) {
 			return Promise.reject(err);
@@ -430,7 +444,7 @@ const useInitModel = <T,>(
 	 */
 	const postExportModel = async (
 		payload: { ids?: string[]; definitions: TExportField[] },
-		paramCondition?: Partial<T>,
+		paramCondition?: QueryCondition<T>,
 		paramFilters?: TFilter<T>[],
 		otherQuery?: Record<string, any>,
 	): Promise<Blob> => {

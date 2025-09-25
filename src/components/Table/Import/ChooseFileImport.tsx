@@ -43,7 +43,7 @@ const ChooseFileImport = (props: { onChange: () => void; onCancel: any; getTempl
 		if (typeof FileReader !== 'undefined') {
 			const reader = new FileReader();
 			reader.onload = (e) => getWorksheets(e.target?.result);
-			reader.readAsBinaryString(file);
+			reader.readAsArrayBuffer(file);
 		} else {
 			message.error(intl.formatMessage({ id: 'global.table.import.choose.message1' }));
 			if (onCancel) onCancel();

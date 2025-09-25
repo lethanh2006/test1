@@ -11,7 +11,7 @@ const PreviewDataImport = (props: {
 	onChange: () => void;
 	onBack: any;
 	importHeaders: TImportHeader[];
-	extendData?: Record<string, string | number>;
+	extendData?: Record<string, string | number | boolean>;
 }) => {
 	const intl = useIntl();
 	const { onChange, onBack, importHeaders, extendData } = props;
@@ -119,7 +119,7 @@ const PreviewDataImport = (props: {
 
 	useEffect(() => {
 		getData();
-	}, []);
+	}, [JSON.stringify(matchedColumns)]);
 
 	return (
 		<Row gutter={[12, 12]}>

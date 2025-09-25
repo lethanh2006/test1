@@ -10,11 +10,18 @@ const MatchColumns = (props: { onChange: () => void; onBack: any; importHeaders:
 	const { onChange, onBack, importHeaders } = props;
 	const { headLine, matchedColumns, setMatchedColumns } = useModel('import');
 	const [form] = Form.useForm();
-	const fileTitles = Object.values(headLine ?? {}); // Các tiêu đề cột lấy từ file
 
 	useEffect(() => {
 		if (matchedColumns) form.setFieldsValue(matchedColumns);
-	}, []);
+		else {
+			const fileTitles = Object.values(headLine ?? {}); // Các tiêu đề cột lấy từ file
+			const initialValues = importHeaders.reduce<Record<string, any>>((acc, col) => {
+				acc[col.field] = fileTitles.includes(col.label) ? col.label : undefined; // Nếu tiêu đề cột trong file trùng với tiêu đề cột đã định nghĩa thì gán giá trị, nếu không thì để undefined
+				return acc;
+			}, {});
+			form.setFieldsValue(initialValues);
+		}
+	}, [JSON.stringify(headLine)]);
 
 	const onFinish = (values: any): void => {
 		setMatchedColumns(values);
@@ -29,12 +36,7 @@ const MatchColumns = (props: { onChange: () => void; onBack: any; importHeaders:
 				</Col>
 				{importHeaders?.map((col) => (
 					<Col span={24} md={12} key={col.field}>
-						<Form.Item
-							name={col.field}
-							label={col.label}
-							rules={[...(col.required ? rules.required : [])]}
-							initialValue={fileTitles.includes(col.label) ? col.label : undefined}
-						>
+						<Form.Item name={col.field} label={col.label} rules={[...(col.required ? rules.required : [])]}>
 							<Select
 								options={Object.entries(headLine ?? {}).map(([colName, title]) => ({
 									value: title,

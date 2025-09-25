@@ -72,9 +72,14 @@ const ColumnChart = (props: DataChartType) => {
 			categories: xAxis || [],
 		},
 		tooltip: {
-			y: {
-				formatter: (val: number) => (formatY ? formatY(val) : tienVietNam(val)),
-			},
+			y: { formatter: (val: number) => (formatY ? formatY(val) : tienVietNam(val)) },
+			intersect: false,
+			shared: true,
+		},
+		grid: {
+			borderColor: '#e0e0e0',
+			strokeDashArray: 2,
+			xaxis: { lines: { show: false } },
 		},
 	};
 
