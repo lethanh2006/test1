@@ -116,21 +116,23 @@
 	}
 
 	.button {
-		color: rgba(0, 0, 0, .45);
+		color: rgba(0, 0, 0, 0.45);
 		line-height: 1;
 		text-decoration: none;
 		background: transparent;
 		border: 0;
 		outline: 0;
 		cursor: pointer;
-		transition: color .3s;
+		transition: color 0.3s;
 		font-size: 16px;
 		padding: 0;
 
 		border-radius: var(--border-radius-sm);
 		width: var(--control-height);
 		height: var(--control-height);
-		transition: color var(--motion-duration-mid), background-color var(--motion-duration-mid);
+		transition:
+			color var(--motion-duration-mid),
+			background-color var(--motion-duration-mid);
 
 		&:hover {
 			color: var(--color-icon-hover) rgba(0, 0, 0, 0.88);
@@ -191,4 +193,23 @@
 	// .extra {
 	// 	width: 100%;
 	// }
+}
+
+.ttCellWrapper {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
+}
+
+.cornerTriangle {
+	position: absolute;
+	left: -8px;
+	width: 10px;
+	height: 10px;
+	border-bottom-right-radius: 5px;
+	clip-path: polygon(0 0, 100% 0, 0 100%);
+	cursor: pointer;
 }

@@ -71,6 +71,7 @@ const TableBase = (props: TableBaseProps) => {
 		isView,
 		edit,
 	} = model;
+	const { danhSach: dsPhanVung } = useModel('core.phanvungdulieu');
 	const filters: TFilter<any>[] = model?.filters;
 	const getData = props.getData ?? model?.getModel;
 	const hasFilter = props.columns?.filter((item) => item.filterType)?.length;
@@ -79,6 +80,7 @@ const TableBase = (props: TableBaseProps) => {
 	const [visibleImport, setVisibleImport] = useState(false);
 	const [visibleExport, setVisibleExport] = useState(false);
 	const searchInputRef = useRef<InputRef>(null);
+
 	// dnd-kit: sensors
 	const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
@@ -358,6 +360,25 @@ const TableBase = (props: TableBaseProps) => {
 				dataIndex: 'index',
 				align: 'center',
 				width: 50,
+				render: (val, rec) => {
+					const phanVungHienTai = dsPhanVung?.find((item) => item?.ma === rec?.dataPartitionCode);
+					const maMau = phanVungHienTai?.maMau ?? 'var(--color-primary)';
+
+					return (
+						<div className='ttCellWrapper'>
+							<span>{val}</span>
+
+							{phanVungHienTai?._id && (
+								<Tooltip title={phanVungHienTai?.name}>
+									<div
+										className='cornerTriangle'
+										style={{ backgroundColor: maMau, top: props?.otherProps?.size === 'small' ? -4 : -8 }}
+									/>
+								</Tooltip>
+							)}
+						</div>
+					);
+				},
 			});
 
 		setColumns(final);

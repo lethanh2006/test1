@@ -46,6 +46,8 @@ declare module ThongBao {
 
 		oneSignalData?: string | null;
 		urlFile?: string[] | null;
+
+		dataPartitionCode: string;
 	}
 
 	export interface IThongKe {
@@ -109,5 +111,7 @@ declare module ThongBao {
 	export interface Tags {
 		ten: string;
 		[key: string]: any;
+
+		dataPartitionCode: string;
 	}
 }

@@ -37,13 +37,12 @@ const ViewThongBao = (props: { record?: ThongBao.IRecord; afterViewDetail?: () =
 		if (sourceType === currentRole) {
 			if (afterViewDetail) afterViewDetail();
 			if (record?.metadata?.pathWeb) {
-				history.push(`${record.metadata.pathWeb.replace(/^\/+/, '')}`);
+				history.push(`${pathWeb}`);
 			}
 		} else {
 			const baseUrl = urlMap[sourceModule as EModuleKey];
 			if (baseUrl && record?.metadata?.pathWeb) {
-				const pathWeb = record.metadata.pathWeb.replace(/^\/+/, '');
-				window.location.href = `${baseUrl}/${pathWeb}`;
+				window.location.href = `${baseUrl}${pathWeb}`;
 			}
 		}
 	};

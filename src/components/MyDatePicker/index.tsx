@@ -1,8 +1,8 @@
+import dayjs from '@/utils/dayjs';
 import { DatePicker } from 'antd';
 import type { DatePickerProps } from 'antd/es/date-picker';
 import locale from 'antd/es/date-picker/locale/vi_VN';
 import type { Dayjs } from 'dayjs';
-import dayjs from 'dayjs';
 
 const MyDatePicker = (
 	props: Omit<DatePickerProps, 'onChange'> & {

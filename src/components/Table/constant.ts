@@ -15,6 +15,8 @@ export enum EOperatorType {
 	NOT_INCLUDE = 'not_in',
 	NULL = 'null',
 	NOT_NULL = 'not_null',
+	OR = 'or',
+	AND = 'and',
 }
 
 export const OperatorLabel = {
@@ -34,4 +36,6 @@ export const OperatorLabel = {
 	[EOperatorType.NOT_INCLUDE]: 'Không thuộc',
 	[EOperatorType.NULL]: 'Trống',
 	[EOperatorType.NOT_NULL]: 'Không trống',
+	[EOperatorType.OR]: 'Hoặc',
+	[EOperatorType.AND]: 'Và',
 };

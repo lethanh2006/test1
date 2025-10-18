@@ -26,29 +26,17 @@ const PrintTemplate = React.forwardRef(
 	) => {
 		const { children, title, subTitle, footer, hideTieuNgu, isCompact, tenPhongBan } = props;
 
-		// const componentRef = useRef(null);
+		// const contentRef = useRef(null);
 
-		// 	const reactToPrintContent = useCallback(() => componentRef.current, [componentRef.current]);
-
-		// 	const reactToPrintTrigger = useCallback(
-		// 		() => (
-		// 			<Button icon={<PrinterOutlined />} disabled={!danhSach.length}>
-		// 				<span className='extend'>In bảng điểm</span>
-		// 			</Button>
-		// 		),
-		// 		[danhSach.length],
-		// 	);
+		// 	const handlePrint = useReactToPrint({ contentRef });
 
 		// BUTTON PRINT
-		// <ReactToPrint
-		// 	content={reactToPrintContent}
-		// 	documentTitle='Kết quả học tập học phần'
-		// 	trigger={reactToPrintTrigger}
-		// 	removeAfterPrint
-		// />;
+		// <Button icon={<PrinterOutlined />} onClick={() => handlePrint()}>
+		// 	In biên lai
+		// </Button>;
 
 		// PRINT CONTENT
-		// <PrintTemplate ref={componentRef}></PrintTemplate>
+		// <PrintTemplate ref={contentRef}></PrintTemplate>
 
 		return (
 			<div className={`print-section ${isCompact ? 'compact' : ''}`} ref={ref}>

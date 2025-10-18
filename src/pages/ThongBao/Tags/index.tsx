@@ -1,11 +1,13 @@
 import ExpandText from '@/components/ExpandText';
 import TableBase from '@/components/Table';
+import ButtonExtend from '@/components/Table/ButtonExtend';
 import type { IColumn } from '@/components/Table/typing';
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import { Button, Popconfirm, Tooltip } from 'antd';
-import { useModel } from 'umi';
-import FormTags from './components/Form';
 import { ThongBao } from '@/services/ThongBao/typing';
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { Popconfirm } from 'antd';
+import { useModel } from 'umi';
+import { kiemTraPhanVung } from '../../../utils/constants';
+import FormTags from './components/Form';
 
 const Tags = () => {
 	const { page, limit, handleEdit, deleteModel } = useModel('thongbao.tags');
@@ -27,10 +29,14 @@ const Tags = () => {
 			align: 'center',
 			width: 60,
 			fixed: 'right',
-			render: (recordVal: ThongBao.Tags) => (
-				<>
-					<Tooltip title='Sửa'>
-						<Button
+			render: (recordVal: ThongBao.Tags) => {
+				const isPhanVung = kiemTraPhanVung(recordVal?.dataPartitionCode ?? null);
+
+				return (
+					<>
+						<ButtonExtend
+							disabled={!isPhanVung}
+							tooltip='Chỉnh sửa'
 							onClick={() => {
 								handleEdit(recordVal);
 							}}
@@ -38,20 +44,25 @@ const Tags = () => {
 							type={'link'}
 							icon={<EditOutlined />}
 						/>
-					</Tooltip>
 
-					<Tooltip title='Xóa'>
 						<Popconfirm
 							onConfirm={() => {
 								deleteModel(recordVal?._id);
 							}}
 							title='Bạn có chắc chắn muốn xóa?'
 						>
-							<Button shape='circle' type='link' danger icon={<DeleteOutlined />} />
+							<ButtonExtend
+								disabled={!isPhanVung}
+								tooltip='Xóa'
+								shape='circle'
+								type='link'
+								danger
+								icon={<DeleteOutlined />}
+							/>
 						</Popconfirm>
-					</Tooltip>
-				</>
-			),
+					</>
+				);
+			},
 		},
 	];
 	return (

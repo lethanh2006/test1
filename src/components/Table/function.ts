@@ -1,19 +1,45 @@
-import type { IColumn, TFilter } from './typing';
+import type { IColumn } from './typing';
 
-export const findFiltersInColumns = (columns: IColumn<unknown>[], filters?: TFilter<unknown>[]) => {
+export const findFiltersInColumns = (columns: IColumn<unknown>[], filters?: any[]): any[] => {
 	if (!filters?.length) return [];
-	return filters.filter((fil) => {
-		const field = JSON.stringify(fil.field);
-		return columns.some((col) => JSON.stringify(col.dataIndex) === field);
-	});
+
+
+	return filters.map((filter): any => {
+
+		if (filter.filtes && Array.isArray(filter.filtes)) {
+			return {
+
+				filters: findFiltersInColumns(columns, filter.filtes),
+
+				logicOperator: filter.operator,
+				active: true,
+			};
+		}
+
+
+		const field = JSON.stringify(filter.field);
+		const column = columns.find((col) => JSON.stringify(col.dataIndex) === field);
+
+
+		if (column) {
+			return {
+				field: filter.field,
+				operator: filter.operator,
+				values: filter.values || [],
+				active: true,
+			};
+		}
+
+		return null;
+	}).filter(Boolean);
 };
 
-// Hàm lưu dữ liệu tìm kiếm vào localStorage
+
 export const updateSearchStorage = (dataIndex: string, value: string) => {
 	const savedSearchValues = JSON.parse(localStorage.getItem('dataTimKiem') || '{}');
 	const currentSearchValues = savedSearchValues[dataIndex] || [];
 
-	// Thêm giá trị mới vào đầu danh sách, loại bỏ trùng lặp và giữ tối đa 10 giá trị
+
 	const newValues = [value, ...currentSearchValues];
 	const uniqueValues = [...new Set(newValues)].slice(0, 10);
 

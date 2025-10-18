@@ -252,7 +252,7 @@ const UploadFile: React.FC<TUploadProps> = ({
 				<ModalExpandable
 					title='Xem trước tập tin'
 					width={1200}
-					visible={previewOpen}
+					open={previewOpen}
 					footer={null}
 					onCancel={() => setPreviewOpen(false)}
 				>

@@ -13,6 +13,7 @@ import { Button, DatePicker, Popconfirm, Segmented, Space } from 'antd';
 import { useState } from 'react';
 import { useModel } from 'umi';
 import news from '../../assets/new6.gif';
+import { kiemTraPhanVung } from '../../utils/constants';
 import Form from './components/Form';
 import CardFormThongBaoTuyChinh from './ThongBaoTuyChinh/CardForm';
 import ViewThongBao from './ViewThongBao/CardView';
@@ -149,37 +150,40 @@ const CardThongBao = (props: { notiType: NotificationType; activeKey: string }) 
 			align: 'center',
 			width: 90,
 			fixed: 'right',
-			render: (recordThongBao: ThongBao.IRecord) => (
-				<>
-					<ButtonExtend
-						tooltip='Xem chi tiết'
-						onClick={() => {
-							setRecord(recordThongBao);
-							setVisible(true);
-						}}
-						type='link'
-						icon={<EyeOutlined />}
-					/>
-					{notiType === NotificationType.ONESIGNAL ? (
-						<Popconfirm
-							disabled={activeKey === 'tu_dong'}
-							onConfirm={() => {
-								deleteModel(recordThongBao._id, getData);
+			render: (recordThongBao: ThongBao.IRecord) => {
+				const isPhanVung = kiemTraPhanVung(recordThongBao?.dataPartitionCode ?? null);
+
+				return (
+					<>
+						<ButtonExtend
+							tooltip='Xem chi tiết'
+							onClick={() => {
+								setRecord(recordThongBao);
+								setVisible(true);
 							}}
-							title='Bạn có chắc chắn muốn xóa?'
-						>
-							<ButtonExtend
-								tooltip='Xóa'
-								disabled={activeKey === 'tu_dong'}
-								shape='circle'
-								type='link'
-								danger
-								icon={<DeleteOutlined />}
-							/>
-						</Popconfirm>
-					) : null}
-				</>
-			),
+							type='link'
+							icon={<EyeOutlined />}
+						/>
+						{notiType === NotificationType.ONESIGNAL ? (
+							<Popconfirm
+								onConfirm={() => {
+									deleteModel(recordThongBao._id, getData);
+								}}
+								title='Bạn có chắc chắn muốn xóa?'
+							>
+								<ButtonExtend
+									tooltip='Xóa'
+									disabled={activeKey === 'tu_dong' || !isPhanVung}
+									shape='circle'
+									type='link'
+									danger
+									icon={<DeleteOutlined />}
+								/>
+							</Popconfirm>
+						) : null}
+					</>
+				);
+			},
 		},
 	];
 

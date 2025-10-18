@@ -4,6 +4,7 @@ import { message, notification } from 'antd';
 import axios1 from 'axios';
 // import { history } from 'umi';
 import qs from 'qs';
+import { excludedPaths } from './constants';
 import data from './data';
 
 // function routeLogin(errorCode: string) {
@@ -31,24 +32,6 @@ import data from './data';
 //   failedQueue = [];
 // };
 
-/**
- * Chuyển sang xử lý access_token with OIDC auth ở Technical Support
- */
-// Add a request interceptor
-// axios.interceptors.request.use(
-//   (config) => {
-//     if (!config.headers.Authorization) {
-//       const token = localStorage.getItem('token');
-//       if (token) {
-//         // eslint-disable-next-line no-param-reassign
-//         config.headers.Authorization = `Bearer ${token}`;
-//       }
-//     }
-//     return config;
-//   },
-//   (error) => Promise.reject(error),
-// );
-
 const axios = axios1.create({
 	/**
 	 *
@@ -75,6 +58,31 @@ const axios = axios1.create({
 		return qs.stringify(cleanedParams, { encode: false, arrayFormat: 'brackets' });
 	},
 });
+
+// Add a request interceptor
+axios.interceptors.request.use(
+	(config) => {
+		/**
+		 * Chuyển sang xử lý access_token with OIDC auth ở Technical Support
+		 */
+		// if (!config.headers.Authorization) {
+		// 	const token = localStorage.getItem('token');
+		// 	if (token) {
+		// 		config.headers.Authorization = `Bearer ${token}`;
+		// 	}
+		// }
+
+		const isExcluded = excludedPaths.some((path) => config.url?.startsWith(path));
+		if (!isExcluded && !config.url?.includes('wp-json')) {
+			const partitionCode = localStorage.getItem('partitionCode');
+			if (partitionCode) {
+				config.headers['x-data-partition-code'] = partitionCode;
+			}
+		}
+		return config;
+	},
+	(error) => Promise.reject(error),
+);
 
 // Add a response interceptor
 axios.interceptors.response.use(

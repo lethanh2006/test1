@@ -1,10 +1,13 @@
-import { CloseOutlined, FilterFilled, PlusOutlined } from '@ant-design/icons';
-import { Button, Form, Modal } from 'antd';
+import { CloseOutlined, FilterFilled, PlusOutlined, PlusSquareOutlined } from '@ant-design/icons';
+import { Button, Form, Modal, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 import { useIntl } from 'umi';
+import { EOperatorType } from './constant';
 import { findFiltersInColumns } from './function';
 import RowFilter from './RowFilter';
 import { type IColumn, type TFilter } from './typing';
+
+const { Text } = Typography;
 
 const ModalCustomFilter = (props: {
 	visible: boolean;
@@ -28,15 +31,127 @@ const ModalCustomFilter = (props: {
 		if (visible) form.setFieldsValue({ filters: fil });
 	}, [filters, visible]);
 
+	const getFormValueByPath = (formValues: any, path: (string | number)[]): any => {
+		let value = formValues;
+		for (const key of path) {
+			value = value?.[key];
+		}
+		return value;
+	};
+
+	const normalizeFilter = (tempFilter: TFilter<any>, formValues: any, path: (string | number)[]): any => {
+
+		let field: any = tempFilter.field;
+		if (typeof field === 'string' && field.includes('.')) {
+			const parts = field.split('.');
+			field = parts.length === 2 ? [parts[0], parts[1]] : parts[0];
+		}
+
+
+		const activePath = [...path, 'active'];
+		const activeValue = getFormValueByPath(formValues, activePath);
+		const isActive = activeValue !== undefined ? activeValue : tempFilter.active !== false;
+
+
+		if (tempFilter.filters && Array.isArray(tempFilter.filters)) {
+
+			const result: any = {
+				operator: tempFilter.logicOperator || 'and',
+				filters: tempFilter.filters
+					.map((subTempFilter, subIndex) => {
+						const subPath = [...path, 'filters', subIndex];
+						const subResult = normalizeFilter(subTempFilter, formValues, subPath);
+
+						return subResult._active ? subResult : null;
+					})
+					.filter(Boolean)
+					.map((filter) => {
+
+						const { _active, ...cleanFilter } = filter;
+						return cleanFilter;
+					})
+					.filter(filter => {
+
+						if (filter.filters) {
+							return filter.filters.length > 0;
+						}
+						if (filter.operator === EOperatorType.NULL || filter.operator === EOperatorType.NOT_NULL) {
+							return true;
+						}
+						return filter.values && Array.isArray(filter.values) && filter.values.length > 0;
+					}),
+			};
+
+
+			result._active = isActive;
+
+			return result;
+		}
+
+
+		const result: any = {
+			field,
+			operator: tempFilter.operator,
+			_active: isActive,
+		};
+
+
+		const valuesPath = [...path, 'values'];
+		let formFilterValues = getFormValueByPath(formValues, valuesPath);
+
+
+		if (formFilterValues && Array.isArray(formFilterValues[0])) {
+			formFilterValues = formFilterValues[0];
+		}
+
+
+		if (tempFilter.operator !== EOperatorType.NULL && tempFilter.operator !== EOperatorType.NOT_NULL) {
+			result.values = formFilterValues || [];
+		}
+
+		return result;
+	};
+
 	const onFinish = (values: any) => {
-		const filtered = values.filters
-			?.map((filter: TFilter<any>, index: number) => ({
-				...filter,
-				...filtersTemp[index],
-				values: Array.isArray(filter.values[0]) ? filter.values[0] : filter.values,
-			}))
-			?.filter((filter: TFilter<any>) => filter.values && Array.isArray(filter.values));
-		setFilters(filtered);
+
+
+
+
+		const tempFiltered = filtersTemp
+			?.map((tempFilter, index) => {
+				const path = ['filters', index];
+				return normalizeFilter(tempFilter, values, path);
+			})
+			?.filter((filter: any) => {
+
+				if (!filter._active) return false;
+
+
+				if (filter.filters) {
+					return filter.filters.length > 0;
+				}
+
+
+				if (filter.operator === EOperatorType.NULL || filter.operator === EOperatorType.NOT_NULL) {
+					return true;
+				}
+
+
+				return filter.values && Array.isArray(filter.values) && filter.values.length > 0;
+			});
+
+
+		const filtered = tempFiltered.map(filter => {
+
+			const { _active, ...cleanFilter } = filter;
+			return cleanFilter;
+		});
+
+
+
+
+
+		setFilters(filtered || []);
 		setVisible(false);
 	};
 
@@ -66,26 +181,40 @@ const ModalCustomFilter = (props: {
 				</Button>,
 			]}
 			title={intl.formatMessage({ id: 'global.table.customfilter.title' })}
+			width={800}
 		>
-			<p>{intl.formatMessage({ id: 'global.table.customfilter.dieukien' })}:</p>
+			<Text type='secondary' style={{ marginBottom: '16px', display: 'block' }}>
+				{intl.formatMessage({ id: 'global.table.customfilter.dieukien' })}:
+			</Text>
 
 			<Form form={form} layout='vertical' onFinish={onFinish} id='custom-filter-form'>
-				{filtersTemp.map((filter, index) => (
-					<RowFilter
-						index={index}
-						columns={columns}
-						key={filter.field.toString()}
-						filter={filter}
-						fieldsFilterable={fieldsFilterable}
-						onChange={(fil) => {
-							const temp = [...filtersTemp];
-							temp[index] = fil;
-							setFiltersTemp(temp);
-						}}
-					/>
-				))}
+				{filtersTemp.length > 0 && (
+					<div style={{ marginBottom: '16px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+						{filtersTemp.map((filter, index) => (
+							<RowFilter
+								index={index}
+								columns={columns}
+								key={(filter.field ?? '').toString()}
+								filter={filter}
+								fieldsFilterable={fieldsFilterable}
+								onChange={(fil) => {
+									const temp = [...filtersTemp];
+									temp[index] = fil;
+									setFiltersTemp(temp);
+								}}
+								onRemove={() => {
+									const temp = [...filtersTemp];
+									temp.splice(index, 1);
+									setFiltersTemp(temp);
+								}}
+								allowGrouping={true}
+								path={['filters', index]}
+							/>
+						))}
+					</div>
+				)}
 
-				<Form.Item>
+				<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
 					<Button
 						block
 						type='dashed'
@@ -95,8 +224,7 @@ const ModalCustomFilter = (props: {
 							setFiltersTemp([
 								...filtersTemp,
 								{
-									active: true,
-									field: fieldsFilterable[0]?.toString() ?? '',
+									field: fieldsFilterable[0]?.replace(/"/g, '') ?? '',
 									values: [],
 								},
 							]);
@@ -104,7 +232,21 @@ const ModalCustomFilter = (props: {
 					>
 						{intl.formatMessage({ id: 'global.table.customfilter.button.them' })}
 					</Button>
-				</Form.Item>
+					<Button
+						type='dashed'
+						block
+						disabled={!fieldsFilterable.length}
+						icon={<PlusSquareOutlined />}
+						onClick={() => {
+							const newGroup: TFilter<any> = {
+								filters: [],
+							};
+							setFiltersTemp([...filtersTemp, newGroup]);
+						}}
+					>
+						Thêm nhóm
+					</Button>
+				</div>
 			</Form>
 		</Modal>
 	);

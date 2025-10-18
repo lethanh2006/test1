@@ -3,6 +3,8 @@ declare module PhanVungDuLieu {
 		_id: string;
 		ma: string;
 		name: string;
+		parentCode: string;
+		maMau: string;
 	}
 
 	export interface IUser {

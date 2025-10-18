@@ -2,7 +2,7 @@ import { ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
 import { useRef, useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
-import ReactToPrint from 'react-to-print';
+import { useReactToPrint } from 'react-to-print';
 import styles from './styles.less';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -10,8 +10,10 @@ const PDFViewer = (props: { data: any; pagination?: boolean; scale?: number }) =
 	const [numPages, setNumPages] = useState(0);
 	const [pageNumber, setPageNumber] = useState(1);
 	// const [scale, setScale] = useState<number>(1);
-	const docRef = useRef<any>();
+	const docRef = useRef<any>(null);
 	const [loadingText] = useState('Đang tải tài liệu. Vui lòng chờ trong giây lát...');
+
+	const handlePrint = useReactToPrint({ contentRef: docRef });
 
 	const onDocumentLoadSuccess = (data: { numPages: number }) => {
 		setPageNumber(1);
@@ -21,16 +23,9 @@ const PDFViewer = (props: { data: any; pagination?: boolean; scale?: number }) =
 	return (
 		<div style={{ textAlign: 'center' }}>
 			<div>
-				<ReactToPrint
-					trigger={() => {
-						return (
-							<button style={{ display: 'none' }} id='printButton'>
-								Print
-							</button>
-						);
-					}}
-					content={() => docRef.current}
-				/>
+				<button style={{ display: 'none' }} id='printButton' onClick={() => handlePrint()}>
+					Print
+				</button>
 			</div>
 			<div ref={docRef} style={{ textAlign: 'center', marginBottom: 12 }}>
 				<Document

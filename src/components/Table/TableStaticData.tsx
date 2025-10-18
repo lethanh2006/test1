@@ -7,7 +7,7 @@ import classNames from 'classnames';
 import _ from 'lodash';
 import { useEffect, useRef, useState } from 'react';
 import Highlighter from 'react-highlight-words';
-import { useIntl } from 'umi';
+import { useIntl, useModel } from 'umi';
 import ButtonExtend from './ButtonExtend';
 import { updateSearchStorage } from './function';
 import ModalExpandable from './ModalExpandable';
@@ -17,10 +17,12 @@ import type { IColumn, TableStaticProps, TDataOption } from './typing';
 const TableStaticData = (props: TableStaticProps) => {
 	const intl = useIntl();
 	const { Form, showEdit, setShowEdit, addStt, data, children, hasCreate, hasTotal, rowSortable } = props;
+	const { danhSach: dsPhanVung } = useModel('core.phanvungdulieu');
 	const [searchText, setSearchText] = useState<string>('');
 	const [searchedColumn, setSearchedColumn] = useState();
 	const [total, setTotal] = useState<number>();
 	const searchInputRef = useRef<InputRef>(null);
+
 	// dnd-kit: sensors
 	const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
@@ -161,6 +163,25 @@ const TableStaticData = (props: TableStaticProps) => {
 			align: 'center',
 			width: 40,
 			children: undefined,
+			render: (val: string, rec: any) => {
+				const phanVungHienTai = dsPhanVung?.find((item) => item?.ma === rec?.dataPartitionCode);
+				const maMau = phanVungHienTai?.maMau ?? 'var(--color-primary)';
+
+				return (
+					<div className='ttCellWrapper'>
+						<span>{val}</span>
+
+						{phanVungHienTai?._id && (
+							<Tooltip title={phanVungHienTai?.name}>
+								<div
+									className='cornerTriangle'
+									style={{ backgroundColor: maMau, top: props?.size === 'small' ? -4 : -8 }}
+								/>
+							</Tooltip>
+						)}
+					</div>
+				);
+			},
 		});
 
 	//#region Get Drag Sortable column
