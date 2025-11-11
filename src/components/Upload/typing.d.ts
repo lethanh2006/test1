@@ -20,7 +20,7 @@ export type TUploadProps = {
 	/** Ảnh khung 1:1? */
 	isAvatarSmall?: boolean;
 	/** Ảnh nằm ngang 4:3? */
-	isPortraitAvatar?: boolean;
+	isLandscapeAvatar?: boolean;
 
 	/** Có thu nhỏ ảnh ko?
 	 * @default false

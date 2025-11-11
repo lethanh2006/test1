@@ -9,15 +9,23 @@
 	display: flex;
 	justify-content: space-between;
 	align-items: flex-end;
+	gap: 6px;
+	height: 100%;
+
+	@media (max-width: @screen-xs) {
+		padding: 8px;
+	}
 
 	&:hover {
 		transform: scale(1.01);
 		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.025);
+		transition: transform 0.3s ease;
 	}
 
 	.text {
 		color: rgba(0, 0, 0, 0.85);
 		font-weight: 500;
+		width: 100%;
 
 		display: flex;
 		flex-direction: column;
@@ -33,6 +41,20 @@
 		font-weight: 700;
 		font-size: 1.75rem;
 		line-height: 1;
+
+		@media (max-width: @screen-xs) {
+			font-size: 1.25rem;
+		}
+	}
+
+	&.selected {
+		outline: 2px solid var(--color-primary);
+		box-shadow: var(--box-shadow-secondary);
+		outline-offset: 2px;
+		transition:
+			outline 0.1s linear,
+			box-shadow 0.3s ease,
+			outline-offset 0.3s ease;
 	}
 
 	&.success {

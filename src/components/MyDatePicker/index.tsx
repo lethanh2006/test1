@@ -36,7 +36,7 @@ const MyDatePicker = (
 	},
 ) => {
 	const format = props?.format ?? 'DD/MM/YYYY';
-	const { saveFormat, pickerStyle, disabledDate, showTime, allowClear, disabled } = props;
+	const { saveFormat, pickerStyle, disabledDate, showTime, allowClear=false, disabled } = props;
 
 	const handleChange = (value: Dayjs | null) => {
 		if (props.onChange)

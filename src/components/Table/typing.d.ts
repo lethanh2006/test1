@@ -1,4 +1,5 @@
 import { Namespaces } from '@/pages/TienIch/AuditLog/Modal';
+import { TableProps } from 'antd';
 import type { ColumnType } from 'antd/lib/table';
 import React, { JSX } from 'react';
 import { type EOperatorType } from './constant';
@@ -174,7 +175,6 @@ export type RowFilterProps = {
 	level?: number;
 	path?: (string | number)[];
 };
-
 
 export type ConditionCriteria<T> = {
 	/** Giá trị nằm trong danh sách */

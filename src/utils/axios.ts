@@ -1,6 +1,6 @@
 // import { refreshAccesssToken } from '@/services/ant-design-pro/api';
 import '@ant-design/v5-patch-for-react-19';
-import { message, notification } from 'antd';
+import { notification } from 'antd';
 import axios1 from 'axios';
 // import { history } from 'umi';
 import qs from 'qs';
@@ -44,12 +44,11 @@ const axios = axios1.create({
 	paramsSerializer: (params) => {
 		const cleanedParams: Record<string, any> = {};
 		Object.entries(params || {}).forEach(([key, value]) => {
-			const isEmptyObject = typeof value === 'object' && !Array.isArray(value) && Object.keys(value).length === 0;
-			const isEmptyArray = Array.isArray(value) && value.length === 0;
-			if (value === undefined || value === null || isEmptyObject || isEmptyArray) return;
+			if (value === undefined) return;
 
+			// Stringify objects and array values which may contain nested objects
 			cleanedParams[key] = Array.isArray(value)
-				? value.map((item) => JSON.stringify(item))
+				? value.map((item) => (item !== null && typeof item === 'object' ? JSON.stringify(item) : item))
 				: typeof value === 'object'
 					? JSON.stringify(value)
 					: value;
@@ -74,9 +73,18 @@ axios.interceptors.request.use(
 
 		const isExcluded = excludedPaths.some((path) => config.url?.startsWith(path));
 		if (!isExcluded && !config.url?.includes('wp-json')) {
-			const partitionCode = localStorage.getItem('partitionCode');
-			if (partitionCode) {
-				config.headers['x-data-partition-code'] = partitionCode;
+			const hasHeader = Object.prototype.hasOwnProperty.call(config.headers, 'x-data-partition-code');
+
+			if (hasHeader) {
+				const value = config.headers['x-data-partition-code'];
+				if (value === null || value === undefined) {
+					delete config.headers['x-data-partition-code'];
+				}
+			} else {
+				const partitionCode = localStorage.getItem('partitionCode');
+				if (partitionCode) {
+					config.headers['x-data-partition-code'] = partitionCode;
+				}
 			}
 		}
 		return config;
@@ -116,6 +124,7 @@ axios.interceptors.response.use(
 					notification.error({
 						message: 'Dữ liệu chưa đúng (004)',
 						description: descriptionError,
+						key: 'error400',
 					});
 					break;
 
@@ -125,6 +134,7 @@ axios.interceptors.response.use(
 						notification.error({
 							message: 'Phiên đăng nhập đã thay đổi (104)',
 							description: 'Vui lòng tải lại trang (F5) để cập nhật. Chú ý các dữ liệu chưa lưu sẽ bị mất!',
+							key: 'error401',
 						});
 					if (originalRequest._retry) break;
 					break;
@@ -185,6 +195,7 @@ axios.interceptors.response.use(
 					notification.error({
 						message: 'Thao tác không được phép (304)',
 						description: descriptionError,
+						key: 'error403',
 					});
 					break;
 
@@ -192,6 +203,7 @@ axios.interceptors.response.use(
 					notification.error({
 						message: 'Không tìm thấy (040)',
 						description: descriptionError,
+						key: 'error404',
 					});
 					break;
 
@@ -199,6 +211,7 @@ axios.interceptors.response.use(
 					notification.error({
 						message: 'Dữ liệu chưa đúng (904)',
 						description: descriptionError,
+						key: 'error409',
 					});
 					break;
 
@@ -207,11 +220,24 @@ axios.interceptors.response.use(
 					notification.warning({
 						message: 'Máy chủ gặp lỗi (005)',
 						description: descriptionError,
+						key: 'error500',
+					});
+					break;
+
+				case 504:
+					notification.info({
+						message: 'Quá thời gian phản hồi (405)',
+						description: 'Hệ thống đang tiếp tục xử lý, kết quả xử lý sẽ được cập nhật sau!',
+						key: 'error504',
 					});
 					break;
 
 				default:
-					message.error('Có lỗi xảy ra. Vui lòng thử lại sau!');
+					notification.warning({
+						message: 'Lỗi xảy ra',
+						description: 'Có lỗi xảy ra. Vui lòng thử lại sau!',
+						key: 'global_error',
+					});
 					break;
 			}
 		}

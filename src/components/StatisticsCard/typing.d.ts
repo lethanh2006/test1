@@ -1,6 +1,6 @@
 import { Breakpoint } from 'antd';
 import { ColSize } from 'antd/es/col';
-import { JSX } from 'react';
+import React, { JSX } from 'react';
 
 /**
  * Interface cho một item thống kê
@@ -8,7 +8,7 @@ import { JSX } from 'react';
  */
 export interface StatisticsItem {
 	/** Tiêu đề hiển thị của item thống kê */
-	title?: string;
+	title?: string | React.ReactNode;
 
 	/** Giá trị hiển thị, có thể là số hoặc chuỗi (đã format)
 	 * @example 100, '1,234 VNĐ', '50%'
@@ -36,6 +36,8 @@ export interface StatisticsItem {
 
 	/** Hàm callback khi click vào item (tùy chọn) */
 	onClick?: () => void;
+
+	selected?: boolean;
 }
 
 /**

@@ -514,7 +514,7 @@ const TableBase = (props: TableBaseProps) => {
 				dataSource={tableData}
 				columns={finalColumns as any[]}
 				components={rowSortable ? { body: { row: SortableRow } } : undefined}
-				{...props.otherProps}
+				{...props?.otherProps}
 			/>
 		);
 	};
@@ -672,18 +672,18 @@ const TableBase = (props: TableBaseProps) => {
 					) : (
 						<ModalExpandable
 							title={
-								props.showModalTitle
-									? (props.modalTitle ?? title)
+								props.modalTitle
+									? props.modalTitle
+									: props.showModalTitle && !!title
 										? `${isView ? 'Chi tiết' : edit ? 'Chỉnh sửa' : 'Thêm mới'} ${title?.toString().toLocaleLowerCase()}`
 										: undefined
-									: undefined
 							}
 							fullScreen={widthDrawer === 'full'}
 							maskClosable={props.maskCloseableForm || false}
-							width={widthDrawer !== 'full' ? widthDrawer : undefined}
+							width={widthDrawer !== 'full' ? (widthDrawer ?? 600) : undefined}
 							onCancel={() => setVisibleForm(false)}
 							footer={null}
-							styles={!props.showModalTitle ? { body: { padding: 0 } } : undefined}
+							styles={!props.modalTitle && (!props.showModalTitle || !title) ? { body: { padding: 0 } } : undefined}
 							open={visibleForm}
 							destroyOnClose={destroyModal || false}
 						>

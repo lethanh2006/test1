@@ -182,7 +182,7 @@ const ModalAuditLog = (props: {
 						styles={{ body: { maxHeight: 630, overflowY: 'auto' } }}
 					>
 						<Spin spinning={loading}>
-							<Descriptions column={1}>
+							<Descriptions column={1} style={{ marginBottom: 16 }}>
 								<Descriptions.Item label='Mã người dùng'>{record?.uCode ?? '--'}</Descriptions.Item>
 								<Descriptions.Item label='Họ tên'>{record?.uName ?? '--'}</Descriptions.Item>
 								<Descriptions.Item label='Địa chỉ Email'>{record?.uEmail ?? '--'}</Descriptions.Item>
@@ -198,7 +198,7 @@ const ModalAuditLog = (props: {
 								{record?._id && !showDetail && (
 									<Descriptions.Item label='Tham số đầu vào, dữ liệu trả về'>
 										<Link
-											to=''
+											to='#'
 											onClick={(e) => {
 												e.preventDefault();
 												handleShowDetail();

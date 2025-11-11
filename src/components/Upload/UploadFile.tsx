@@ -26,7 +26,7 @@ const UploadFile: React.FC<TUploadProps> = ({
 	resize,
 	fileList: fileListProp,
 	extra,
-	isPortraitAvatar,
+	isLandscapeAvatar,
 	hasPreviewFile = true,
 	...props
 }) => {
@@ -36,7 +36,7 @@ const UploadFile: React.FC<TUploadProps> = ({
 	const [previewOpen, setPreviewOpen] = useState(false);
 	const [previewImage, setPreviewImage] = useState('');
 	const resizeProps: TResizeProps | undefined = typeof resize === 'boolean' ? {} : resize;
-	const showImage = isAvatar || isAvatarSmall || isPortraitAvatar;
+	const showImage = isAvatar || isAvatarSmall || isLandscapeAvatar;
 
 	useEffect(() => {
 		let files: any[] = [];
@@ -185,7 +185,7 @@ const UploadFile: React.FC<TUploadProps> = ({
 					customRequest={({ onSuccess }) => setTimeout(() => onSuccess && onSuccess('ok'), 0)}
 					listType='picture-card'
 					className={`avatar-uploader ${
-						isAvatarSmall ? 'avatar-small' : isPortraitAvatar ? 'avatar-portrait' : undefined
+						isAvatarSmall ? 'avatar-small' : isLandscapeAvatar ? 'avatar-landscape' : undefined
 					}`}
 					fileList={fileList}
 					onChange={handleChange}

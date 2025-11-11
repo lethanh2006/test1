@@ -31,19 +31,34 @@ export const TabViewPage = (props: TabViewPageComponentProps) => {
 	} = props;
 	const activeMenu = menu?.filter((i) => !i.hide);
 	const paths = activeMenu?.map((item) => item.menuKey);
-	const hash = window.location.hash?.replace('#', '') || paths[0];
 	const [tabActive, setTabActive] = useState<string | undefined>(paths[0]);
 	const [currentTitle, setCurrentTitle] = useState(getTitle(cardTitle, activeMenu[0]?.title));
 
 	useEffect(() => {
-		if (hash && paths.includes(hash)) setTabActive(hash);
-		else setTabActive(paths[0]);
-	}, [hash, menu]);
+		const updateTabFromHash = () => {
+			const currentHash = window.location.hash.replace('#', '');
+			if (currentHash && paths.includes(currentHash)) {
+				setTabActive(currentHash);
+				setCurrentTitle(getTitle(cardTitle, activeMenu.find((item) => item.menuKey === currentHash)?.title));
+			} else {
+				setTabActive(paths[0]);
+				setCurrentTitle(getTitle(cardTitle, activeMenu[0]?.title));
+			}
+		};
+
+		updateTabFromHash();
+		window.addEventListener('hashchange', updateTabFromHash);
+
+		return () => {
+			window.removeEventListener('hashchange', updateTabFromHash);
+		};
+	}, [paths, cardTitle, activeMenu]);
 
 	const onChangeTab = (tab: string) => {
 		if (onChange) onChange(tab);
 		setCurrentTitle(getTitle(cardTitle, activeMenu.find((item) => item.menuKey === tab)?.title));
 		window.location.hash = tab === paths[0] ? '' : tab;
+		setTabActive(tab);
 	};
 
 	const mainContent = () => (
@@ -55,7 +70,7 @@ export const TabViewPage = (props: TabViewPageComponentProps) => {
 				{type === 'step' ? (
 					<Steps
 						type='navigation'
-						current={paths.includes(hash) ? paths.indexOf(hash) : 0}
+						current={paths.includes(tabActive!) ? paths.indexOf(tabActive!) : 0}
 						onChange={(step) => onChangeTab(paths[step])}
 						style={{ marginBottom: 18, background: 'white' }}
 					>

@@ -42,8 +42,8 @@ const useInitService = (url: string, ip?: string) => {
 		return axios.get(`${finalIp}/${url}/${id}`, { headers });
 	};
 
-	const getImportHeaders = () => {
-		return axios.get(`${finalIp}/${url}/import/definition`, { data: { silent: true } });
+	const getImportHeaders = (headers?: any) => {
+		return axios.get(`${finalIp}/${url}/import/definition`, { data: { silent: true }, headers });
 	};
 
 	const getImportTemplate = (params?: any, headers?: any) => {
@@ -62,8 +62,8 @@ const useInitService = (url: string, ip?: string) => {
 		return axios.post(`${finalIp}/${url}/import/insert`, payload, { headers });
 	};
 
-	const getExportFields = () => {
-		return axios.get(`${finalIp}/${url}/export/definition`, { data: { silent: true } });
+	const getExportFields = (headers?: any) => {
+		return axios.get(`${finalIp}/${url}/export/definition`, { data: { silent: true }, headers });
 	};
 
 	const postExport = (

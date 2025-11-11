@@ -432,10 +432,10 @@ export const decodeHtmlEntities = (str: string): string => {
 };
 
 /**
- * Number to currency format
+ * Number to currency format: 1234567 => 1,234,567, '--' => '--'
  * @param number value
  */
-export const inputFormat = (value?: number): string => `${value}`.replace(/(?=(\d{3})+(?!\d))\B/g, ',');
+export const inputFormat = (value?: number | string): string => `${value}`.replace(/(?=(\d{3})+(?!\d))\B/g, ',');
 
 /**
  * Input value to number

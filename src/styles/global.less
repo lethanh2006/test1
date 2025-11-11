@@ -82,7 +82,7 @@ a {
 		margin-top: 0;
 	}
 
-	.ant-btn+.ant-btn {
+	.ant-btn + .ant-btn {
 		margin-left: 0 !important;
 	}
 }
@@ -108,12 +108,13 @@ a {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-	background: #888;
+	background: #aaa;
+	border-radius: 4px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-	background: #555;
+	background: #888;
 }
 
 .rbc-day-slot .rbc-event,
@@ -207,16 +208,16 @@ canvas {
 		height: 100vh;
 		overflow: hidden;
 
-		>.ant-modal-content,
-		>div .ant-modal-content,
-		.ant-modal-body>.ant-card {
+		> .ant-modal-content,
+		> div .ant-modal-content,
+		.ant-modal-body > .ant-card {
 			border-radius: 0;
 			height: 100vh;
 			display: flex;
 			flex-direction: column;
 
-			>.ant-modal-body,
-			>.ant-card-body {
+			> .ant-modal-body,
+			> .ant-card-body {
 				// height: 100vh;
 				overflow: auto;
 				flex: 1;

@@ -66,7 +66,7 @@ export const OIDCBounder_: FC<{ children: React.ReactElement }> = ({ children })
 
 				// Persist minimal initial state so reload won't lose permissions immediately
 				try {
-					sessionStorage.setItem('initialState', JSON.stringify({ ...tmpInitialState, permissionLoading: false }));
+					sessionStorage.setItem('initialState', JSON.stringify(tmpInitialState));
 				} catch (e) {}
 
 				// Use setTimeout to ensure state update is completed before setting permissionLoading to false

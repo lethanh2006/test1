@@ -10,10 +10,6 @@ declare module '*.gif';
 declare module '*.bmp';
 declare module '*.tiff';
 declare module 'react-split-pane/lib/Pane';
-declare module 'react-big-calendar';
-declare module 'react-big-calendar/lib/addons/dragAndDrop';
-declare module 'react-big-calendar/lib/addons/dragAndDrop/styles';
-declare module 'react-big-calendar/lib/Toolbar';
 
 // preview.pro.ant.design only do not use in your production ;
 // preview.pro.ant.design Dedicated environment variable, please do not use it in your project.

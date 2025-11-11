@@ -35,7 +35,7 @@ const MyDateRangePicker = (
 	},
 ) => {
 	const format = props?.format ?? 'DD/MM/YYYY';
-	const { saveFormat, disabledDate, showTime, allowClear, disabled } = props;
+	const { saveFormat, disabledDate, showTime, allowClear=false, disabled } = props;
 
 	const handleChange = (value: [Dayjs, Dayjs] | null) => {
 		if (value) {
