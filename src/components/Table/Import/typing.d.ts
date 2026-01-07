@@ -17,7 +17,7 @@ export type ModalImportProps = {
 	maskCloseableForm?: boolean;
 
 	/** Data thêm vào mỗi record khi validate và execute import */
-	extendData?: Record<string, string | number | boolean>;
+	extendData?: Record<string, string | number | boolean | null | undefined>;
 
 	/** Hàm gọi API để get file import mẫu */
 	getTemplate?: () => Promise<Blob>;

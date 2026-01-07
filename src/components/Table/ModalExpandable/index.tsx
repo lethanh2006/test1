@@ -1,6 +1,6 @@
 import { CloseOutlined, FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons';
-import { Modal, type ModalProps } from 'antd';
-import React, { useState } from 'react';
+import { Button, Modal, type ModalProps } from 'antd';
+import { useState } from 'react';
 import './style.less';
 
 const ModalExpandable = (
@@ -19,14 +19,15 @@ const ModalExpandable = (
 
 			<div className='modal-buttons'>
 				{!fullScreen && (
-					<button className='button' onClick={() => setIsExpanded((expand) => !expand)}>
-						{isExpanded ? <FullscreenExitOutlined /> : <FullscreenOutlined />}
-					</button>
+					<Button
+						type='text'
+						icon={isExpanded ? <FullscreenExitOutlined /> : <FullscreenOutlined />}
+						onClick={() => setIsExpanded((expand) => !expand)}
+						className='button'
+					/>
 				)}
 
-				<button className='button' onClick={otherProps.onCancel}>
-					<CloseOutlined />
-				</button>
+				<Button type='text' icon={<CloseOutlined />} onClick={otherProps.onCancel} className='button' />
 			</div>
 		</Modal>
 	);

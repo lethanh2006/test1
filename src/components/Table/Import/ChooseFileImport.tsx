@@ -69,7 +69,7 @@ const ChooseFileImport = (props: { onChange: () => void; onCancel: any; getTempl
 
 			const cols = Object.values(hline); // Những tên cột thực tế, bỏ các cột trống
 			// Lấy toàn bộ data trong file
-			const sheetData = XLSX.utils.sheet_to_json(ws, { header }) as any[];
+			const sheetData = XLSX.utils.sheet_to_json(ws, { header, rawNumbers: false }) as any[];
 			const data = sheetData.filter((item) => item.__rowNum__ >= line).map((item) => pick(item, cols)); // Chỉ lấy từ data những trường cần lấy
 
 			if (data.length > 0 && cols.length > 0) {

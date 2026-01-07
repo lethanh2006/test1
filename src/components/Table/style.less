@@ -99,48 +99,6 @@
 	padding: 8px;
 }
 
-// Modal buttons: Close, Expand fullscreen, Collapse fullscreen
-.modal-buttons {
-	position: absolute;
-	top: 0;
-	right: 0;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	gap: 2px;
-	height: 56px;
-	padding: 12px;
-
-	@media (max-width: @screen-xs) {
-		padding: 12px;
-	}
-
-	.button {
-		color: rgba(0, 0, 0, 0.45);
-		line-height: 1;
-		text-decoration: none;
-		background: transparent;
-		border: 0;
-		outline: 0;
-		cursor: pointer;
-		transition: color 0.3s;
-		font-size: 16px;
-		padding: 0;
-
-		border-radius: var(--border-radius-sm);
-		width: var(--control-height);
-		height: var(--control-height);
-		transition:
-			color var(--motion-duration-mid),
-			background-color var(--motion-duration-mid);
-
-		&:hover {
-			color: var(--color-icon-hover) rgba(0, 0, 0, 0.88);
-			background-color: var(--color-bg-text-hover);
-		}
-	}
-}
-
 /* stylelint-disable-next-line no-duplicate-selectors */
 .ant-modal.modal-ho-so-nhan-su {
 	@media (min-width: @screen-md) {
@@ -177,19 +135,6 @@
 }
 
 @media (max-width: @screen-xs) {
-	.ant-btn:has(.span-extend) {
-		// antd btn icon only
-		width: 32px;
-		height: 32px;
-		padding: 2.4px 0;
-		font-size: 16px;
-		vertical-align: -3px;
-
-		.span-extend {
-			display: none;
-		}
-	}
-
 	// .extra {
 	// 	width: 100%;
 	// }

@@ -1,15 +1,18 @@
 import { tienVietNam } from '@/utils/utils';
 import { Empty } from 'antd';
 import type { ApexOptions } from 'apexcharts';
+import vi from 'apexcharts/dist/locales/vi.json';
+import en from 'apexcharts/dist/locales/en.json';
 import Chart from 'react-apexcharts';
 import { useMediaQuery } from 'react-responsive';
 import type { DataChartType } from '.';
 import './style.less';
-import vi from './vi.json';
+import { getLocale } from '@umijs/max';
 
 const BarChart = (props: DataChartType) => {
 	const { title, xAxis, yAxis, yLabel, height = 350, formatY, otherOptions } = props;
-
+	const locale = getLocale();
+	const defaultLocale = locale === 'vi-VN' ? 'vi' : 'en';
 	if (!xAxis || !yAxis || yAxis.length === 0 || yAxis[0].length === 0) {
 		return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='Không có dữ liệu' />;
 	}
@@ -32,16 +35,13 @@ const BarChart = (props: DataChartType) => {
 						columnDelimiter: ',',
 						headerCategory: 'Danh mục',
 						headerValue: 'Giá trị',
-						dateFormatter(timestamp: number) {
-							return new Date(timestamp).toDateString();
-						},
 					},
 					svg: { filename: 'chart-visual' },
 					png: { filename: 'chart-visual' },
 				},
 			},
-			defaultLocale: 'vi',
-			locales: [vi],
+			defaultLocale: defaultLocale,
+			locales: [vi, en],
 		},
 		title: { text: title },
 		plotOptions: {

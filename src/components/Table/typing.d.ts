@@ -2,7 +2,7 @@ import { Namespaces } from '@/pages/TienIch/AuditLog/Modal';
 import { TableProps } from 'antd';
 import type { ColumnType } from 'antd/lib/table';
 import React, { JSX } from 'react';
-import { type EOperatorType } from './constant';
+import { type EOperatorType } from './constant/constant';
 
 export interface IColumn<T> extends Omit<ColumnType<T>, 'dataIndex' | 'width' | 'children'> {
 	/** Ẩn cột khi hiển thị trên table, nhưng vẫn có trong filter, import, export */
@@ -23,6 +23,8 @@ export interface IColumn<T> extends Omit<ColumnType<T>, 'dataIndex' | 'width' | 
 
 	/** JSX Element trả về 1 mảng value, thường là id */
 	filterCustomSelect?: JSX.Element;
+
+	handleFilter?: (value: any) => void;
 
 	/** Bắt buộc phải có để dùng custom Filter hoặc Import dữ liệu
 	 * Có thể filter 'string' với các trường populated
@@ -153,6 +155,8 @@ export type TableBaseProps = {
 	 * @default getData
 	 */
 	onReload?: (params?: any) => void;
+
+	cardExtra?: React.ReactNode;
 };
 
 export type TFilter<T> = {
@@ -162,18 +166,16 @@ export type TFilter<T> = {
 	active?: boolean;
 	filters?: TFilter<T>[];
 	logicOperator?: 'or' | 'and';
+	readOnly?: boolean;
 };
 
 export type RowFilterProps = {
-	index: number;
-	columns: IColumn<any>[];
-	filter: TFilter<any>;
-	onChange: (filter: TFilter<any>) => void;
-	fieldsFilterable: string[];
-	onRemove?: () => void;
+	name: string | number;
+	formOwner: FormInstance;
+	parentPath?: (string | number)[];
 	allowGrouping?: boolean;
 	level?: number;
-	path?: (string | number)[];
+	onRemove?: () => void;
 };
 
 export type ConditionCriteria<T> = {

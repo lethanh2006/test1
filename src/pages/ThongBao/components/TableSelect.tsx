@@ -6,7 +6,7 @@ import { type ThongBao } from '@/services/ThongBao/typing';
 import { ImportOutlined } from '@ant-design/icons';
 import { Checkbox, Col, Empty, Row } from 'antd';
 import _ from 'lodash';
-import { useEffect, useState } from 'react';
+import { Key, useEffect, useState } from 'react';
 import { useModel } from 'umi';
 import GroupTagUsers from './GroupTagUsers';
 import ModalImport from './ModalImport';
@@ -58,7 +58,7 @@ const TableSelectUser = (props: {
 		} else setChecked(true);
 	}, [allCanBoInSelected]);
 
-	const onChange = (keys?: string[], rows?: ThongBao.IUser[]) => {
+	const onChange = (keys?: Key[], rows?: ThongBao.IUser[]) => {
 		const arr = [...selectedUsers, ...(rows ?? [])]?.filter((item) => item !== undefined);
 		const obj = arr?.filter((item) => {
 			return keys?.includes(item?.username);
@@ -116,7 +116,7 @@ const TableSelectUser = (props: {
 					// filterData: Object.values(ETrangThaiHocSv),
 					// render: (val, rec) => <Tag color={colorTrangThaiHocSv[val as ETrangThaiHocSv]}>{val}</Tag>,
 					onCell,
-			  }
+				}
 			: {
 					title: 'Trạng thái',
 					dataIndex: 'trangThai',
@@ -126,7 +126,7 @@ const TableSelectUser = (props: {
 					// filterData: Object.values(ETrangThaiNhanSu),
 					// render: (val, rec) => <Tag color={MapColorETrangThaiNhanSu[val as ETrangThaiNhanSu]}>{val}</Tag>,
 					onCell,
-			  },
+				},
 	];
 
 	return (

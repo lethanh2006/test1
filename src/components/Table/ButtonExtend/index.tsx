@@ -2,14 +2,13 @@ import { Button, Tooltip, type ButtonProps } from 'antd';
 import React from 'react';
 import './style.less';
 
+export interface ButtonExtendProps extends ButtonProps {
+	tooltip?: React.ReactNode;
+	notHideText?: boolean;
+}
+
 /** Button extend text with default Tooltip */
-const ButtonExtend = (
-	props: {
-		children?: React.ReactNode;
-		tooltip?: React.ReactNode;
-		notHideText?: boolean;
-	} & ButtonProps,
-) => {
+const ButtonExtend = (props: ButtonExtendProps) => {
 	const { children, tooltip, notHideText, ...otherProps } = props;
 
 	return (

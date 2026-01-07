@@ -42,8 +42,8 @@ const useInitService = (url: string, ip?: string) => {
 		return axios.get(`${finalIp}/${url}/${id}`, { headers });
 	};
 
-	const getImportHeaders = (headers?: any) => {
-		return axios.get(`${finalIp}/${url}/import/definition`, { data: { silent: true }, headers });
+	const getImportHeaders = (params?: any, headers?: any) => {
+		return axios.get(`${finalIp}/${url}/import/definition`, { params, data: { silent: true }, headers });
 	};
 
 	const getImportTemplate = (params?: any, headers?: any) => {

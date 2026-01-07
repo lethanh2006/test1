@@ -1,5 +1,6 @@
 import ModalExpandable from '@/components/Table/ModalExpandable';
 import ViewThongBao from '@/pages/ThongBao/components/ViewThongBao';
+import { Spin } from 'antd';
 import { useEffect, useState } from 'react';
 import { useIntl, useModel } from 'umi';
 import NoticeIcon from './NoticeIcon';
@@ -7,13 +8,17 @@ import NoticeList from './NoticeList';
 
 const NoticeIconView = () => {
 	const intl = useIntl();
-	const { record, setRecord, unread, readNotificationModel, page, limit, getThongBaoModel, total } =
+	const { record, setRecord, unread, readNotificationModel, page, limit, getThongBaoModel, total, loading } =
 		useModel('thongbao.noticeicon');
 	const [visibleDetail, setVisibleDetail] = useState<boolean>(false);
 	const [visiblePopup, setVisiblePopup] = useState<boolean>(false);
 
-	useEffect(() => {
+	const getData = () => {
 		getThongBaoModel();
+	};
+
+	useEffect(() => {
+		getData();
 	}, [page, limit]);
 
 	const clearReadState = async () => {
@@ -30,14 +35,17 @@ const NoticeIconView = () => {
 				onPopupVisibleChange={(visible) => setVisiblePopup(visible)}
 				allowClear={!!unread}
 				onClear={clearReadState}
+				getData={getData}
 			>
-				<NoticeList
-					onClick={(item) => {
-						setRecord(item);
-						setVisibleDetail(true);
-						setVisiblePopup(false);
-					}}
-				/>
+				<Spin spinning={loading}>
+					<NoticeList
+						onClick={(item) => {
+							setRecord(item);
+							setVisibleDetail(true);
+							setVisiblePopup(false);
+						}}
+					/>
+				</Spin>
 			</NoticeIcon>
 
 			<ModalExpandable

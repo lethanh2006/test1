@@ -1,7 +1,6 @@
 import dayjs from '@/utils/dayjs';
 import { DatePicker } from 'antd';
 import type { DatePickerProps } from 'antd/es/date-picker';
-import locale from 'antd/es/date-picker/locale/vi_VN';
 import type { Dayjs } from 'dayjs';
 
 const MyDatePicker = (
@@ -12,18 +11,18 @@ const MyDatePicker = (
 		format?: string;
 		pickerStyle?: 'time' | 'date' | 'week' | 'month' | 'quarter' | 'year' | undefined;
 		showTime?:
-			| boolean
-			| {
-					format?: string;
-					showNow?: boolean;
-					showHour?: boolean;
-					showMinute?: boolean;
-					showSecond?: boolean;
-					use12Hours?: boolean;
-					hourStep?: number;
-					minuteStep?: number;
-					secondStep?: number;
-			  };
+		| boolean
+		| {
+			format?: string;
+			showNow?: boolean;
+			showHour?: boolean;
+			showMinute?: boolean;
+			showSecond?: boolean;
+			use12Hours?: boolean;
+			hourStep?: number;
+			minuteStep?: number;
+			secondStep?: number;
+		};
 		allowClear?: boolean;
 		disabled?: boolean;
 
@@ -36,7 +35,7 @@ const MyDatePicker = (
 	},
 ) => {
 	const format = props?.format ?? 'DD/MM/YYYY';
-	const { saveFormat, pickerStyle, disabledDate, showTime, allowClear=false, disabled } = props;
+	const { saveFormat, pickerStyle, disabledDate, showTime, allowClear = false, disabled } = props;
 
 	const handleChange = (value: Dayjs | null) => {
 		if (props.onChange)
@@ -54,7 +53,6 @@ const MyDatePicker = (
 			{...props}
 			format={format}
 			picker={pickerStyle}
-			locale={locale}
 			value={objMoment}
 			onChange={handleChange}
 			disabledDate={disabledDate}

@@ -1,4 +1,10 @@
-import { AppModules, EModuleKey, moduleCongThongTin, moduleQuanLyVanBan } from '@/services/base/constant';
+import {
+	AppModules,
+	EModuleKey,
+	moduleCongThongTin,
+	moduleQuanLyVanBan,
+	moduleTapChiKhoaHoc,
+} from '@/services/base/constant';
 import type { Login } from '@/services/base/typing';
 import { UserSwitchOutlined } from '@ant-design/icons';
 import { Col, Row } from 'antd';
@@ -14,6 +20,7 @@ const ModuleView = () => {
 	);
 	const extendModules: Partial<Login.TModule>[] = [];
 	if (moduleQuanLyVanBan.url && isCanBo) extendModules.push(moduleQuanLyVanBan);
+	if (moduleTapChiKhoaHoc.url) extendModules.push(moduleTapChiKhoaHoc);
 	if (moduleCongThongTin.url) extendModules.push(moduleCongThongTin);
 
 	const allowedModules = Object.entries(AppModules).filter(

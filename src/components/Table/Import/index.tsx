@@ -22,17 +22,23 @@ const ModalImport = (props: ModalImportProps) => {
 		dependenciesHeader = [],
 		getHeader,
 	} = props;
-	const { setFileData, setMatchedColumns, setDataImport } = useModel('import');
+	const { setFileData, setMatchedColumns, setDataImport, loading, setLoading } = useModel('import');
 	const { getImportHeaderModel, getImportTemplateModel, importHeaders, setImportHeaders } = useModel(modelName) as any;
 	const [currentStep, setCurrentStep] = useState(0);
 	const [isGetHeader, setIsGetHeader] = useState<boolean>(false);
 
-	const getHeaders = () => {
-		if (getHeader)
-			getHeader().then((headers) => {
-				setImportHeaders(headers);
-			});
-		else if (getImportHeaderModel) getImportHeaderModel();
+	const getHeaders = async () => {
+		setLoading(true);
+		try {
+			if (getHeader)
+				await getHeader().then((headers) => {
+					setImportHeaders(headers);
+				});
+			else if (getImportHeaderModel) await getImportHeaderModel(extendData);
+			setIsGetHeader(true);
+		} finally {
+			setLoading(false);
+		}
 	};
 
 	useEffect(() => {
@@ -42,7 +48,6 @@ const ModalImport = (props: ModalImportProps) => {
 	useEffect(() => {
 		if (visible && !isGetHeader) {
 			getHeaders();
-			setIsGetHeader(true);
 		}
 	}, [visible, isGetHeader]);
 
@@ -63,6 +68,7 @@ const ModalImport = (props: ModalImportProps) => {
 			width={800}
 			destroyOnClose
 			maskClosable={maskCloseableForm || false}
+			loading={loading}
 		>
 			{!!importHeaders.length ? (
 				<>

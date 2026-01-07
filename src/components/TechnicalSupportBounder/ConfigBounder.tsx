@@ -1,4 +1,5 @@
 import { primaryColor } from '@/services/base/constant';
+import { getLocale } from '@umijs/max';
 import { ConfigProvider, Spin } from 'antd';
 import { useEffect } from 'react';
 
@@ -17,8 +18,11 @@ const ConfigBounder = (props: { children?: any }) => {
 		Spin.setDefaultIndicator(<div className='circle-loader' />);
 	}, [primaryColor]);
 
+	const locale = getLocale();
+
 	return (
 		<ConfigProvider
+			locale={locale}
 			theme={{
 				token: { borderRadius: 4, colorPrimary: primaryColor, colorLink: primaryColor },
 				hashed: false,

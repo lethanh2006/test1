@@ -4,7 +4,6 @@ export enum EModuleKey {
 	CONNECT = 'cong-hoc-vien',
 	CONG_CAN_BO = 'cong-can-bo',
 	QLDT = 'quan-ly-dao-tao',
-	CORE = 'danh-muc-chung',
 	TCNS = 'to-chuc-nhan-su',
 	CTSV = 'cong-tac-sinh-vien',
 	VPS = 'van-phong-so',
@@ -12,8 +11,10 @@ export enum EModuleKey {
 	QLKH = 'quan-ly-khoa-hoc',
 	KT = 'khao-thi',
 	CSVC = 'co-so-vat-chat',
-	THU_VIEN = 'thu-vien',
 	VBCC = 'van-bang-chung-chi',
+	THU_VIEN = 'thu-vien',
+	CORE = 'danh-muc-chung',
+	QLND = 'quan-ly-nguoi-dung',
 }
 
 export const AppModules: Record<EModuleKey, Login.TModule> = {
@@ -28,12 +29,6 @@ export const AppModules: Record<EModuleKey, Login.TModule> = {
 		clientId: `${APP_CONFIG_PREFIX_OF_KEYCLOAK_CLIENT_ID}connect`,
 		url: APP_CONFIG_URL_CAN_BO,
 		icon: EModuleKey.CONG_CAN_BO + '.svg',
-	},
-	[EModuleKey.CORE]: {
-		title: APP_CONFIG_TITLE_CORE,
-		clientId: `${APP_CONFIG_PREFIX_OF_KEYCLOAK_CLIENT_ID}core`,
-		url: APP_CONFIG_URL_CORE,
-		icon: EModuleKey.CORE + '.svg',
 	},
 	[EModuleKey.QLDT]: {
 		title: APP_CONFIG_TITLE_DAO_TAO,
@@ -83,17 +78,29 @@ export const AppModules: Record<EModuleKey, Login.TModule> = {
 		url: APP_CONFIG_URL_CSVC,
 		icon: EModuleKey.CSVC + '.svg',
 	},
+	[EModuleKey.VBCC]: {
+		title: APP_CONFIG_TITLE_VBCC,
+		clientId: `${APP_CONFIG_PREFIX_OF_KEYCLOAK_CLIENT_ID}vbcc`,
+		url: APP_CONFIG_URL_VBCC,
+		icon: EModuleKey.VBCC + '.svg',
+	},
 	[EModuleKey.THU_VIEN]: {
 		title: APP_CONFIG_TITLE_THU_VIEN,
 		clientId: `${APP_CONFIG_PREFIX_OF_KEYCLOAK_CLIENT_ID}thu-vien`,
 		url: APP_CONFIG_URL_THU_VIEN,
 		icon: EModuleKey.THU_VIEN + '.svg',
 	},
-	[EModuleKey.VBCC]: {
-		title: APP_CONFIG_TITLE_VBCC,
-		clientId: `${APP_CONFIG_PREFIX_OF_KEYCLOAK_CLIENT_ID}vbcc`,
-		url: APP_CONFIG_URL_VBCC,
-		icon: EModuleKey.VBCC + '.svg',
+	[EModuleKey.CORE]: {
+		title: APP_CONFIG_TITLE_CORE,
+		clientId: `${APP_CONFIG_PREFIX_OF_KEYCLOAK_CLIENT_ID}core`,
+		url: APP_CONFIG_URL_CORE,
+		icon: EModuleKey.CORE + '.svg',
+	},
+	[EModuleKey.QLND]: {
+		title: APP_CONFIG_TITLE_QLND,
+		clientId: `${APP_CONFIG_PREFIX_OF_KEYCLOAK_CLIENT_ID}qlnd`,
+		url: APP_CONFIG_URL_QLND,
+		icon: EModuleKey.QLND + '.svg',
 	},
 };
 
@@ -107,6 +114,12 @@ export const moduleCongThongTin: Partial<Login.TModule> = {
 	title: APP_CONFIG_TITLE_LANDING,
 	url: APP_CONFIG_URL_LANDING,
 	icon: 'cong-thong-tin.svg',
+};
+
+export const moduleTapChiKhoaHoc: Partial<Login.TModule> = {
+	title: APP_CONFIG_TITLE_TAP_CHI_KH,
+	url: APP_CONFIG_URL_TAP_CHI_KH,
+	icon: 'tap-chi-khoa-hoc.svg',
 };
 
 /** Đường link landing page */

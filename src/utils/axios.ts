@@ -219,7 +219,8 @@ axios.interceptors.response.use(
 				case 502:
 					notification.warning({
 						message: 'Máy chủ gặp lỗi (005)',
-						description: descriptionError,
+						// description: descriptionError,
+						description: 'Có lỗi xảy ra. Vui lòng thử lại sau!',
 						key: 'error500',
 					});
 					break;

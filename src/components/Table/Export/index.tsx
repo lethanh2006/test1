@@ -15,6 +15,7 @@ const ModalExport = (props: ModalExportProps) => {
 	const [allFields, setAllFields] = useState<TExportField[]>([]); // Export Fields lấy từ API
 	const [exportFields, setExportFields] = useState<TExportField[]>([]);
 	const [isGetFields, setIsGetFields] = useState<boolean>(false);
+	const [loading, setLoading] = useState<boolean>(false);
 	const finalFields = exportFields.filter((item) => item.selected);
 
 	const genFlatData = (data?: TExportField[], disableImport?: boolean): TExportField[] => {
@@ -31,14 +32,20 @@ const ModalExport = (props: ModalExportProps) => {
 			.flat();
 	};
 
-	const getFields = () => {
-		if (getExportFieldsModel)
-			getExportFieldsModel().then((fields: TExportField[]) => {
-				setAllFields(fields);
+	const getFields = async () => {
+		setLoading(true);
+		try {
+			if (getExportFieldsModel)
+				await getExportFieldsModel().then((fields: TExportField[]) => {
+					setAllFields(fields);
 
-				const flatData = genFlatData(fields);
-				setExportFields(flatData);
-			});
+					const flatData = genFlatData(fields);
+					setExportFields(flatData);
+					setIsGetFields(true);
+				});
+		} finally {
+			setLoading(false);
+		}
 	};
 
 	useEffect(() => {
@@ -48,7 +55,6 @@ const ModalExport = (props: ModalExportProps) => {
 	useEffect(() => {
 		if (visible && !isGetFields) {
 			getFields();
-			setIsGetFields(true);
 		}
 	}, [visible]);
 
@@ -76,6 +82,7 @@ const ModalExport = (props: ModalExportProps) => {
 			width={800}
 			destroyOnClose
 			maskClosable={maskCloseableForm || false}
+			loading={loading}
 		>
 			{!!exportFields.length ? (
 				<>

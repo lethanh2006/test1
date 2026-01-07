@@ -1,18 +1,21 @@
 import { primaryColor } from '@/services/base/constant';
 import { tienVietNam } from '@/utils/utils';
 import { type ApexOptions } from 'apexcharts';
+import vi from 'apexcharts/dist/locales/vi.json';
+import en from 'apexcharts/dist/locales/en.json';
 import Chart from 'react-apexcharts';
 import { type DataChartType } from '.';
 import './style.less';
-import vi from './vi.json';
+import { getLocale } from '@umijs/max';
 
 const ColumnChart = (props: DataChartType) => {
 	const { title, xAxis, yAxis, yLabel, height, type, formatY, colors, otherOptions } = props;
-
+	const locale = getLocale();
+	const defaultLocale = locale === 'vi-VN' ? 'vi' : 'en';
 	const options: ApexOptions = {
 		chart: {
-			defaultLocale: 'vi',
-			locales: [vi],
+			defaultLocale: defaultLocale,
+			locales: [vi, en],
 			zoom: {
 				enabled: true,
 				type: 'x',

@@ -1,53 +1,14 @@
-import { primaryColor } from '@/services/base/constant';
-import { inputFormat } from '@/utils/utils';
-import {
-	CloseOutlined,
-	ExportOutlined,
-	FilterOutlined,
-	FilterTwoTone,
-	ImportOutlined,
-	MenuOutlined,
-	PlusCircleOutlined,
-	ReloadOutlined,
-	SearchOutlined,
-} from '@ant-design/icons';
-import { closestCenter, DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
-import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import {
-	AutoComplete,
-	Button,
-	Card,
-	ConfigProvider,
-	Drawer,
-	Empty,
-	Input,
-	Popconfirm,
-	Space,
-	Table,
-	Tooltip,
-	type InputRef,
-	type PaginationProps,
-} from 'antd';
-import type { FilterValue, SortOrder } from 'antd/lib/table/interface';
-import classNames from 'classnames';
-import _ from 'lodash';
-import React, { JSX, useEffect, useRef, useState } from 'react';
-import { useIntl, useModel } from 'umi';
-import ButtonExtend from './ButtonExtend';
-import ModalExport from './Export';
-import ModalImport from './Import';
-import ModalCustomFilter from './ModalCustomFilter';
-import ModalExpandable from './ModalExpandable';
-import { EOperatorType } from './constant';
-import { findFiltersInColumns, updateSearchStorage } from './function';
+import { useModel } from 'umi';
+import { TableBaseContent } from './components/TableBaseContent';
+import { TableProvider } from './components/TableContext';
 import './style.less';
-import type { IColumn, TableBaseProps, TDataOption, TFilter } from './typing';
+import type { TableBaseProps, TFilter } from './typing';
 
 const TableBase = (props: TableBaseProps) => {
-	const intl = useIntl();
-	const { modelName, Form, title, dependencies = [], params, buttons, widthDrawer, destroyModal, rowSortable } = props;
-	const model = useModel(modelName) as any;
+	const model = useModel(props.modelName) as any;
+	const filters: TFilter<any>[] = model?.filters;
+	const getData = props.getData ?? model?.getModel;
+	const hasFilter = props.columns?.filter((item) => item.filterType)?.length;
 	const {
 		visibleForm,
 		setVisibleForm,
@@ -56,674 +17,70 @@ const TableBase = (props: TableBaseProps) => {
 		setIsView,
 		selectedIds,
 		setSelectedIds,
-		page,
-		limit,
 		total,
-		setPage,
-		setLimit,
-		condition,
 		loading,
-		sort,
-		setSort,
-		setFilters,
-		deleteManyModel,
-		initFilter,
 		isView,
 		edit,
+		deleteManyModel,
 	} = model;
-	const { danhSach: dsPhanVung } = useModel('core.phanvungdulieu');
-	const filters: TFilter<any>[] = model?.filters;
-	const getData = props.getData ?? model?.getModel;
-	const hasFilter = props.columns?.filter((item) => item.filterType)?.length;
-	const [finalColumns, setColumns] = useState<IColumn<any>[]>([]);
-	const [visibleFilter, setVisibleFilter] = useState(false);
-	const [visibleImport, setVisibleImport] = useState(false);
-	const [visibleExport, setVisibleExport] = useState(false);
-	const searchInputRef = useRef<InputRef>(null);
-
-	// dnd-kit: sensors
-	const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
-
-	// State cho tableData để sortable
-	const tableData: any[] = model?.[props.dataState || 'danhSach']?.map((item: any, index: number) => ({
-		...item,
-		index: index + 1 + (page - 1) * limit * (props.pageable === false ? 0 : 1),
-		key: item?._id ?? index,
-		children:
-			!props.hideChildrenRows && item?.children && Array.isArray(item.children) && item.children.length
-				? item.children
-				: undefined,
-	}));
-
-	useEffect(() => {
-		setPage(1);
-	}, [JSON.stringify(filters ?? [])]);
-
-	useEffect(() => {
-		getData(params);
-	}, [...dependencies, filters, condition, sort]);
-
-	useEffect(() => {
-		return () => {
-			if (props.noCleanUp !== true) {
-				// setCondition(undefined);
-				setFilters(initFilter);
-				setSelectedIds(undefined);
-				// setSort(undefined);
-			}
-		};
-	}, []);
-
-	/**
-	 * Get current filter rule in column
-	 * @date 2023-04-13
-	 */
-	const getFilterColumn = (fieldName: any, operator?: EOperatorType, active?: boolean) =>
-		filters?.find(
-			(item) =>
-				JSON.stringify(item.field) === JSON.stringify(fieldName) &&
-				(operator === undefined || item.operator === operator) &&
-				(active === undefined || item.active === undefined || item.active === active),
-		);
-
-	//#region Get Sort Column Props
-	const getCondValue = (dataIndex: any) => {
-		const type = typeof dataIndex;
-		return _.get(sort, type === 'string' ? dataIndex : dataIndex?.join('.'), []);
-	};
-
-	const getSortValue = (dataIndex: any): SortOrder => {
-		const value = getCondValue(dataIndex);
-		return value === 1 ? 'ascend' : value === -1 ? 'descend' : null;
-	};
-
-	const getSort = (dataIndex: any): Partial<IColumn<unknown>> => ({
-		sorter: true,
-		sortDirections: ['ascend', 'descend'],
-		sortOrder: getSortValue(dataIndex),
-	});
-	//#endregion
-
-	//#region Get Search Column Props
-	const handleSearch = (dataIndex: any, value: string, confirm?: () => void) => {
-		if (!value) {
-			// Remove filter of this column
-			const tempFilters = filters?.filter((item) => JSON.stringify(item.field) !== JSON.stringify(dataIndex));
-			setFilters(tempFilters);
-		} else {
-			const filter = getFilterColumn(dataIndex);
-			let tempFilters: TFilter<any>[] = [...(filters ?? [])];
-			if (filter)
-				// Udpate current filter
-				tempFilters = tempFilters.map((item) =>
-					JSON.stringify(item.field) === JSON.stringify(dataIndex)
-						? { ...item, active: true, operator: EOperatorType.CONTAIN, values: [value] }
-						: item,
-				);
-			// Add new filter rule for this column
-			else
-				tempFilters.push({
-					active: true,
-					field: dataIndex,
-					operator: EOperatorType.CONTAIN,
-					values: [value],
-				});
-			setFilters(tempFilters);
-		}
-		if (confirm) confirm();
-	};
-
-	const getColumnSearchProps = (dataIndex: any, columnTitle: any): Partial<IColumn<unknown>> => {
-		const filterColumn = getFilterColumn(dataIndex, EOperatorType.CONTAIN, true);
-		return {
-			filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
-				const options = (JSON.parse(localStorage.getItem('dataTimKiem') || '{}')[dataIndex] || []).map(
-					(value: string) => ({
-						value,
-						label: value,
-					}),
-				);
-
-				return (
-					<div className='column-search-box' onKeyDown={(e) => e.stopPropagation()}>
-						<AutoComplete
-							options={options}
-							onSelect={(value: string) => {
-								setSelectedKeys([value]);
-								handleSearch(dataIndex, value, confirm);
-							}}
-						>
-							<Input.Search
-								placeholder={`Tìm ${columnTitle}`}
-								allowClear
-								enterButton
-								value={selectedKeys[0]}
-								onChange={(e) => {
-									if (e.type === 'click') {
-										setSelectedKeys([]);
-										confirm();
-									} else {
-										setSelectedKeys(e.target.value ? [e.target.value] : []);
-									}
-								}}
-								onSearch={(value) => {
-									if (value) updateSearchStorage(dataIndex, value);
-									handleSearch(dataIndex, value, confirm);
-								}}
-								ref={searchInputRef}
-							/>
-						</AutoComplete>
-						{buttons?.filter !== false && hasFilter ? (
-							<div>
-								Xem thêm{' '}
-								<a
-									onClick={() => {
-										setVisibleFilter(true);
-										confirm();
-									}}
-								>
-									Bộ lọc tùy chỉnh
-								</a>
-							</div>
-						) : null}
-					</div>
-				);
-			},
-			filteredValue: filterColumn?.values ?? [],
-			filterIcon: () => {
-				const values = getFilterColumn(dataIndex, undefined, true)?.values;
-				const filtered = values && values[0];
-				return <SearchOutlined className={filtered ? 'text-primary' : undefined} />;
-			},
-			filterDropdownProps: {
-				onOpenChange: (vis) => vis && setTimeout(() => searchInputRef?.current?.select(), 100),
-			},
-		};
-	};
-	//#endregion
-
-	//#region Get Filter Column Props
-
-	const handleFilter = (dataIndex: any, values: string[]) => {
-		if (!values || !values.length) {
-			// Remove filter of this column
-			const tempFilters = filters?.filter((item) => JSON.stringify(item.field) !== JSON.stringify(dataIndex));
-			setFilters(tempFilters);
-		} else {
-			const filter = getFilterColumn(dataIndex);
-			let tempFilters: TFilter<any>[] = [...(filters ?? [])];
-			if (filter)
-				// Udpate current filter
-				tempFilters = tempFilters.map((item) =>
-					JSON.stringify(item.field) === JSON.stringify(dataIndex)
-						? { ...item, active: true, operator: EOperatorType.INCLUDE, values }
-						: item,
-				);
-			// Add new filter rule for this column
-			else
-				tempFilters.push({
-					active: true,
-					field: dataIndex,
-					operator: EOperatorType.INCLUDE,
-					values,
-				});
-			setFilters(tempFilters);
-		}
-	};
-
-	const getFilterColumnProps = (dataIndex: any, filterData?: any[]): Partial<IColumn<unknown>> => {
-		const filterColumn = getFilterColumn(dataIndex, EOperatorType.INCLUDE, true);
-		return {
-			filters: filterData?.map((item: string | TDataOption) =>
-				typeof item === 'string'
-					? { key: item, value: item, text: item }
-					: { key: item.value, value: item.value, text: item.label },
-			),
-			filteredValue: filterColumn?.values ?? [],
-			filterSearch: true,
-		};
-	};
-	//#endregion
-
-	const getColumnSelectProps = (dataIndex: any, filterCustomSelect?: JSX.Element): Partial<IColumn<unknown>> => {
-		if (!filterCustomSelect) return {};
-		const filterColumn = getFilterColumn(dataIndex, EOperatorType.INCLUDE, true);
-		return {
-			filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => (
-				<div className='column-search-box' onKeyDown={(e) => e.stopPropagation()}>
-					<Space size={0}>
-						<div style={{ width: 300 }}>
-							{React.cloneElement(filterCustomSelect, {
-								value: selectedKeys,
-								onChange: (value: any) => setSelectedKeys(Array.isArray(value) ? value : [value]),
-								style: { width: '100%' },
-							})}
-						</div>
-						<Button
-							type='primary'
-							icon={<FilterOutlined />}
-							onClick={() => {
-								handleFilter(dataIndex, selectedKeys as string[]);
-								confirm();
-							}}
-						/>
-					</Space>
-					{buttons?.filter !== false && hasFilter ? (
-						<div>
-							Xem thêm{' '}
-							<a
-								onClick={() => {
-									setVisibleFilter(true);
-									confirm();
-								}}
-							>
-								Bộ lọc tùy chỉnh
-							</a>
-						</div>
-					) : null}
-				</div>
-			),
-			filteredValue: filterColumn?.values ?? [],
-		};
-	};
-
-	//#region Get Table Columns
-
-	const getColumns = () => {
-		let final: IColumn<any>[] = props.columns.map((item) => ({
-			...item,
-			...(item.sortable && getSort(item.dataIndex)),
-			...(item.filterType === 'string'
-				? getColumnSearchProps(item.dataIndex, item.title)
-				: item.filterType === 'select'
-					? getFilterColumnProps(item.dataIndex, item.filterData)
-					: item.filterType === 'customselect'
-						? getColumnSelectProps(item.dataIndex, item.filterCustomSelect)
-						: undefined),
-			children: item.children?.map((child) => ({
-				...child,
-				...(child.sortable && getSort(child.dataIndex)),
-				...(child.filterType === 'string'
-					? getColumnSearchProps(child.dataIndex, child.title)
-					: child.filterType === 'select'
-						? getFilterColumnProps(child.dataIndex, child.filterData)
-						: child.filterType === 'customselect'
-							? getColumnSelectProps(child.dataIndex, child.filterCustomSelect)
-							: undefined),
-			})),
-		}));
-
-		final = final?.filter((item) => item?.hide !== true);
-		if (props.addStt !== false)
-			final.unshift({
-				title: 'TT',
-				dataIndex: 'index',
-				align: 'center',
-				width: 50,
-				render: (val, rec) => {
-					const phanVungHienTai = dsPhanVung?.find((item) => item?.ma === rec?.dataPartitionCode);
-					const maMau = phanVungHienTai?.maMau ?? 'var(--color-primary)';
-
-					return (
-						<div className='ttCellWrapper'>
-							<span>{val}</span>
-
-							{phanVungHienTai?._id && (
-								<Tooltip title={phanVungHienTai?.name}>
-									<div
-										className='cornerTriangle'
-										style={{ backgroundColor: maMau, top: props?.otherProps?.size === 'small' ? -4 : -8 }}
-									/>
-								</Tooltip>
-							)}
-						</div>
-					);
-				},
-			});
-
-		setColumns(final);
-	};
-
-	useEffect(() => {
-		getColumns();
-	}, [JSON.stringify(filters), sort, ...props.columns]);
-
-	//#region Get Drag Sortable column
-	if (rowSortable)
-		finalColumns.unshift({
-			width: 30,
-			align: 'center',
-			render: () => <MenuOutlined style={{ cursor: 'grab', color: '#999' }} />,
-		});
-
-	const handleDragEnd = (event: any) => {
-		const { active, over } = event;
-		if (active && over && active.id !== over.id) {
-			const oldIndex = tableData.findIndex((i) => i.key === active.id);
-			const newIndex = tableData.findIndex((i) => i.key === over.id);
-			if (props.onSortEnd) props.onSortEnd(tableData[oldIndex], newIndex);
-		}
-	};
-
-	// dnd-kit: SortableRow component
-	const SortableRow = (props: any) => {
-		const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
-			id: props['data-row-key'],
-		});
-		const style = {
-			...props.style,
-			transform: CSS.Transform.toString(transform),
-			transition,
-			cursor: 'grab',
-			...(isDragging ? { background: '#fafafa' } : {}),
-		};
-		return <tr {...props} ref={setNodeRef} style={style} {...attributes} {...listeners} />;
-	};
-	//#endregion
-
-	//#endregion
-
-	/**
-	 * On Table Changed
-	 * @date 2023-04-13
-	 */
-	const onChange = (pagination: PaginationProps, fil: Record<string, FilterValue | null>, sorter: any) => {
-		const allColumns = finalColumns
-			.map((col) => {
-				if (col.children?.length) return [col, ...col.children];
-				else return [col];
-			})
-			.flat();
-		// Handle Filter in columns
-		Object.entries(fil).map(([field, values]) => {
-			// Field từ table => nếu dataIndex là Array => field1.subfield
-			const dataIndex = field.includes('.') ? field.split('.') : field;
-			const col = allColumns.find((item) => JSON.stringify(item.dataIndex) === JSON.stringify(dataIndex));
-			if (col?.filterType === 'select') handleFilter(dataIndex, values as any);
-			else if (col?.filterType === 'string') handleSearch(dataIndex, values?.[0] as any);
-			else if (col?.filterType === 'customselect') handleFilter(dataIndex, values as any);
-		});
-
-		const { order, field } = sorter;
-		const orderValue = order === 'ascend' ? 1 : order === 'descend' ? -1 : undefined;
-		if (sorter && setSort) setSort({ [Array.isArray(field) ? field.join('.') : field]: orderValue });
-
-		// thay đổi từ phân trang || filter
-		const { current, pageSize } = pagination;
-		setPage(current);
-		setLimit(pageSize);
-	};
 
 	const handleDeleteMany = () => {
 		if (deleteManyModel && selectedIds?.length)
-			deleteManyModel(selectedIds, () => getData(params))
+			deleteManyModel(selectedIds, () => getData(props.params))
 				.then(() => setSelectedIds(undefined))
 				.catch((er: any) => console.log(er));
 	};
 
-	const renderTable = () => {
-		return (
-			<Table
-				scroll={{ x: _.sum(finalColumns.map((item) => item.width ?? 80)), ...props.scroll }}
-				rowSelection={
-					props?.rowSelection
-						? {
-								type: 'checkbox',
-								selectedRowKeys: selectedIds ?? [],
-								preserveSelectedRowKeys: true,
-								onChange: (selectedRowKeys) => setSelectedIds(selectedRowKeys),
-								columnWidth: 40,
-								...props.detailRow,
-							}
-						: undefined
-				}
-				loading={loading}
-				bordered={props.border || true}
-				pagination={{
-					current: page,
-					pageSize: limit,
-					position: ['bottomRight'],
-					total,
-					showSizeChanger: true,
-					pageSizeOptions: ['5', '10', '25', '50', '100'],
-					showTotal: (tongSo: number) => (
-						<Space>
-							{props?.rowSelection ? (
-								<>
-									<span>
-										{intl.formatMessage({ id: 'global.table.index.dachon' })}: {selectedIds?.length ?? 0}
-									</span>
-									{selectedIds?.length > 0 ? (
-										<span>
-											(
-											<a href='#!' onClick={() => setSelectedIds(undefined)}>
-												{intl.formatMessage({ id: 'global.table.index.bochon' })}
-											</a>
-											)
-										</span>
-									) : null}
-								</>
-							) : null}
-							<span>
-								{intl.formatMessage({ id: 'global.table.index.tongso' })}: {tongSo}
-							</span>
-						</Space>
-					),
-				}}
-				onChange={onChange}
-				dataSource={tableData}
-				columns={finalColumns as any[]}
-				components={rowSortable ? { body: { row: SortableRow } } : undefined}
-				{...props?.otherProps}
-			/>
-		);
+	const onCreate = () => {
+		setRecord({});
+		setEdit(false);
+		setIsView(false);
+		setVisibleForm(true);
 	};
 
-	const mainContent = (
-		<div className='table-base'>
-			{props.children}
-
-			<div className='header'>
-				<div className='action'>
-					{buttons?.create !== false ? (
-						<ButtonExtend
-							size={props?.otherProps?.size}
-							onClick={() => {
-								setRecord({});
-								setEdit(false);
-								setIsView(false);
-								setVisibleForm(true);
-							}}
-							icon={<PlusCircleOutlined />}
-							type='primary'
-							notHideText
-							tooltip={intl.formatMessage({ id: 'global.table.index.button.themmoi.tooltip' })}
-						>
-							{intl.formatMessage({ id: 'global.table.index.button.themmoi' })}
-						</ButtonExtend>
-					) : null}
-
-					{buttons?.import ? (
-						<ButtonExtend
-							size={props?.otherProps?.size}
-							icon={<ImportOutlined />}
-							onClick={() => setVisibleImport(true)}
-						>
-							{intl.formatMessage({ id: 'global.table.index.button.nhapdulieu' })}
-						</ButtonExtend>
-					) : null}
-					{buttons?.export ? (
-						<ButtonExtend
-							size={props?.otherProps?.size}
-							icon={<ExportOutlined />}
-							onClick={() => setVisibleExport(true)}
-						>
-							{intl.formatMessage({ id: 'global.table.index.button.xuatdulieu' })}{' '}
-							{selectedIds?.length > 0 ? `(${selectedIds.length})` : ''}
-						</ButtonExtend>
-					) : null}
-
-					{props.otherButtons}
-
-					{props.rowSelection && props.deleteMany && selectedIds?.length ? (
-						<Popconfirm
-							title={intl.formatMessage({ id: 'global.table.index.button.xoa.title' }, { count: selectedIds?.length })}
-							onConfirm={handleDeleteMany}
-						>
-							<ButtonExtend type='link' danger>
-								{intl.formatMessage({ id: 'global.table.index.button.xoa' }, { count: selectedIds?.length })}
-							</ButtonExtend>
-						</Popconfirm>
-					) : null}
-				</div>
-
-				<div className='extra'>
-					{buttons?.reload !== false ? (
-						<ButtonExtend
-							size={props?.otherProps?.size}
-							icon={<ReloadOutlined />}
-							onClick={() => (props.onReload ? props.onReload(params) : getData(params))}
-							loading={loading}
-							tooltip={intl.formatMessage({ id: 'global.table.index.button.tailai.tooltip' })}
-						>
-							{intl.formatMessage({ id: 'global.table.index.button.tailai' })}
-						</ButtonExtend>
-					) : null}
-
-					{buttons?.filter !== false && hasFilter ? (
-						<ButtonExtend
-							size={props?.otherProps?.size}
-							icon={
-								findFiltersInColumns(finalColumns, filters)?.length ? (
-									<FilterTwoTone twoToneColor={primaryColor} />
-								) : (
-									<FilterOutlined />
-								)
-							}
-							onClick={() => setVisibleFilter(true)}
-							tooltip={intl.formatMessage({ id: 'global.table.index.button.boloc.tooltip' })}
-						>
-							{intl.formatMessage({ id: 'global.table.index.button.boloc' })}
-						</ButtonExtend>
-					) : null}
-
-					{!props?.hideTotal ? (
-						<Tooltip title={intl.formatMessage({ id: 'global.table.index.button.tongso.tooltip' })}>
-							<div className={classNames({ total: true, small: props?.otherProps?.size === 'small' })}>
-								{intl.formatMessage({ id: 'global.table.index.button.tongso' })}:<span>{inputFormat(total || 0)}</span>
-							</div>
-						</Tooltip>
-					) : null}
-				</div>
-			</div>
-
-			<ConfigProvider
-				renderEmpty={() => (
-					<Empty
-						style={{ marginTop: 32, marginBottom: 32 }}
-						description={props.emptyText ?? intl.formatMessage({ id: 'global.table.index.empty' })}
-						image={props.otherProps?.size === 'small' ? Empty.PRESENTED_IMAGE_SIMPLE : undefined}
-					/>
-				)}
-			>
-				{rowSortable ? (
-					<DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-						<SortableContext items={tableData.map((item) => item.key)} strategy={verticalListSortingStrategy}>
-							{renderTable()}
-						</SortableContext>
-					</DndContext>
-				) : (
-					renderTable()
-				)}
-			</ConfigProvider>
-		</div>
-	);
+	const onReload = () => (props.onReload ? props.onReload(props.params) : getData(props.params));
 
 	return (
-		<>
-			{props.hideCard ? (
-				mainContent
-			) : (
-				<Card title={title || false} variant={props.border ? 'outlined' : 'borderless'}>
-					{mainContent}
-				</Card>
-			)}
-
-			{Form && (
-				<>
-					{props.formType === 'Drawer' ? (
-						<Drawer
-							className={widthDrawer === 'full' ? 'drawer-full' : ''}
-							maskClosable={props.maskCloseableForm || false}
-							width={widthDrawer !== 'full' ? widthDrawer : undefined}
-							footer={false}
-							styles={{ body: { padding: 0 } }}
-							open={visibleForm}
-							destroyOnClose={destroyModal || false}
-						>
-							<Form title={title ?? ''} {...props.formProps} />
-
-							<div className='modal-buttons'>
-								<button className='button' onClick={() => setVisibleForm(false)}>
-									<CloseOutlined />
-								</button>
-							</div>
-						</Drawer>
-					) : (
-						<ModalExpandable
-							title={
-								props.modalTitle
-									? props.modalTitle
-									: props.showModalTitle && !!title
-										? `${isView ? 'Chi tiết' : edit ? 'Chỉnh sửa' : 'Thêm mới'} ${title?.toString().toLocaleLowerCase()}`
-										: undefined
-							}
-							fullScreen={widthDrawer === 'full'}
-							maskClosable={props.maskCloseableForm || false}
-							width={widthDrawer !== 'full' ? (widthDrawer ?? 600) : undefined}
-							onCancel={() => setVisibleForm(false)}
-							footer={null}
-							styles={!props.modalTitle && (!props.showModalTitle || !title) ? { body: { padding: 0 } } : undefined}
-							open={visibleForm}
-							destroyOnClose={destroyModal || false}
-						>
-							<Form title={title ?? ''} {...props.formProps} />
-						</ModalExpandable>
-					)}
-				</>
-			)}
-
-			{buttons?.filter !== false && hasFilter ? (
-				<ModalCustomFilter
-					visible={visibleFilter}
-					setVisible={setVisibleFilter}
-					columns={finalColumns}
-					filters={filters}
-					setFilters={setFilters}
-				/>
-			) : null}
-
-			{buttons?.import ? (
-				<ModalImport
-					visible={visibleImport}
-					modelName={props.modelImportName ?? modelName}
-					onCancel={() => setVisibleImport(false)}
-					onOk={() => getData(params)}
-					titleTemplate={title ? `Biểu mẫu ${title}.xlsx` : undefined}
-					extendData={params}
-				/>
-			) : null}
-
-			{buttons?.export ? (
-				<ModalExport
-					visible={visibleExport}
-					modelName={props.modelExportName ?? modelName}
-					onCancel={() => setVisibleExport(false)}
-					fileName={`Danh sách ${title ?? 'dữ liệu'}.xlsx`}
-					condition={params}
-				/>
-			) : null}
-		</>
+		<TableProvider
+			value={{
+				selectedIds,
+				setSelectedIds,
+				loading,
+				total,
+				filters,
+				hasFilter: !!hasFilter,
+				handleDeleteMany,
+				onCreate,
+				onReload,
+				buttons: props.buttons,
+				otherButtons: props.otherButtons,
+				rowSelection: props.rowSelection,
+				deleteMany: props.deleteMany,
+				hideTotal: props.hideTotal,
+				size: props.otherProps?.size,
+				visibleForm,
+				setVisibleForm,
+				isView,
+				edit,
+				Form: props.Form,
+				title: props.title,
+				widthDrawer: props.widthDrawer,
+				maskCloseableForm: props.maskCloseableForm,
+				destroyModal: props.destroyModal,
+				formType: props.formType,
+				modalTitle: props.modalTitle,
+				showModalTitle: props.showModalTitle,
+				formProps: props.formProps,
+				modelName: props.modelName,
+				modelImportName: props.modelImportName,
+				modelExportName: props.modelExportName,
+				params: props.params,
+				getData,
+				setFilters: model?.setFilters,
+			}}
+		>
+			<TableBaseContent {...props} />
+		</TableProvider>
 	);
 };
 

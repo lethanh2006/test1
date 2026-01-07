@@ -1,3 +1,4 @@
+import ButtonExtend from '@/components/Table/ButtonExtend';
 import { MenuOutlined, PlusCircleOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { closestCenter, DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
@@ -8,11 +9,10 @@ import _ from 'lodash';
 import { useEffect, useRef, useState } from 'react';
 import Highlighter from 'react-highlight-words';
 import { useIntl, useModel } from 'umi';
-import ButtonExtend from './ButtonExtend';
-import { updateSearchStorage } from './function';
 import ModalExpandable from './ModalExpandable';
 import './style.less';
 import type { IColumn, TableStaticProps, TDataOption } from './typing';
+import { updateSearchStorage } from './utils';
 
 const TableStaticData = (props: TableStaticProps) => {
 	const intl = useIntl();
@@ -158,7 +158,7 @@ const TableStaticData = (props: TableStaticProps) => {
 
 	if (addStt)
 		columns.unshift({
-			title: 'TT',
+			title: intl.formatMessage({ id: 'global.table.column.tt' }),
 			dataIndex: 'index',
 			align: 'center',
 			width: 40,

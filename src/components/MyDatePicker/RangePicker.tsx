@@ -1,7 +1,6 @@
 import dayjs from '@/utils/dayjs';
 import { DatePicker } from 'antd';
 import type { RangePickerProps } from 'antd/es/date-picker';
-import locale from 'antd/es/date-picker/locale/vi_VN';
 import type { Dayjs } from 'dayjs';
 
 const MyDateRangePicker = (
@@ -11,18 +10,18 @@ const MyDateRangePicker = (
 		 */
 		format?: string;
 		showTime?:
-			| boolean
-			| {
-					format?: string;
-					showNow?: boolean;
-					showHour?: boolean;
-					showMinute?: boolean;
-					showSecond?: boolean;
-					use12Hours?: boolean;
-					hourStep?: number;
-					minuteStep?: number;
-					secondStep?: number;
-			  };
+		| boolean
+		| {
+			format?: string;
+			showNow?: boolean;
+			showHour?: boolean;
+			showMinute?: boolean;
+			showSecond?: boolean;
+			use12Hours?: boolean;
+			hourStep?: number;
+			minuteStep?: number;
+			secondStep?: number;
+		};
 		allowClear?: boolean;
 		disabled?: boolean;
 
@@ -35,7 +34,7 @@ const MyDateRangePicker = (
 	},
 ) => {
 	const format = props?.format ?? 'DD/MM/YYYY';
-	const { saveFormat, disabledDate, showTime, allowClear=false, disabled } = props;
+	const { saveFormat, disabledDate, showTime, allowClear = false, disabled } = props;
 
 	const handleChange = (value: [Dayjs, Dayjs] | null) => {
 		if (value) {
@@ -58,7 +57,6 @@ const MyDateRangePicker = (
 			style={{ width: '100%' }}
 			{...props}
 			format={format}
-			locale={locale}
 			value={objMoment}
 			onChange={handleChange as any}
 			disabledDate={disabledDate}

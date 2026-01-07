@@ -2,6 +2,9 @@ export default {
 	'app.header.appdrawer': 'Danh sách chức năng',
 	'app.header.notice': 'Thông báo',
 	'app.header.introduce': 'Giới thiệu chung',
+	'app.header.noti': 'Thông báo của tôi',
+	'app.header.reload': 'Làm mới',
+	'app.header.readAll': 'Đánh dấu tất cả là đã đọc',
 
 	'app.header.userpage': 'Thông tin cá nhân',
 	'app.header.portal': 'Cổng thông tin',

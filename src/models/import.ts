@@ -6,6 +6,7 @@ export default () => {
 	const [fileData, setFileData] = useState<Record<string, string>[]>(); // "Mã": "ABC"
 	const [matchedColumns, setMatchedColumns] = useState<Record<string, string>>(); // ma: "Mã"
 	const [dataImport, setDataImport] = useState<any[]>();
+	const [loading, setLoading] = useState<boolean>(false);
 
 	return {
 		startLine,
@@ -18,5 +19,7 @@ export default () => {
 		setMatchedColumns,
 		dataImport,
 		setDataImport,
+		loading,
+		setLoading,
 	};
 };
