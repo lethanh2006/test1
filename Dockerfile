@@ -10,7 +10,6 @@ ENV APP_CONFIG_KEYCLOAK_AUTHORITY=https://gwdu.ptit.edu.vn/sso/realms/ptit
 ENV APP_CONFIG_PREFIX_OF_KEYCLOAK_CLIENT_ID=ptit-
 ENV APP_CONFIG_APP_VERSION=250219.1200
 
-ENV APP_CONFIG_CO_QUAN_CHU_QUAN='Bộ Khoa học và Công nghệ'
 ENV APP_CONFIG_TEN_TRUONG='Học viện Công nghệ Bưu chính Viễn thông'
 ENV APP_CONFIG_TIEN_TO_TRUONG='Học viện'
 ENV APP_CONFIG_TEN_TRUONG_VIET_TAT_TIENG_ANH='PTIT'
@@ -33,24 +32,6 @@ ENV APP_CONFIG_URL_QLVB=https://gwdu.ptit.edu.vn/sso/realms/ptit/protocol/openid
 ENV APP_CONFIG_URL_VBCC=https://vanbang.ptit.edu.vn/
 ENV APP_CONFIG_URL_QLND=https://iam.ptit.edu.vn/
 ENV APP_CONFIG_URL_TAP_CHI_KH=
-
-ENV APP_CONFIG_TITLE_LANDING='Cổng thông tin'
-ENV APP_CONFIG_TITLE_CONNECT='Slink'
-ENV APP_CONFIG_TITLE_CAN_BO='Cổng cán bộ'
-ENV APP_CONFIG_TITLE_DAO_TAO='Quản lý đào tạo'
-ENV APP_CONFIG_TITLE_NHAN_SU='Tổ chức cán bộ'
-ENV APP_CONFIG_TITLE_TAI_CHINH='Thanh toán'
-ENV APP_CONFIG_TITLE_CTSV='Công tác sinh viên'
-ENV APP_CONFIG_TITLE_QLKH='Quản lý khoa học'
-ENV APP_CONFIG_TITLE_VPS='Văn phòng số'
-ENV APP_CONFIG_TITLE_KHAO_THI='Khảo thí'
-ENV APP_CONFIG_TITLE_CORE='Danh mục chung'
-ENV APP_CONFIG_TITLE_CSVC='Cơ sở vật chất'
-ENV APP_CONFIG_TITLE_THU_VIEN='Thư viện'
-ENV APP_CONFIG_TITLE_QLVB='Quản lý văn bản'
-ENV APP_CONFIG_TITLE_VBCC='Văn bằng chứng chỉ'
-ENV APP_CONFIG_TITLE_QLND='Người dùng & phân quyền'
-ENV APP_CONFIG_TITLE_TAP_CHI_KH='Tạp chí khoa học'
 
 
 # Set working directory
