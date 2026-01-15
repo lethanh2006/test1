@@ -3,6 +3,7 @@ import dayjs from '@/utils/dayjs';
 import { Col, Row } from 'antd';
 import React from 'react';
 import './style.less';
+import { useIntl } from '@umijs/max';
 
 /**
  * PRINT TEMPLATE
@@ -25,7 +26,7 @@ const PrintTemplate = React.forwardRef(
 		ref: any,
 	) => {
 		const { children, title, subTitle, footer, hideTieuNgu, isCompact, tenPhongBan } = props;
-
+		const intl = useIntl();
 		// const contentRef = useRef(null);
 
 		// 	const handlePrint = useReactToPrint({ contentRef });
@@ -52,7 +53,7 @@ const PrintTemplate = React.forwardRef(
 								) : (
 									<>
 										<div>{coQuanChuQuan.toUpperCase()}</div>
-										<span className='tieu-ngu'>{unitName.toUpperCase()}</span>
+										<span className='tieu-ngu'>{intl.formatMessage({ id: unitName }).toUpperCase()}</span>
 									</>
 								)}
 							</Col>

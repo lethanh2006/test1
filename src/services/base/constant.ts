@@ -19,85 +19,85 @@ export enum EModuleKey {
 
 export const AppModules: Record<EModuleKey, Login.TModule> = {
 	[EModuleKey.CONNECT]: {
-		title: APP_CONFIG_TITLE_CONNECT,
+		title: `modules.${EModuleKey.CONNECT}`,
 		clientId: `${APP_CONFIG_PREFIX_OF_KEYCLOAK_CLIENT_ID}connect`,
 		url: APP_CONFIG_URL_CONNECT,
 		icon: EModuleKey.CONNECT + '.svg',
 	},
 	[EModuleKey.CONG_CAN_BO]: {
-		title: APP_CONFIG_TITLE_CAN_BO,
+		title: `modules.${EModuleKey.CONG_CAN_BO}`,
 		clientId: `${APP_CONFIG_PREFIX_OF_KEYCLOAK_CLIENT_ID}connect`,
 		url: APP_CONFIG_URL_CAN_BO,
 		icon: EModuleKey.CONG_CAN_BO + '.svg',
 	},
 	[EModuleKey.QLDT]: {
-		title: APP_CONFIG_TITLE_DAO_TAO,
+		title: `modules.${EModuleKey.QLDT}`,
 		clientId: `${APP_CONFIG_PREFIX_OF_KEYCLOAK_CLIENT_ID}qldt`,
 		url: APP_CONFIG_URL_DAO_TAO,
 		icon: EModuleKey.QLDT + '.svg',
 	},
 	[EModuleKey.TCNS]: {
-		title: APP_CONFIG_TITLE_NHAN_SU,
+		title: `modules.${EModuleKey.TCNS}`,
 		clientId: `${APP_CONFIG_PREFIX_OF_KEYCLOAK_CLIENT_ID}tcns`,
 		url: APP_CONFIG_URL_NHAN_SU,
 		icon: EModuleKey.TCNS + '.svg',
 	},
 	[EModuleKey.CTSV]: {
-		title: APP_CONFIG_TITLE_CTSV,
+		title: `modules.${EModuleKey.CTSV}`,
 		clientId: `${APP_CONFIG_PREFIX_OF_KEYCLOAK_CLIENT_ID}ctsv`,
 		url: APP_CONFIG_URL_CTSV,
 		icon: EModuleKey.CTSV + '.svg',
 	},
 	[EModuleKey.VPS]: {
-		title: APP_CONFIG_TITLE_VPS,
+		title: `modules.${EModuleKey.VPS}`,
 		clientId: `${APP_CONFIG_PREFIX_OF_KEYCLOAK_CLIENT_ID}vps`,
 		url: APP_CONFIG_URL_VPS,
 		icon: EModuleKey.VPS + '.svg',
 	},
 	[EModuleKey.QLKH]: {
-		title: APP_CONFIG_TITLE_QLKH,
+		title: `modules.${EModuleKey.QLKH}`,
 		clientId: `${APP_CONFIG_PREFIX_OF_KEYCLOAK_CLIENT_ID}qlkh`,
 		url: APP_CONFIG_URL_QLKH,
 		icon: EModuleKey.QLKH + '.svg',
 	},
 	[EModuleKey.TC]: {
-		title: APP_CONFIG_TITLE_TAI_CHINH,
+		title: `modules.${EModuleKey.TC}`,
 		clientId: `${APP_CONFIG_PREFIX_OF_KEYCLOAK_CLIENT_ID}tc`,
 		url: APP_CONFIG_URL_TAI_CHINH,
 		icon: EModuleKey.TC + '.svg',
 	},
 	[EModuleKey.KT]: {
-		title: APP_CONFIG_TITLE_KHAO_THI,
+		title: `modules.${EModuleKey.KT}`,
 		clientId: `${APP_CONFIG_PREFIX_OF_KEYCLOAK_CLIENT_ID}kt`,
 		url: APP_CONFIG_URL_KHAO_THI,
 		icon: EModuleKey.KT + '.svg',
 	},
 	[EModuleKey.CSVC]: {
-		title: APP_CONFIG_TITLE_CSVC,
+		title: `modules.${EModuleKey.CSVC}`,
 		clientId: `${APP_CONFIG_PREFIX_OF_KEYCLOAK_CLIENT_ID}csvc`,
 		url: APP_CONFIG_URL_CSVC,
 		icon: EModuleKey.CSVC + '.svg',
 	},
 	[EModuleKey.VBCC]: {
-		title: APP_CONFIG_TITLE_VBCC,
+		title: `modules.${EModuleKey.VBCC}`,
 		clientId: `${APP_CONFIG_PREFIX_OF_KEYCLOAK_CLIENT_ID}vbcc`,
 		url: APP_CONFIG_URL_VBCC,
 		icon: EModuleKey.VBCC + '.svg',
 	},
 	[EModuleKey.THU_VIEN]: {
-		title: APP_CONFIG_TITLE_THU_VIEN,
+		title: `modules.${EModuleKey.THU_VIEN}`,
 		clientId: `${APP_CONFIG_PREFIX_OF_KEYCLOAK_CLIENT_ID}thu-vien`,
 		url: APP_CONFIG_URL_THU_VIEN,
 		icon: EModuleKey.THU_VIEN + '.svg',
 	},
 	[EModuleKey.CORE]: {
-		title: APP_CONFIG_TITLE_CORE,
+		title: `modules.${EModuleKey.CORE}`,
 		clientId: `${APP_CONFIG_PREFIX_OF_KEYCLOAK_CLIENT_ID}core`,
 		url: APP_CONFIG_URL_CORE,
 		icon: EModuleKey.CORE + '.svg',
 	},
 	[EModuleKey.QLND]: {
-		title: APP_CONFIG_TITLE_QLND,
+		title: `modules.${EModuleKey.QLND}`,
 		clientId: `${APP_CONFIG_PREFIX_OF_KEYCLOAK_CLIENT_ID}qlnd`,
 		url: APP_CONFIG_URL_QLND,
 		icon: EModuleKey.QLND + '.svg',
@@ -105,19 +105,19 @@ export const AppModules: Record<EModuleKey, Login.TModule> = {
 };
 
 export const moduleQuanLyVanBan: Partial<Login.TModule> = {
-	title: APP_CONFIG_TITLE_QLVB,
+	title: `modules.quan-ly-van-ban`,
 	url: APP_CONFIG_URL_QLVB,
 	icon: 'quan-ly-van-ban.svg',
 };
 
 export const moduleCongThongTin: Partial<Login.TModule> = {
-	title: APP_CONFIG_TITLE_LANDING,
+	title: `modules.cong-thong-tin`,
 	url: APP_CONFIG_URL_LANDING,
 	icon: 'cong-thong-tin.svg',
 };
 
 export const moduleTapChiKhoaHoc: Partial<Login.TModule> = {
-	title: APP_CONFIG_TITLE_TAP_CHI_KH,
+	title: `modules.tap-chi-khoa-hoc`,
 	url: APP_CONFIG_URL_TAP_CHI_KH,
 	icon: 'tap-chi-khoa-hoc.svg',
 };
@@ -129,13 +129,13 @@ export const landingUrl = APP_CONFIG_URL_LANDING;
 export const primaryColor = APP_CONFIG_PRIMARY_COLOR;
 
 /** Tên trường Học viện */
-export const unitName = APP_CONFIG_TEN_TRUONG;
+export const unitName = 'config.ten-truong';
 
 /** Cơ quan chủ quản của trường */
-export const coQuanChuQuan = APP_CONFIG_CO_QUAN_CHU_QUAN;
+export const coQuanChuQuan = 'config.co-quan-chu-quan';
 
 /** Trường / Học viện */
-export const unitPrefix = APP_CONFIG_TIEN_TO_TRUONG;
+export const unitPrefix = 'config.tien-to-truong';
 
 /** Tên tiếng anh của trường */
 export const tenTruongVietTatTiengAnh = APP_CONFIG_TEN_TRUONG_VIET_TAT_TIENG_ANH;

@@ -15,7 +15,7 @@ export default () => {
 			links={[
 				{
 					key: 'link',
-					title: unitName.toUpperCase(),
+					title: intl.formatMessage({ id: unitName }).toUpperCase(),
 					href: landingUrl,
 					blankTarget: true,
 				},

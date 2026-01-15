@@ -45,7 +45,7 @@ const ModuleView = () => {
 									) : (
 										<UserSwitchOutlined />
 									)}
-									<span className='module-name'>{value?.title ?? name}</span>
+									<span className='module-name'>{intl.formatMessage({ id: value?.title ?? name })}</span>
 								</div>
 							</a>
 						</Col>
@@ -60,7 +60,7 @@ const ModuleView = () => {
 									) : (
 										<UserSwitchOutlined />
 									)}
-									<span className='module-name'>{mod.title}</span>
+									<span className='module-name'>{intl.formatMessage({ id: mod.title })}</span>
 								</div>
 							</a>
 						</Col>

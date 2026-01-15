@@ -5,7 +5,7 @@ import { App } from 'antd';
 import 'dayjs/locale/vi';
 import React from 'react'; // Bổ sung import React
 import type { RunTimeLayoutConfig } from 'umi';
-import { history } from 'umi';
+import { getIntl, history } from 'umi';
 import defaultSettings from '../config/defaultSettings';
 import ErrorBoundary from './components/ErrorBoundary';
 import { OIDCBounder } from './components/OIDCBounder';
@@ -39,13 +39,14 @@ export async function getInitialState(): Promise<IInitialState> {
 			const { authorizedPermissions } = JSON.parse(raw) as Partial<IInitialState>;
 			Object.assign(initialState, { authorizedPermissions });
 		}
-	} catch (e) {}
+	} catch (e) { }
 
 	return initialState;
 }
 
 // ProLayout  https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
+	const intl = getIntl();
 	return {
 		unAccessible: (
 			<OIDCBounder>
@@ -111,7 +112,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
 			</OIDCBounder>
 		),
 
-		title: AppModules[currentRole].title,
+		title: intl.formatMessage({ id: AppModules[currentRole].title }),
 		...initialState?.settings,
 	};
 };

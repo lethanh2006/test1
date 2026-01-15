@@ -1,19 +1,23 @@
 import { HomeOutlined } from '@ant-design/icons';
 import { Button, Result } from 'antd';
-import { history } from 'umi';
+import { history, useIntl } from 'umi';
 
-const NotFoundContent = () => (
-	<Result
-		status='404'
-		title='404'
-		style={{ background: 'none' }}
-		subTitle='Xin lỗi, trang bạn yêu cầu không tồn tại.'
-		extra={
-			<Button type='primary' onClick={() => history.push('/')} icon={<HomeOutlined />}>
-				Về trang chủ
-			</Button>
-		}
-	/>
-);
+const NotFoundContent = () => {
+	const intl = useIntl();
+
+	return (
+		<Result
+			status='404'
+			title='404'
+			style={{ background: 'none' }}
+			subTitle={intl.formatMessage({ id: 'pages.exception.404.subtitle' })}
+			extra={
+				<Button type='primary' onClick={() => history.push('/')} icon={<HomeOutlined />}>
+					{intl.formatMessage({ id: 'pages.exception.404.backhome' })}
+				</Button>
+			}
+		/>
+	);
+};
 
 export default NotFoundContent;

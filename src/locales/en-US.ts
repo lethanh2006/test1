@@ -1,5 +1,6 @@
 import global from './en-US/global';
 import menu from './en-US/menu';
+import modules from './en-US/modules';
 import pages from './en-US/pages';
 
 export default {
@@ -9,4 +10,5 @@ export default {
 	...menu,
 	...pages,
 	...global,
+	...modules
 };

@@ -25,4 +25,8 @@ export default {
 	'pages.login.submit': 'Đăng nhập',
 	'pages.login.loginWith': 'Login with :',
 	'pages.login.registerAccount': 'Đăng ký',
+	'pages.login.redirecting': 'Đang chuyển tới trang đăng nhập...',
+	'pages.login.errorOccurred': 'Có lỗi xảy ra...',
+	'pages.exception.404.subtitle': 'Xin lỗi, trang bạn yêu cầu không tồn tại.',
+	'pages.exception.404.backhome': 'Về trang chủ',
 };

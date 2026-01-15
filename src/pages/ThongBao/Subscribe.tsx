@@ -1,14 +1,15 @@
 import { initOneSignal } from '@/services/base/api';
 import { unitName } from '@/services/base/constant';
+import { useIntl } from '@umijs/max';
 import { useEffect } from 'react';
 import { useAuth } from 'react-oidc-context';
 import OneSignal from 'react-onesignal';
 
 const SubscribeOneSignal = () => {
 	const auth = useAuth();
-
+	const intl = useIntl();
 	useEffect(() => {
-		document.title = `Đăng ký nhận thông báo | ${unitName.toUpperCase()}`;
+		document.title = `Đăng ký nhận thông báo | ${intl.formatMessage({ id: unitName }).toUpperCase()}`;
 	}, []);
 
 	/**

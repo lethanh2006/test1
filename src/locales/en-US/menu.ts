@@ -6,6 +6,6 @@ export default {
 	'menu.About': `Introduction ${APP_CONFIG_TIEN_TO_TRUONG.toLowerCase()}`,
 	'menu.News': 'News',
 
-	'menu.DanhMuc': 'Danh mục',
-	'menu.DanhMuc.ChucVu': 'Chức vụ',
+	'menu.DanhMuc': 'Categories',
+	'menu.DanhMuc.ChucVu': 'Position',
 };

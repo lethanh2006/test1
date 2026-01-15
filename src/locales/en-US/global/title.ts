@@ -16,4 +16,5 @@ export default {
 	'global.title.khongcodulieu': 'No Data Available',
 	'global.title.dachon': 'Selected',
 	'global.title.bochon': 'Deselect All',
+	'global.title.coloi': 'An Error Occurred',
 };

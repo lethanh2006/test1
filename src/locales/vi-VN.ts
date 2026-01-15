@@ -1,5 +1,6 @@
 import global from './vi-VN/global';
 import menu from './vi-VN/menu';
+import modules from './vi-VN/modules';
 import pages from './vi-VN/pages';
 
 export default {
@@ -9,4 +10,5 @@ export default {
 	...menu,
 	...pages,
 	...global,
+	...modules
 };

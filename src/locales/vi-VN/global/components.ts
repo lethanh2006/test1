@@ -32,7 +32,7 @@ export default {
 	'global.previewfile.thongbao': 'Tệp tin không hỗ trợ hiển thị trực tiếp',
 
 	//RightContent
-	'global.rightcontent.header.title': 'HỆ THỐNG PHẦN MỀM CHỈ ĐẠO, ĐIỀU HÀNH',
+	'global.rightcontent.header.title': 'HỆ THỐNG CHUYỂN ĐỔI SỐ',
 	'global.rightcontent.moduleswitch.dschungnang': 'Danh sách chức năng',
 
 	'global.rightcontent.thongbao.title': 'Thông báo',
@@ -209,4 +209,11 @@ export default {
 	'global.uploadfile.text': 'Nhấn chuột hoặc kéo thả tài liệu để tải lên',
 	'global.uploadfile.text1': 'Thêm ảnh đại diện',
 	'global.uploadfile.button.chontep': 'Chọn tệp',
+
+	// PDFViewer
+	'global.pdfviewer.dangtai': 'Đang tải...',
+	'global.pdfviewer.dangtaitailieu': 'Đang tải tài liệu. Vui lòng chờ trong giây lát...',
+	'global.pdfviewer.truoc': 'Trước',
+	'global.pdfviewer.sau': 'Sau',
+	'global.pdfviewer.trang': 'Trang {pageNumber} trên tổng số {numPages}',
 };
