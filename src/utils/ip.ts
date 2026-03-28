@@ -10,9 +10,9 @@ const ipNotif = ipRoot + 'notification'; // ip dev
 const ipSlink = ipRoot + 'slink'; // ip dev
 const ipCore = ipRoot + 'core'; // ip dev
 
-const currentRole = EModuleKey.TCNS;
-const replaceRole: EModuleKey | undefined = undefined; //EModuleKey.CONG_CAN_BO; // Thay đổi theo từng phân hệ
-const oneSignalRole = EModuleKey.CONG_CAN_BO;
+const currentRole = EModuleKey.CONNECT;
+const replaceRole: EModuleKey | undefined = undefined; //EModuleKey.CONNECT; // Thay đổi theo từng phân hệ
+const oneSignalRole = EModuleKey.CONNECT;
 
 // DO NOT TOUCH
 const keycloakClientID = AppModules[currentRole].clientId;
@@ -26,7 +26,6 @@ const oneSignalClient = APP_CONFIG_ONE_SIGNAL_ID;
 
 export {
 	currentRole,
-	replaceRole,
 	ip3,
 	ipCore,
 	ipNotif,
@@ -38,6 +37,7 @@ export {
 	keycloakUserInfoEndpoint,
 	oneSignalClient,
 	oneSignalRole,
+	replaceRole,
 	resourceServerClientId,
 	sentryDSN,
 };
