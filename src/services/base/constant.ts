@@ -15,9 +15,16 @@ export enum EModuleKey {
 	THU_VIEN = 'thu-vien',
 	CORE = 'danh-muc-chung',
 	QLND = 'quan-ly-nguoi-dung',
+	QUY_TRINH = 'quy-trinh',
 }
 
 export const AppModules: Record<EModuleKey, Login.TModule> = {
+	[EModuleKey.QUY_TRINH]: {
+		title: `modules.${EModuleKey.QUY_TRINH}`,
+		clientId: `${APP_CONFIG_PREFIX_OF_KEYCLOAK_CLIENT_ID}quy-trinh`,
+		url: APP_CONFIG_URL_QUY_TRINH,
+		icon: EModuleKey.QUY_TRINH + '.svg',
+	},
 	[EModuleKey.CONNECT]: {
 		title: `modules.${EModuleKey.CONNECT}`,
 		clientId: `${APP_CONFIG_PREFIX_OF_KEYCLOAK_CLIENT_ID}connect`,

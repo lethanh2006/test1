@@ -17,6 +17,7 @@ ENV APP_CONFIG_PRIMARY_COLOR='#CC0D00'
 
 ENV APP_CONFIG_URL_LANDING=https://ptit.edu.vn/
 ENV APP_CONFIG_URL_CONNECT=https://slink.ptit.edu.vn/
+ENV APP_CONFIG_URL_QUY_TRINH=https://quytrinh.ptit.edu.vn/
 ENV APP_CONFIG_URL_CAN_BO=https://canbo.ptit.edu.vn/
 ENV APP_CONFIG_URL_DAO_TAO=https://quanlydaotao.ptit.edu.vn/
 ENV APP_CONFIG_URL_NHAN_SU=https://tccb.ptit.edu.vn/

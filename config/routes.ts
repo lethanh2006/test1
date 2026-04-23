@@ -34,20 +34,65 @@
 		component: './TienIch/GioiThieu',
 		hideInMenu: true,
 	},
+	{
+		name: 'Workflow',
+		path: '/workflow',
+		icon: 'ApartmentOutlined',
+		component: './Workflow/WorkflowListPage.tsx',
+	},
+	{
+		name: 'Workflow Design',
+		path: '/workflow/design/:id',
+		component: './Workflow/WorkflowDesignPage.tsx',
+		hideInMenu: true,
+	},
+	// sử dụng quy trình
+	{
+		name: 'Workflow Use',
+		path: '/workflow-use',
+		icon: 'InteractionOutlined',
+		component: './Workflow/WorkflowListUsePage.tsx',
+	},
+	// instance
+	{
+		name: 'Instances',
+		path: '/instance',
+		icon: 'DeploymentUnitOutlined',
+		component: './Instance/InstanceListPage.tsx',
+	},
+	{
+		name: 'Instances Me',
+		path: '/instance-me',
+		icon: 'DeploymentUnitOutlined',
+		component: './Instance/InstanceMeListPage.tsx',
+	},
+	{
+		name: 'Instance Detail',
+		path: '/instance/:id',
+		component: './Instance/InstanceDetailPage.tsx',
+		hideInMenu: true,
+	},
+	// Biểu mẫu khai báo
+	{
+		name: 'Form',
+		path: '/form',
+		icon: 'FormOutlined',
+		component: './DanhMuc/BieuMauKhaiBao',
+	},
 
 	// DANH MUC HE THONG
-	{
-		name: 'DanhMuc',
-		path: '/danh-muc',
-		icon: 'copy',
-		routes: [
-			{
-				name: 'ChucVu',
-				path: 'chuc-vu',
-				component: './DanhMuc/ChucVu',
-			},
-		],
-	},
+	// {
+	// 	name: 'DanhMuc',
+	// 	path: '/danh-muc',
+	// 	icon: 'copy',
+	// 	routes: [
+	// 		{
+	// 			name: 'ChucVu',
+	// 			path: 'chuc-vu',
+	// 			component: './DanhMuc/ChucVu',
+	// 		},
+	// 	],
+	// },
 
 	{
 		path: '/notification',

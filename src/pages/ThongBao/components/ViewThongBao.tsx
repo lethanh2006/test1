@@ -15,6 +15,7 @@ const ViewThongBao = (props: { record?: ThongBao.IRecord; afterViewDetail?: () =
 	const redirectNotif = () => {
 		const urlMap: Record<EModuleKey, string> = {
 			[EModuleKey.CONNECT]: APP_CONFIG_URL_CONNECT,
+			[EModuleKey.QUY_TRINH]: APP_CONFIG_URL_QUY_TRINH,
 			[EModuleKey.CONG_CAN_BO]: APP_CONFIG_URL_CAN_BO,
 			[EModuleKey.QLDT]: APP_CONFIG_URL_DAO_TAO,
 			[EModuleKey.CORE]: APP_CONFIG_URL_CORE,
@@ -25,8 +26,9 @@ const ViewThongBao = (props: { record?: ThongBao.IRecord; afterViewDetail?: () =
 			[EModuleKey.QLKH]: APP_CONFIG_URL_QLKH,
 			[EModuleKey.KT]: APP_CONFIG_URL_KHAO_THI,
 			[EModuleKey.CSVC]: APP_CONFIG_URL_CSVC,
-			[EModuleKey.VBCC]: '',
-			[EModuleKey.THU_VIEN]: '',
+			[EModuleKey.VBCC]: APP_CONFIG_URL_VBCC,
+			[EModuleKey.THU_VIEN]: APP_CONFIG_URL_THU_VIEN,
+			[EModuleKey.QLND]: APP_CONFIG_URL_QLND,
 		};
 
 		const sourceType = mapModuleKey[record?.metadata?.sourceType as ESourceTypeNotification];

@@ -1,0 +1,15 @@
+export default {
+	'chucvu.chinhsua': 'Edit',
+	'chucvu.themmoi': 'Add new',
+	'chucvu.luulai': 'Save',
+	'chucvu.huy': 'Cancel',
+	'chucvu.ma': 'Code',
+	'chucvu.machucvu': 'Position code',
+	'chucvu.tenchucvu': 'Position name',
+	'chucvu.chonchucvu': 'Select position',
+	'chucvu.ngaytao': 'Created at',
+	'chucvu.thaotac': 'Actions',
+	'chucvu.xoa': 'Delete',
+	'chucvu.banchacchanmuonxoachucvunay': 'Are you sure you want to delete this position?',
+	'chucvu.chucvu': 'Position',
+};

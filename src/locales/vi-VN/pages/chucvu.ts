@@ -1,0 +1,15 @@
+export default {
+	'chucvu.chinhsua': 'Chỉnh sửa',
+	'chucvu.themmoi': 'Thêm mới',
+	'chucvu.luulai': 'Lưu lại',
+	'chucvu.huy': 'Hủy',
+	'chucvu.ma': 'Mã',
+	'chucvu.machucvu': 'Mã chức vụ',
+	'chucvu.tenchucvu': 'Tên chức vụ',
+	'chucvu.chonchucvu': 'Chọn chức vụ',
+	'chucvu.ngaytao': 'Ngày tạo',
+	'chucvu.thaotac': 'Thao tác',
+	'chucvu.xoa': 'Xóa',
+	'chucvu.banchacchanmuonxoachucvunay': 'Bạn có chắc chắn muốn xóa chức vụ này?',
+	'chucvu.chucvu': 'Chức vụ',
+};

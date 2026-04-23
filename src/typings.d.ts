@@ -31,6 +31,7 @@ declare const APP_CONFIG_PRIMARY_COLOR: string;
 
 declare const APP_CONFIG_URL_LANDING: string;
 declare const APP_CONFIG_URL_CONNECT: string;
+declare const APP_CONFIG_URL_QUY_TRINH: string;
 declare const APP_CONFIG_URL_CAN_BO: string;
 declare const APP_CONFIG_URL_DAO_TAO: string;
 declare const APP_CONFIG_URL_NHAN_SU: string;

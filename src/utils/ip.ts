@@ -3,16 +3,19 @@ import { AppModules, EModuleKey } from '@/services/base/constant';
 const ipRoot = APP_CONFIG_IP_ROOT; // ip dev
 
 // Ip Chính => Mặc định dùng trong các useInitModel
-const ip3 = ipRoot + 'tcns'; // ip dev
+const ip3 = ipRoot + 'workflow'; // ip dev
+const ipWorkflow = ipRoot + 'workflow'; // ip dev
 
 // Ip khác
 const ipNotif = ipRoot + 'notification'; // ip dev
 const ipSlink = ipRoot + 'slink'; // ip dev
 const ipCore = ipRoot + 'core'; // ip dev
+const ipTcns = ipRoot + 'tcns';
+const ipDaoTao = ipRoot + 'qldt'; // ip dev
 
-const currentRole = EModuleKey.CONNECT;
+const currentRole = EModuleKey.CONG_CAN_BO;
 const replaceRole: EModuleKey | undefined = undefined; //EModuleKey.CONNECT; // Thay đổi theo từng phân hệ
-const oneSignalRole = EModuleKey.CONNECT;
+const oneSignalRole = EModuleKey.CONG_CAN_BO;
 
 // DO NOT TOUCH
 const keycloakClientID = AppModules[currentRole].clientId;
@@ -28,8 +31,11 @@ export {
 	currentRole,
 	ip3,
 	ipCore,
+	ipDaoTao,
 	ipNotif,
 	ipSlink,
+	ipTcns,
+	ipWorkflow,
 	keycloakAuthEndpoint,
 	keycloakAuthority,
 	keycloakClientID,
