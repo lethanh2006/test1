@@ -13,9 +13,9 @@ const ipCore = ipRoot + 'core'; // ip dev
 const ipTcns = ipRoot + 'tcns';
 const ipDaoTao = ipRoot + 'qldt'; // ip dev
 
-const currentRole = EModuleKey.CONG_CAN_BO;
+const currentRole = EModuleKey.VPS;
 const replaceRole: EModuleKey | undefined = undefined; //EModuleKey.CONNECT; // Thay đổi theo từng phân hệ
-const oneSignalRole = EModuleKey.CONG_CAN_BO;
+const oneSignalRole = EModuleKey.VPS;
 
 // DO NOT TOUCH
 const keycloakClientID = AppModules[currentRole].clientId;
