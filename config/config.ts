@@ -26,7 +26,7 @@ export default defineConfig({
 		antd: true,
 		// default true, when it is true, will use `navigator.language` overwrite default
 		// Có sử dụng ngôn ngữ mặc định của trình duyệt?
-		baseNavigator: false,
+		baseNavigator: true,
 
 		// Default: '-' => 'vi-VN'
 		// baseSeparator: '_',

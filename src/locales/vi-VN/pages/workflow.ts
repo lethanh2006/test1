@@ -1,4 +1,5 @@
 export default {
+  'workflow.table.title': 'Danh sách Workflow',
   'workflow.common.cancel': 'Hủy',
   'workflow.common.add': 'Thêm',
   'workflow.common.update': 'Cập nhật',
