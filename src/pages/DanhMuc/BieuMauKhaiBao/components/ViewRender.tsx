@@ -41,6 +41,16 @@ const ViewRender = ({ cauHinh, recordSanPham, isCot }: IProps) => {
 		? recordSanPhamFinal?.[cauHinh.ma]
 		: (recordSanPhamFinal?.[cauHinh.ma]?.value?.value ?? recordSanPhamFinal?.[cauHinh.ma]?.value);
 
+	const getTableRows = () => {
+		const rawRows = isCot
+			? (recordSanPhamFinal?.[cauHinh.ma] ??
+				recordSanPham?.thongTinKhaiBao?.[cauHinh.ma]?.value ??
+				recordSanPham?.thongTinKhaiBao?.[cauHinh.ma])
+			: (recordSanPham?.thongTinKhaiBao?.[cauHinh.ma]?.value ?? recordSanPham?.thongTinKhaiBao?.[cauHinh.ma] ?? []);
+
+		return Array.isArray(rawRows) ? rawRows : Array.isArray(rawRows?.data) ? rawRows.data : [];
+	};
+
 	switch (cauHinh.kieuDuLieu) {
 		case EKieuDuLieu.TEXT:
 			value = <div dangerouslySetInnerHTML={{ __html: valueFinal ?? '' }}></div>;
@@ -132,7 +142,7 @@ const ViewRender = ({ cauHinh, recordSanPham, isCot }: IProps) => {
 						otherProps={{ pagination: false }}
 						addStt
 						size='small'
-						data={recordSanPham?.thongTinKhaiBao?.[cauHinh.ma]?.value ?? []}
+						data={getTableRows()}
 						columns={columns}
 					/>
 					<Modal

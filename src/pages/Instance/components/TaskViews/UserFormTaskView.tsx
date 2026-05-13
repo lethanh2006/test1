@@ -116,6 +116,21 @@ export const UserFormTaskView: React.FC<TaskRendererProps> = ({
 						values[field.ma] = dayjs(values[field.ma]);
 					}
 				});
+
+				externalFormConfig.cauHinhLoaiHinh?.forEach((field) => {
+					if (field.kieuDuLieu === EKieuDuLieu.TABLE && values[field.ma] !== undefined) {
+						const raw = values[field.ma];
+						let normalized: any = raw;
+						if (raw && typeof raw === 'object' && !Array.isArray(raw)) {
+							const keys = Object.keys(raw);
+							if (keys.every((k) => /^\d+$/.test(k))) {
+								normalized = keys.sort((a, b) => Number(a) - Number(b)).map((k) => raw[k]);
+							}
+						}
+						values[`table||${field.ma}`] = normalized;
+						values[field.ma] = normalized;
+					}
+				});
 			} else {
 				fields.forEach((field) => {
 					if (field.type === 'date' && values[field.name]) {
