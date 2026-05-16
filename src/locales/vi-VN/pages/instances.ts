@@ -11,7 +11,7 @@ export default {
 	'instances.tt': 'TT',
 	'instances.ngaytao': 'Ngày tạo',
 	'instances.capnhatgannhat': 'Cập nhật gần nhất',
-	'instances.workflowname': 'Workflow Name',
+	'instances.workflowname': 'Tên quy trình',
 	'instances.hotennguoitao': 'Họ tên người tạo',
 	'instances.tenbuochientai': 'Tên bước hiện tại',
 	'instances.trangthai': 'Trạng thái',

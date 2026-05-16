@@ -44,6 +44,7 @@ const WorkflowListUsePage = () => {
 			title: 'TT',
 			dataIndex: 'index',
 			width: 60,
+			align: 'center',
 		},
 		{
 			title: intl.formatMessage({ id: 'workflow.list.column.name' }),

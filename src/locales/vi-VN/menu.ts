@@ -7,4 +7,10 @@ export default {
 	'menu.News': 'Tin tức',
 	'menu.DanhMuc': 'Danh mục',
 	'menu.DanhMuc.ChucVu': 'Chức vụ',
+	'menu.Workflow': 'Mẫu quy trình',
+	'menu.Workflow Use': 'Sử dụng mẫu quy trình',
+	'menu.Instances': 'Quy trình',
+	'menu.Instances Me': 'Quy trình của tôi',
+	'menu.Form': 'Biểu mẫu',
+
 };

@@ -2,6 +2,7 @@ import TableBase from '@/components/Table';
 import ButtonExtend from '@/components/Table/ButtonExtend';
 import { IColumn } from '@/components/Table/typing';
 import { ExportInstanceSpecialistMe } from '@/services/Instance';
+import { useInstanceStepHelpers } from '@/hooks/useInstanceStepHelpers';
 import {
 	ETrangThaiInstanceTask,
 	MapTrangThaiInstanceTask,
@@ -24,6 +25,10 @@ const TableInstanceMe = (props: IProps) => {
 	const { initialState } = useModel('@@initialState');
 	const instanceMeModel = useModel('workflow.instanceMe');
 	const { limit, page, setPage, getInstaceMe, getInstanceSpecialistMe, loading, setLoading } = instanceMeModel;
+
+	const { getCurrentStepLabel, getAssigneesForCurrentStep } = useInstanceStepHelpers(
+		(instanceMeModel as any)?.danhSach ?? []
+	);
 
 	useEffect(() => {
 		setPage(1);
@@ -57,26 +62,6 @@ const TableInstanceMe = (props: IProps) => {
 			width: 60,
 		},
 		{
-			title: intl.formatMessage({ id: 'instances.ngaytao' }),
-			dataIndex: 'createdAt',
-			width: 150,
-			render: (val) => val && dayjs(val).format('HH:mm DD/MM/YYYY'),
-			onCell,
-		},
-		{
-			title: intl.formatMessage({ id: 'instances.capnhatgannhat' }),
-			dataIndex: 'updatedAt',
-			width: 150,
-			render: (val) => val && dayjs(val).format('HH:mm DD/MM/YYYY'),
-			onCell,
-		},
-		{
-			title: intl.formatMessage({ id: 'instances.workflowname' }),
-			dataIndex: ['workflow', 'ten'],
-			width: 200,
-			onCell,
-		},
-		{
 			title: intl.formatMessage({ id: 'instances.hotennguoitao' }),
 			dataIndex: 'nguoiTaoHoTen',
 			width: 200,
@@ -86,35 +71,57 @@ const TableInstanceMe = (props: IProps) => {
 			onCell,
 		},
 		{
+			title: intl.formatMessage({ id: 'instances.workflowname' }),
+			dataIndex: ['workflow', 'ten'],
+			width: 200,
+			onCell,
+		},
+		// {
+		// 	title: intl.formatMessage({ id: 'instances.ngaytao' }),
+		// 	dataIndex: 'createdAt',
+		// 	width: 150,
+		// 	render: (val) => val && dayjs(val).format('HH:mm DD/MM/YYYY'),
+		// 	onCell,
+		// },
+		{
+			title: intl.formatMessage({ id: 'instances.capnhatgannhat' }),
+			dataIndex: 'updatedAt',
+			width: 150,
+			render: (val) => val && dayjs(val).format('HH:mm DD/MM/YYYY'),
+			onCell,
+		},
+		{
 			title: intl.formatMessage({ id: 'instances.tenbuochientai' }),
 			dataIndex: 'currentStep',
-			width: 200,
-			ellipsis: true,
+			width: 220,
 			align: 'center',
-			render(value, record: any) {
-				return <>{record?.currentStep ? record?.currentStep : '-'}</>;
+			render(value, record) {
+				return (
+					<div
+						style={{
+							whiteSpace: 'normal',
+							backgroundColor: '#f6ffed',
+							border: '1px solid #b7eb8f',
+							color: '#389e0d',
+							borderRadius: '4px',
+							padding: '2px 8px',
+							display: 'inline-block',
+							fontSize: '12px',
+							textAlign: 'center',
+						}}
+					>
+						{getCurrentStepLabel(record)}
+					</div>
+				);
 			},
 			onCell,
 		},
 		{
-			title: intl.formatMessage({ id: 'instances.trangthai' }),
-			dataIndex: 'trangThai',
-			align: 'center',
-			width: 120,
+			title: 'Bộ phận xử lý',
+			width: 220,
+			ellipsis: true,
 			render(value, record) {
-				return (
-					<Tag
-						color={MapTrangThaiInstanceTaskColor[record.trangThai as ETrangThaiInstanceTask] || 'default'}
-						bordered={false}
-					>
-						{intl.formatMessage({
-							id:
-								MapTrangThaiInstanceTask[record.trangThai as ETrangThaiInstanceTask] ||
-								'MapTrangThaiInstanceTask.UNKNOWN',
-							defaultMessage: record.trangThai,
-						})}
-					</Tag>
-				);
+				return <>{getAssigneesForCurrentStep(record)}</>;
 			},
 			onCell,
 		},
