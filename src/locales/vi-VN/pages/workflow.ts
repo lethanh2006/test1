@@ -232,4 +232,8 @@ export default {
   'workflow.instance.userForm.requiredField': '{label} là bắt buộc',
   'workflow.instance.userForm.submit': 'Gửi',
   'workflow.instance.userForm.edit': 'Chỉnh sửa',
+  'workflow.instance.taskList.empty': 'Không có nhiệm vụ nào',
+  'workflow.instance.taskList.back': 'Quay lại',
+  'workflow.instance.taskList.title': 'Quy trình ({count} bước)',
+  'workflow.instance.taskCard.step': 'Bước {depth}: {name}',
 };

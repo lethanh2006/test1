@@ -1,6 +1,6 @@
-import { ETrangThaiInstanceTask, MapTrangThaiInstanceTaskColor } from '@/services/Instance/constance';
-import { Tag, Typography } from 'antd';
+import { Card, Typography } from 'antd';
 import React from 'react';
+import { useIntl } from 'umi';
 
 const { Text } = Typography;
 
@@ -8,163 +8,64 @@ interface TaskCardProps {
 	task: Instance.IStepTask;
 	selected: boolean;
 	onClick: () => void;
-	isLast?: boolean;
-	showHandledTag?: boolean;
 }
 
-export const TaskCard: React.FC<TaskCardProps> = ({
-	task,
-	selected,
-	onClick,
-	isLast = false,
-	showHandledTag = false,
-}) => {
-	const { node, clickable } = task;
+export const TaskCard: React.FC<TaskCardProps> = ({ task, selected, onClick }) => {
+	const intl = useIntl();
+	const { node, clickable, depth } = task;
 
+	// Disabled style for non-clickable tasks
 	const isDisabled = !clickable;
-	const status = showHandledTag ? ETrangThaiInstanceTask.DA_XU_LY : undefined;
 
 	return (
-		<div
+		<Card
+			size='small'
+			hoverable={clickable}
 			onClick={clickable ? onClick : undefined}
 			style={{
-				display: 'flex',
-				flexDirection: 'column',
-				alignItems: 'flex-start',
-				padding: 0,
-				width: '100%',
-				minHeight: 63,
+				marginBottom: 12,
+				borderRadius: 8,
+				height: 'auto',
 				flex: 'none',
 				transition: 'all 0.3s ease',
 				cursor: clickable ? 'pointer' : 'not-allowed',
-				backgroundColor: selected ? '#E9F6FF' : 'transparent',
-				paddingLeft: 4,
-				paddingRight: 8,
-				paddingTop: 6,
-				paddingBottom: 6,
+				borderColor: selected ? '#1890ff' : isDisabled ? '#d9d9d9' : '#f0f0f0',
+				backgroundColor: selected ? '#e6f7ff' : isDisabled ? '#fafafa' : '#fff',
+				boxShadow: selected ? '0 4px 12px rgba(24, 144, 255, 0.2)' : 'none',
+				borderLeft: selected ? '4px solid #1890ff' : clickable ? '4px solid #52c41a' : '4px solid #d9d9d9',
+				opacity: isDisabled ? 0.7 : 1,
 			}}
 		>
-			<div
-				style={{
-					display: 'flex',
-					flexDirection: 'row',
-					alignItems: 'center',
-					padding: 0,
-					gap: 12,
-					width: '100%',
-					alignSelf: 'stretch',
-				}}
-			>
-				<div
-					style={{
-						width: 20,
-						height: 20,
-						flexShrink: 0,
-						display: 'flex',
-						alignItems: 'center',
-						justifyContent: 'center',
-					}}
-				>
-					<svg width='15' height='15' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
-						<circle cx='10' cy='10' r='8.75' stroke='#0E50CF' strokeWidth='1.25' fill='none' />
-						{(selected || clickable) && <circle cx='10' cy='10' r='5' fill='#0E50CF' />}
-					</svg>
-				</div>
-
-				<div
-					style={{
-						display: 'flex',
-						flexDirection: 'column',
-						alignItems: 'flex-start',
-						padding: 0,
-						gap: 4,
-						flex: 1,
-						minWidth: 0,
-					}}
-				>
+			<div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+				<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
 					<Text
+						strong
 						style={{
 							fontSize: 14,
-							lineHeight: '22px',
-							color: selected ? '#0E50CF' : isDisabled ? 'rgba(0,0,0,0.35)' : 'rgba(0,0,0,0.85)',
-							overflow: 'hidden',
-							display: '-webkit-box',
-							WebkitLineClamp: 2,
-							WebkitBoxOrient: 'vertical',
-							fontWeight: 500,
+							color: selected ? '#1890ff' : isDisabled ? 'rgba(0,0,0,0.45)' : 'rgba(0,0,0,0.85)',
 						}}
 					>
-						{node.name || node.id || task.nodeId}
+						{intl.formatMessage(
+							{ id: 'workflow.instance.taskCard.step' },
+							{ depth, name: node.name || node.id || task.nodeId },
+						)}
 					</Text>
-				</div>
-			</div>
-
-			<div
-				style={{
-					display: 'flex',
-					flexDirection: 'row',
-					alignItems: 'flex-start',
-					padding: 0,
-					gap: 12,
-					width: '100%',
-					height: 40,
-					flex: 'none',
-				}}
-			>
-				<div
-					style={{
-						width: 20,
-						height: 40,
-						flex: 'none',
-						display: 'flex',
-						justifyContent: 'center',
-					}}
-				>
-					{!isLast && (
-						<div
-							style={{
-								width: 2,
-								height: 40,
-								backgroundColor: '#F4F4F4',
-								borderRadius: 4,
-							}}
-						/>
-					)}
+					{/* {clickable ? (
+						<CheckCircleOutlined style={{ color: '#52c41a', fontSize: 14 }} />
+					) : (
+						<LockOutlined style={{ color: '#bfbfbf', fontSize: 14 }} />
+					)} */}
 				</div>
 
-				<div
-					style={{
-						display: 'flex',
-						flexDirection: 'column',
-						alignItems: 'flex-start',
-						padding: '2px 0px 0px',
-						gap: 4,
-						width: 'calc(100% - 32px)',
-						height: 40,
-						flex: 'none',
-					}}
-				>
-					{status && (
-						<Tag
-							color={MapTrangThaiInstanceTaskColor[status as ETrangThaiInstanceTask]}
-							bordered={false}
-							style={{
-								margin: 0,
-								fontSize: 12,
-								fontFamily: 'Montserrat',
-								fontStyle: 'normal',
-								fontWeight: 600,
-								lineHeight: '165%',
-								letterSpacing: '0.015em',
-								display: 'flex',
-								alignItems: 'flex-end',
-							}}
-						>
-							{status}
-						</Tag>
-					)}
+				<div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+					{/* <Tag color={getNodeTypeColor(node.type)} style={{ margin: 0, fontSize: 11 }}>
+						{node.type}
+					</Tag>
+					<Tag color='default' style={{ margin: 0, fontSize: 11 }}>
+						Step {depth}
+					</Tag> */}
 				</div>
 			</div>
-		</div>
+		</Card>
 	);
 };

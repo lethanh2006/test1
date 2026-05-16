@@ -1,6 +1,8 @@
-import { useIntl } from '@umijs/max';
-import { Empty } from 'antd';
+import ButtonExtend from '@/components/Table/ButtonExtend';
+import { ArrowLeftOutlined } from '@ant-design/icons';
+import { Card, Empty } from 'antd';
 import React from 'react';
+import { useIntl } from 'umi';
 import { TaskCard } from './TaskCard';
 
 interface TaskListProps {
@@ -12,85 +14,53 @@ interface TaskListProps {
 
 export const TaskList: React.FC<TaskListProps> = ({ tasks, selectedTaskId, onSelectTask, loading }) => {
 	const intl = useIntl();
-	const firstNonClickableIndex = tasks.findIndex((task) => !task.clickable);
-	const handledMaxIndex = firstNonClickableIndex === -1 ? tasks.length - 1 : firstNonClickableIndex - 2;
+
 	if (!loading && !tasks.length) {
 		return (
-			<div
-				style={{
-					width: 280,
-					height: 756,
-					overflowY: 'auto',
-					flex: 'none',
-					display: 'flex',
-					alignItems: 'center',
-					justifyContent: 'center',
-					padding: 16,
-					borderRadius: 8,
-					backgroundColor: '#fff',
-				}}
-			>
-				<Empty description={intl.formatMessage({ id: 'instances.khongconhiemvunao' })} />
-			</div>
+			<Card style={{ height: '100%', borderRadius: 8 }}>
+				<Empty description={intl.formatMessage({ id: 'workflow.instance.taskList.empty' })} />
+			</Card>
 		);
 	}
-	const lastClickableTask = tasks.findLast((task) => task.clickable);
-	const listTaskClickable = tasks.filter((task) => task.depth > (lastClickableTask?.depth || 0) || task.clickable);
+
+	// const listTaskClickable = tasks.filter((task) => task.clickable);
 
 	return (
-		<div
-			style={{
-				width: 280,
-				height: 756,
-				overflow: 'hidden',
-				flex: 'none',
-				order: 1,
-				alignSelf: 'stretch',
-				flexGrow: 0,
-				display: 'flex',
-				flexDirection: 'column',
-				borderRadius: 8,
-				backgroundColor: '#fff',
-				boxSizing: 'border-box',
-			}}
+		<Card
+			title={
+				<div style={{ fontSize: 14 }}>
+					<ButtonExtend
+						onClick={() => {
+							history.back();
+						}}
+						tooltip={intl.formatMessage({ id: 'workflow.instance.taskList.back' })}
+						type='link'
+						icon={<ArrowLeftOutlined />}
+					/>
+					{intl.formatMessage({ id: 'workflow.instance.taskList.title' }, { count: tasks.length })}
+				</div>
+			}
+			style={{ height: '100%', display: 'flex', flexDirection: 'column' }}
 		>
 			<div
 				style={{
-					padding: '12px 16px',
-					fontSize: 14,
-					fontWeight: 600,
-					color: 'rgba(0, 0, 0, 0.85)',
-					borderBottom: '1px solid #f0f0f0',
-					flex: 'none',
-				}}
-			>
-				{intl.formatMessage({ id: 'instances.sostepcanthuchien' })} ({listTaskClickable.length})
-			</div>
-
-			<div
-				style={{
-					display: 'flex',
-					flexDirection: 'column',
-					alignItems: 'flex-start',
-					padding: '16px 16px',
-					width: '100%',
+					maxHeight: 'calc(100vh - 140px)',
 					flex: 1,
 					overflowY: 'auto',
-					gap: 0,
-					boxSizing: 'border-box',
+					paddingRight: 8,
+					display: 'flex',
+					flexDirection: 'column',
 				}}
 			>
-				{listTaskClickable.map((task, index) => (
+				{tasks.map((task) => (
 					<TaskCard
 						key={task.nodeId}
 						task={task}
 						selected={task.nodeId === selectedTaskId}
 						onClick={() => onSelectTask(task.nodeId)}
-						isLast={index === tasks.length - 1}
-						showHandledTag={index <= handledMaxIndex}
 					/>
 				))}
 			</div>
-		</div>
+		</Card>
 	);
 };

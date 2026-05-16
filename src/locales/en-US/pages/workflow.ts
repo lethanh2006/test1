@@ -232,6 +232,10 @@ export default {
 	'workflow.instance.userForm.requiredField': '{label} is required',
 	'workflow.instance.userForm.submit': 'Submit',
 	'workflow.instance.userForm.edit': 'Edit',
+	'workflow.instance.taskList.empty': 'No tasks available',
+	'workflow.instance.taskList.back': 'Back',
+	'workflow.instance.taskList.title': 'Workflow ({count} steps)',
+	'workflow.instance.taskCard.step': 'Step {depth}: {name}',
 
 
 };

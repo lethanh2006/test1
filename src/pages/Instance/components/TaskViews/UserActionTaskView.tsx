@@ -159,7 +159,7 @@ export const UserActionTaskView: React.FC<TaskRendererProps> = ({
 						{isNotAllowAction ? (
 							<Alert
 								type='warning'
-								description={intl.formatMessage({ id: 'instances.bankhongcoquyenthuchientasknay' })}
+								message={intl.formatMessage({ id: 'instances.bankhongcoquyenthuchientasknay' })}
 								showIcon
 							/>
 						) : (

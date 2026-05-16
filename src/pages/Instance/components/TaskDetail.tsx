@@ -166,16 +166,24 @@ export const TaskDetail: React.FC<TaskDetailProps> = ({
 			{disabled ? (
 				<Alert
 					type='info'
-					message={intl.formatMessage({ id: 'workflow.instance.detail.alert.disabled.message' })}
-					description={intl.formatMessage({ id: 'workflow.instance.detail.alert.disabled.description' })}
+					message={
+						<span>
+							<strong>{intl.formatMessage({ id: 'workflow.instance.detail.alert.disabled.message' })}</strong>:{' '}
+							{intl.formatMessage({ id: 'workflow.instance.detail.alert.disabled.description' })}
+						</span>
+					}
 					showIcon
 				/>
 			) : (
 				!task.isActOnSelf && (
 					<Alert
 						type='warning'
-						message={intl.formatMessage({ id: 'workflow.instance.detail.alert.accessDenied.message' })}
-						description={intl.formatMessage({ id: 'workflow.instance.detail.alert.accessDenied.description' })}
+						message={
+							<span>
+								<strong>{intl.formatMessage({ id: 'workflow.instance.detail.alert.accessDenied.message' })}</strong>:{' '}
+								{intl.formatMessage({ id: 'workflow.instance.detail.alert.accessDenied.description' })}
+							</span>
+						}
 						showIcon
 					/>
 				)
