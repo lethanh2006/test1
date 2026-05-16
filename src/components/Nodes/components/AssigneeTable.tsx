@@ -71,7 +71,9 @@ export const AssigneeTable = ({ value = [], onChange, isView }: AssigneeTablePro
 		let title = 'Người đề xuất';
 		if (record.type === PhuongThucPhanCong.DON_VI_CU_THE || record.type === PhuongThucPhanCong.NGUOI_CU_THE) {
 			count = record.danhSachThanhVienXuLy?.length ?? 0;
-			title = record?.tenDonVi ?? '';
+			title =
+				record?.tenDonVi ||
+				(record.type === PhuongThucPhanCong.NGUOI_CU_THE ? `${translateMethod(record.type)} (${count})` : '');
 		} else if (record.type === PhuongThucPhanCong.DON_VI_QUAN_LY) {
 			count = record.danhSachCapChucVu?.length ?? 0;
 			title = record?.tenDonVi ?? '';

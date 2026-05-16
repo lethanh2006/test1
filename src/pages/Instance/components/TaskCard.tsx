@@ -17,6 +17,26 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, selected, onClick }) =
 	// Disabled style for non-clickable tasks
 	const isDisabled = !clickable;
 
+	const getAssigneeLabel = (taskData: Instance.IStepTask): string => {
+		const assignees = taskData?.node?.config?.assignee ?? [];
+		if (!assignees.length) return '-';
+
+		return (
+			assignees
+				.map((item: any) => {
+					if (item?.danhSachThanhVienXuLy?.length) {
+						return item.danhSachThanhVienXuLy
+							.map((m: any) => m.hoTen)
+							.filter(Boolean)
+							.join(', ');
+					}
+					return item.tenDonVi ?? item.type ?? '-';
+				})
+				.filter(Boolean)
+				.join(', ') || '-'
+		);
+	};
+
 	return (
 		<Card
 			size='small'
@@ -50,11 +70,23 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, selected, onClick }) =
 							{ depth, name: node.name || node.id || task.nodeId },
 						)}
 					</Text>
-					{/* {clickable ? (
-						<CheckCircleOutlined style={{ color: '#52c41a', fontSize: 14 }} />
-					) : (
-						<LockOutlined style={{ color: '#bfbfbf', fontSize: 14 }} />
-					)} */}
+				</div>
+
+				<div
+					style={{
+						display: 'flex',
+						fontSize: 13,
+						color: isDisabled ? 'rgba(0,0,0,0.45)' : 'rgba(0,0,0,0.65)',
+						width: '100%',
+					}}
+				>
+					<span style={{ whiteSpace: 'nowrap', marginRight: 4 }}>Bộ phận xử lý:</span>
+					<Text
+						style={{ fontWeight: 500, color: 'inherit', flex: 1 }}
+						ellipsis={{ tooltip: getAssigneeLabel(task) }}
+					>
+						{getAssigneeLabel(task)}
+					</Text>
 				</div>
 
 				<div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
