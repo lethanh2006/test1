@@ -33,7 +33,8 @@ declare module Instance {
     loai?: string;
     config?: Record<string, any>;
     userInstanceTasks?: UserInstanceTask[];
-
+    data?: Record<string, any>;
+    ghiChu?: string;
     ketQua?: Record<string, any>;
     nguoiXuLy?: any;
 

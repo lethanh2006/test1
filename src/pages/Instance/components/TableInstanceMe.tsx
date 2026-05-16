@@ -25,9 +25,8 @@ const TableInstanceMe = (props: IProps) => {
 	const { initialState } = useModel('@@initialState');
 	const instanceMeModel = useModel('workflow.instanceMe');
 	const { limit, page, setPage, getInstaceMe, getInstanceSpecialistMe, loading, setLoading } = instanceMeModel;
-
 	const { getCurrentStepLabel, getAssigneesForCurrentStep } = useInstanceStepHelpers(
-		(instanceMeModel as any)?.danhSach ?? []
+		instanceMeModel?.danhSach ?? []
 	);
 
 	useEffect(() => {
@@ -60,6 +59,7 @@ const TableInstanceMe = (props: IProps) => {
 			title: intl.formatMessage({ id: 'instances.tt' }),
 			dataIndex: 'index',
 			width: 60,
+			align: 'center',
 		},
 		{
 			title: intl.formatMessage({ id: 'instances.hotennguoitao' }),
@@ -125,6 +125,28 @@ const TableInstanceMe = (props: IProps) => {
 			},
 			onCell,
 		},
+		// {
+		// 	title: intl.formatMessage({ id: 'instances.trangthai' }),
+		// 	dataIndex: 'trangThai',
+		// 	align: 'center',
+		// 	width: 120,
+		// 	render(value, record) {
+		// 		return (
+		// 			<Tag
+		// 				color={MapTrangThaiInstanceTaskColor[record.trangThai as ETrangThaiInstanceTask] || 'default'}
+		// 				bordered={false}
+		// 			>
+		// 				{intl.formatMessage({
+		// 					id:
+		// 						MapTrangThaiInstanceTask[record.trangThai as ETrangThaiInstanceTask] ||
+		// 						'MapTrangThaiInstanceTask.UNKNOWN',
+		// 					defaultMessage: record.trangThai,
+		// 				})}
+		// 			</Tag>
+		// 		);
+		// 	},
+		// 	onCell,
+		// },
 	];
 
 	const handleExport = () => {

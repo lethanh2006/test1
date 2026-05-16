@@ -39,6 +39,7 @@ const InstanceListPage = () => {
 			title: intl.formatMessage({ id: 'instances.tt' }),
 			dataIndex: 'index',
 			width: 60,
+			align: 'center',
 		},
 		// {
 		// 	title: intl.formatMessage({ id: 'instances.ngaytao' }),

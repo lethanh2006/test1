@@ -3,7 +3,7 @@ import ResultFormDetail from '@/pages/Instance/components/TaskViews/ResultFormDe
 import { transformBackendToWorkflow } from '@/pages/Workflow/utils';
 import { ETrangThaiInstanceTask } from '@/services/Instance/constance';
 import { useIntl, useModel } from '@umijs/max';
-import { Alert, Button, Card, Col, Row, Space, Spin, Typography } from 'antd';
+import { Alert, Button, Card, Col, Row, Space, Spin, Typography, Input } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { TaskRendererProps } from './types';
 
@@ -48,9 +48,13 @@ export const UserActionTaskView: React.FC<TaskRendererProps> = ({
 
 	const workflowModel = useModel('workflow.workflow');
 	const instanceTaskModel = useModel('workflow.instancetask');
+	const [ghiChu, setGhiChu] = useState<string>('');
 
 	const handleActionClick = async (actionId: string) => {
 		const payload = TASK_RENDERER_REGISTRY['user.action'].buildSubmitPayload(actionId);
+		if (ghiChu) {
+			payload.outcome.ghiChu = ghiChu;
+		}
 		await onSubmit(payload);
 	};
 
@@ -163,22 +167,33 @@ export const UserActionTaskView: React.FC<TaskRendererProps> = ({
 								showIcon
 							/>
 						) : (
-							<Row gutter={6} justify='end'>
-								{actions.map((action) => (
-									<Col key={action.id}>
-										<Button
-											disabled={!task.isActOnSelf}
-											type={getButtonType(action.variant)}
-											danger={getButtonDanger(action.variant)}
-											onClick={() => handleActionClick(action.id)}
-											loading={loading}
-											size='small'
-										>
-											{action.label}
-										</Button>
-									</Col>
-								))}
-							</Row>
+							<>
+								<div style={{ marginBottom: 16 }}>
+									<div style={{ marginBottom: 8 }}>{intl.formatMessage({ id: 'workflow.instance.detail.field.note' })}</div>
+									<Input.TextArea
+										rows={4}
+										value={ghiChu}
+										onChange={(e) => setGhiChu(e.target.value)}
+										placeholder={intl.formatMessage({ id: 'workflow.instance.detail.field.note' })}
+									/>
+								</div>
+								<Row gutter={6} justify='end'>
+									{actions.map((action) => (
+										<Col key={action.id}>
+											<Button
+												disabled={!task.isActOnSelf}
+												type={getButtonType(action.variant)}
+												danger={getButtonDanger(action.variant)}
+												onClick={() => handleActionClick(action.id)}
+												loading={loading}
+												size='small'
+											>
+												{action.label}
+											</Button>
+										</Col>
+									))}
+								</Row>
+							</>
 						)}
 					</>
 				)}
