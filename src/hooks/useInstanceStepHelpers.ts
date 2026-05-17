@@ -1,23 +1,34 @@
-import { getListTaskByInstanceId } from '@/services/Instance/task';
+import { getListTaskByInstanceId, getInforTaskNode } from '@/services/Instance/task';
 import { useEffect, useState } from 'react';
 
 export const useInstanceStepHelpers = (danhSach: Instance.IRecord[]) => {
     const [instanceTasksMap, setInstanceTasksMap] = useState<Record<string, Instance.IStepTask[]>>({});
+    const [instanceNotesMap, setInstanceNotesMap] = useState<Record<string, string>>({});
 
     useEffect(() => {
-        danhSach.forEach((rec) => {
-            if (!rec?._id) return;
-            setInstanceTasksMap((prev) => {
-                if (prev[rec._id!]) return prev; // check trong setter tránh stale closure
-                getListTaskByInstanceId(rec._id!).then((res) => {
-                    const tasks: Instance.IStepTask[] = res?.data?.data || [];
-                    setInstanceTasksMap((p) => ({
-                        ...p,
-                        [rec._id!]: tasks.sort((a, b) => (a.depth || 0) - (b.depth || 0)),
-                    }));
-                });
-                return prev;
-            });
+        danhSach.forEach(async (rec) => {
+            if (!rec?._id || instanceTasksMap[rec._id]) return;
+
+            const res = await getListTaskByInstanceId(rec._id);
+            const sortedTasks = (res?.data?.data || []).sort((a: any, b: any) => (a.depth || 0) - (b.depth || 0));
+            setInstanceTasksMap((p) => ({ ...p, [rec._id!]: sortedTasks }));
+
+            const currentNodeId = Array.isArray(rec.currentNodeId) ? rec.currentNodeId[0] : rec.currentNodeId;
+            if (!currentNodeId) return;
+
+            const getNote = (data: any) => data?.ketQua?.ghiChu || data?.ghiChu || data?.data?.ghiChu;
+            let taskRes = await getInforTaskNode(rec._id, currentNodeId);
+            let note = getNote(taskRes?.data?.data);
+
+            if (!note) {
+                const currentIndex = sortedTasks.findIndex((t: any) => t.nodeId === currentNodeId);
+                if (currentIndex > 0) {
+                    taskRes = await getInforTaskNode(rec._id, sortedTasks[currentIndex - 1].nodeId);
+                    note = getNote(taskRes?.data?.data);
+                }
+            }
+
+            if (note) setInstanceNotesMap((p) => ({ ...p, [rec._id!]: note }));
         });
     }, [danhSach]);
 
@@ -100,5 +111,9 @@ export const useInstanceStepHelpers = (danhSach: Instance.IRecord[]) => {
         return task ? getAssigneeLabel(task) : '-';
     };
 
-    return { getCurrentStepLabel, getAssigneesForCurrentStep };
+    const getNoteForCurrentStep = (record: Instance.IRecord): string | null => {
+        return record?._id ? instanceNotesMap[record._id] : null;
+    };
+
+    return { getCurrentStepLabel, getAssigneesForCurrentStep, getNoteForCurrentStep };
 };

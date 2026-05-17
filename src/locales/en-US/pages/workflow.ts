@@ -236,6 +236,10 @@ export default {
 	'workflow.instance.taskList.back': 'Back',
 	'workflow.instance.taskList.title': 'Workflow ({count} steps)',
 	'workflow.instance.taskCard.step': 'Step {depth}: {name}',
-
-
+	'workflow.instance.task.success.saved': 'Task completed successfully!',
+	'workflow.instance.task.error.complete': 'An error occurred while completing the task',
+	'workflow.instance.task.error.notProcessed': 'This task has not been processed yet',
+	'workflow.instance.task.error.reoperateUnavailable': 'This task cannot be re-processed at the moment',
+	'workflow.instance.task.error.updateResult': 'An error occurred while updating task result',
+	'workflow.instance.task.success.updated': 'Task result was updated successfully!'
 };

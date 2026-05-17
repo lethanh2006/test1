@@ -236,4 +236,11 @@ export default {
   'workflow.instance.taskList.back': 'Quay lại',
   'workflow.instance.taskList.title': 'Quy trình ({count} bước)',
   'workflow.instance.taskCard.step': 'Bước {depth}: {name}',
+  'workflow.instance.task.success.saved': 'Lưu thành công',
+  'workflow.instance.task.error.noPermission': 'Bạn không có quyền thực hiện task này',
+  'workflow.instance.task.error.complete': 'Có lỗi xảy ra khi hoàn thành task',
+  'workflow.instance.task.error.notProcessed': 'Task này chưa được thực hiện',
+  'workflow.instance.task.error.reoperateUnavailable': 'Hiện tại task này không thể thực hiện lại',
+  'workflow.instance.task.error.updateResult': 'Có lỗi xảy ra khi cập nhật kết quả task',
+  'workflow.instance.task.success.updated': 'Task đã được cập nhật kết quả thành công!',
 };

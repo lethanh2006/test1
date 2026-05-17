@@ -25,7 +25,7 @@ const TableInstanceMe = (props: IProps) => {
 	const { initialState } = useModel('@@initialState');
 	const instanceMeModel = useModel('workflow.instanceMe');
 	const { limit, page, setPage, getInstaceMe, getInstanceSpecialistMe, loading, setLoading } = instanceMeModel;
-	const { getCurrentStepLabel, getAssigneesForCurrentStep } = useInstanceStepHelpers(
+	const { getCurrentStepLabel, getAssigneesForCurrentStep, getNoteForCurrentStep } = useInstanceStepHelpers(
 		instanceMeModel?.danhSach ?? []
 	);
 
@@ -112,6 +112,27 @@ const TableInstanceMe = (props: IProps) => {
 					>
 						{getCurrentStepLabel(record)}
 					</div>
+				);
+			},
+			onCell,
+		},
+		{
+			title: 'Ghi chú xử lý',
+			width: 220,
+			ellipsis: true,
+			render(_, record: any) {
+				const note = getNoteForCurrentStep(record);
+				if (!note) return '-';
+				return (
+					<div
+						dangerouslySetInnerHTML={{ __html: note }}
+						style={{
+							display: '-webkit-box',
+							WebkitLineClamp: 2,
+							WebkitBoxOrient: 'vertical',
+							overflow: 'hidden',
+						}}
+					/>
 				);
 			},
 			onCell,
