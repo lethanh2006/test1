@@ -190,7 +190,7 @@ export const TaskDetail: React.FC<TaskDetailProps> = ({
 			)}
 			{task?.config?.assignee && task.config.assignee.length > 0 && (
 				<div style={{ marginBottom: 24 }}>
-					<Divider orientation='left' style={{ fontSize: 14, fontWeight: 'bold' }}>
+					<Divider orientation='left' orientationMargin={0} style={{ fontSize: 14, fontWeight: 'bold' }}>
 						{intl.formatMessage({ id: 'workflow.instance.detail.section.generalInfo' })}
 					</Divider>
 					<Descriptions bordered>
@@ -238,7 +238,7 @@ export const TaskDetail: React.FC<TaskDetailProps> = ({
 			)}
 
 
-			<Divider orientation='left' style={{ fontSize: 14, fontWeight: 'bold' }}>
+			<Divider orientation='left' orientationMargin={0} style={{ fontSize: 14, fontWeight: 'bold' }}>
 				{intl.formatMessage({ id: 'workflow.instance.detail.section.processingContent' })}
 			</Divider>
 
