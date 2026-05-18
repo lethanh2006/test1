@@ -80,7 +80,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, selected, onClick }) =
 					</Text>
 				</div>
 
-				{hanXuLyStr && (
+				{hanXuLyStr && trangThaiStr !== 'Đã xử lý' && (
 					<div
 						style={{
 							display: 'flex',
