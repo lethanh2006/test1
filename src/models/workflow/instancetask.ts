@@ -131,6 +131,6 @@ export default () => {
     refreshAction,
     editTask,
     checkAllowReoperate,
-    setLoading 
+    setLoading
   };
 };

@@ -59,6 +59,7 @@ declare module Instance {
     clickable: boolean;
     depth: number;
     trangThai: string;
+    instanceTask?: IInstanceTask;
   }
 
   export interface INodeInfo {
