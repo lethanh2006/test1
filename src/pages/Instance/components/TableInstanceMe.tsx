@@ -67,6 +67,7 @@ const TableInstanceMe = (props: IProps) => {
 			dataIndex: 'moTa',
 			width: 240,
 			ellipsis: true,
+			filterType: 'string',
 			render(value) {
 				return <>{value || '-'}</>;
 			},
@@ -76,6 +77,7 @@ const TableInstanceMe = (props: IProps) => {
 			title: intl.formatMessage({ id: 'instances.workflowname' }),
 			dataIndex: ['workflow', 'ten'],
 			width: 200,
+			filterType: 'string',
 			onCell,
 		},
 		// {

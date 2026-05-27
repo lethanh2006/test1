@@ -58,6 +58,7 @@ export default {
 	'bieumaukhaibao.chophepnhapnhieugiatri': 'Cho phép nhập nhiều giá trị',
 	'bieumaukhaibao.chieurongcot': 'Chiều rộng',
 	'bieumaukhaibao.themmoivatieptuc': 'Thêm mới và tiếp tục',
+	'bieumaukhaibao.themmoi': 'Thêm mới',
 	'bieumaukhaibao.danhsach': 'Danh sách',
 	'bieumaukhaibao.lammoi': 'Làm mới',
 	'bieumaukhaibao.xoa': 'Xóa',

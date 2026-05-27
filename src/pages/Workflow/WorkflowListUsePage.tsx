@@ -114,8 +114,8 @@ const WorkflowListUsePage = () => {
 				width={520}
 			>
 				<Form form={form} layout='vertical' onFinish={onCreateInstance}>
-					<Form.Item name='moTa' label='Mô tả instance'>
-						<Input.TextArea rows={4} placeholder='Nhập mô tả để phân biệt instance...' />
+					<Form.Item name='moTa' label='Mô tả quy trình'>
+						<Input.TextArea rows={4} placeholder='Nhập mô tả để phân biệt quy trình ...' />
 					</Form.Item>
 
 					<div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>

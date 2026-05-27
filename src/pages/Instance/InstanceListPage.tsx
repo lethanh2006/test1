@@ -55,6 +55,7 @@ const InstanceListPage = () => {
 		{
 			title: 'Mô tả',
 			dataIndex: 'moTa',
+			filterType: 'string',
 			width: 240,
 			ellipsis: true,
 			render(value) {
@@ -65,6 +66,7 @@ const InstanceListPage = () => {
 		{
 			title: intl.formatMessage({ id: 'instances.workflowname' }),
 			dataIndex: ['workflow', 'ten'],
+			filterType: 'string',
 			width: 200,
 			onCell,
 		},
