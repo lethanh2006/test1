@@ -86,13 +86,6 @@ const TableInstanceMe = (props: IProps) => {
 		// 	onCell,
 		// },
 		{
-			title: intl.formatMessage({ id: 'instances.capnhatgannhat' }),
-			dataIndex: 'updatedAt',
-			width: 150,
-			render: (val) => val && dayjs(val).format('HH:mm DD/MM/YYYY'),
-			onCell,
-		},
-		{
 			title: intl.formatMessage({ id: 'instances.tenbuochientai' }),
 			dataIndex: 'currentStep',
 			width: 220,
@@ -125,6 +118,13 @@ const TableInstanceMe = (props: IProps) => {
 			render(value, record) {
 				return <>{getAssigneesForCurrentStep(record)}</>;
 			},
+			onCell,
+		},
+		{
+			title: intl.formatMessage({ id: 'instances.capnhatgannhat' }),
+			dataIndex: 'updatedAt',
+			width: 150,
+			render: (val) => val && dayjs(val).format('HH:mm DD/MM/YYYY'),
 			onCell,
 		},
 		// {

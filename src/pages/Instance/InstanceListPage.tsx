@@ -68,13 +68,6 @@ const InstanceListPage = () => {
 			width: 200,
 			onCell,
 		},
-		{
-			title: intl.formatMessage({ id: 'instances.capnhatgannhat' }),
-			dataIndex: 'updatedAt',
-			width: 180,
-			render: (val) => val && dayjs(val).format('HH:mm DD/MM/YYYY'),
-			onCell,
-		},
 		// {
 		// 	title: 'Tên bước hiện tại',
 		// 	dataIndex: 'currentStep',
@@ -121,7 +114,13 @@ const InstanceListPage = () => {
 			},
 			onCell,
 		},
-
+		{
+			title: intl.formatMessage({ id: 'instances.capnhatgannhat' }),
+			dataIndex: 'updatedAt',
+			width: 180,
+			render: (val) => val && dayjs(val).format('HH:mm DD/MM/YYYY'),
+			onCell,
+		},
 		{
 			title: intl.formatMessage({ id: 'workflow.common.action' }),
 			key: 'action',
