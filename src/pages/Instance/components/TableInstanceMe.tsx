@@ -63,9 +63,13 @@ const TableInstanceMe = (props: IProps) => {
 			onCell,
 		},
 		{
-			title: 'Ghi chú xử lý',
-			width: 220,
+			title: 'Mô tả',
+			dataIndex: 'moTa',
+			width: 240,
 			ellipsis: true,
+			render(value) {
+				return <>{value || '-'}</>;
+			},
 			onCell,
 		},
 		{

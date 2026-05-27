@@ -10,6 +10,7 @@ declare module Instance {
     nguoiTaoHoTen: string;
     nguoiXemSsoIds: string[];
     context: Record<string, any>;
+    moTa?: string
     stateNodes: Record<string, any>;
     instanceTasks: InstanceTask[];
     workflow?: Workflow.IRecord;

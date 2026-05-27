@@ -2,7 +2,20 @@ import axios from "@/utils/axios";
 import { ip3 } from "@/utils/ip";
 import { ipWorkflow } from '@/utils/ip';
 
-export async function StartInstance(workflowId: string, data: Instance.IRecord) {
+export interface IStartInstancePayload {
+  moTa?: string;
+  data: {
+    _userInfo: {
+      ssoId?: string;
+      hoTen?: string;
+      email?: string;
+      donViId?: string;
+      maDonVi?: string;
+    };
+  };
+}
+
+export async function StartInstance(workflowId: string, data: IStartInstancePayload) {
   return axios.post(`${ip3}/instance/start-instance/${workflowId}`, data);
 }
 

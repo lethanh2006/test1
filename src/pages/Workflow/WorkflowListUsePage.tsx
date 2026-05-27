@@ -4,19 +4,38 @@ import { IColumn } from '@/components/Table/typing';
 import { Workflow } from '@/services/Workflow/typing';
 import { PlusOutlined } from '@ant-design/icons';
 import { history, useIntl, useModel } from '@umijs/max';
-import { Popconfirm } from 'antd';
+import { Button, Form, Input, Modal, message } from 'antd';
+import { useState } from 'react';
 
 const WorkflowListUsePage = () => {
 	const intl = useIntl();
+	const [form] = Form.useForm();
+	const [open, setOpen] = useState(false);
+	const [selectedWorkflowId, setSelectedWorkflowId] = useState<string | null>(null);
+	const [submitting, setSubmitting] = useState(false);
 
 	const { initialState } = useModel('@@initialState');
 	const { page, limit } = useModel('workflow.workflow');
 	const { startInstance } = useModel('workflow.instance');
 
-	const onCreateInstance = async (workflowId: string) => {
-		if (!initialState) return;
+	const openCreateInstanceModal = (workflowId: string) => {
+		setSelectedWorkflowId(workflowId);
+		setOpen(true);
+	};
+
+	const closeCreateInstanceModal = () => {
+		setOpen(false);
+		setSelectedWorkflowId(null);
+		form.resetFields();
+	};
+
+	const onCreateInstance = async (values: { moTa?: string }) => {
+		if (!initialState || !selectedWorkflowId) return;
+
+		setSubmitting(true);
 
 		const payload = {
+			moTa: values.moTa?.trim() || '',
 			data: {
 				_userInfo: {
 					ssoId: initialState?.currentUser?.ssoId,
@@ -30,13 +49,18 @@ const WorkflowListUsePage = () => {
 			},
 		};
 
-		const res = await startInstance(workflowId, payload);
+		try {
+			const res = await startInstance(selectedWorkflowId, payload);
+			closeCreateInstanceModal();
 
-		console.log(res);
-
-		setTimeout(() => {
-			history.push(`/instance/${res?._id}`);
-		}, 800);
+			setTimeout(() => {
+				history.push(`/instance/${res?._id}`);
+			}, 800);
+		} catch (error) {
+			message.error(intl.formatMessage({ id: 'workflow.instance.error.start' }));
+		} finally {
+			setSubmitting(false);
+		}
 	};
 
 	const columns: IColumn<Workflow.IRecordWorkflow>[] = [
@@ -49,11 +73,13 @@ const WorkflowListUsePage = () => {
 		{
 			title: intl.formatMessage({ id: 'workflow.list.column.name' }),
 			dataIndex: 'ten',
+			width: 280,
 			ellipsis: true,
 		},
 		{
 			title: intl.formatMessage({ id: 'workflow.list.column.description' }),
 			dataIndex: 'moTa',
+			width: 320,
 			ellipsis: true,
 		},
 		{
@@ -63,13 +89,7 @@ const WorkflowListUsePage = () => {
 			width: 100,
 			fixed: 'right' as const,
 			render: (_: any, record: Workflow.IRecordWorkflow) => (
-				<Popconfirm
-					onConfirm={() => onCreateInstance(record._id!)}
-					title={intl.formatMessage({ id: 'workflow.instance.create' })}
-					placement='topRight'
-				>
-					<ButtonExtend type='link' icon={<PlusOutlined />} />
-				</Popconfirm>
+				<ButtonExtend type='link' icon={<PlusOutlined />} onClick={() => openCreateInstanceModal(record._id!)} />
 			),
 		},
 	];
@@ -84,6 +104,28 @@ const WorkflowListUsePage = () => {
 				modelName='workflow.workflow'
 				addStt={false}
 			/>
+
+			<Modal
+				title={intl.formatMessage({ id: 'workflow.instance.create' })}
+				open={open}
+				onCancel={closeCreateInstanceModal}
+				footer={null}
+				destroyOnClose
+				width={520}
+			>
+				<Form form={form} layout='vertical' onFinish={onCreateInstance}>
+					<Form.Item name='moTa' label='Mô tả instance'>
+						<Input.TextArea rows={4} placeholder='Nhập mô tả để phân biệt instance...' />
+					</Form.Item>
+
+					<div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+						<Button onClick={closeCreateInstanceModal}>Hủy</Button>
+						<Button type='primary' htmlType='submit' loading={submitting}>
+							Xác nhận
+						</Button>
+					</div>
+				</Form>
+			</Modal>
 		</>
 	);
 };

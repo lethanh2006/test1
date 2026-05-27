@@ -52,7 +52,16 @@ const InstanceListPage = () => {
 			},
 			onCell,
 		},
-
+		{
+			title: 'Mô tả',
+			dataIndex: 'moTa',
+			width: 240,
+			ellipsis: true,
+			render(value) {
+				return <>{value || '-'}</>;
+			},
+			onCell,
+		},
 		{
 			title: intl.formatMessage({ id: 'instances.workflowname' }),
 			dataIndex: ['workflow', 'ten'],

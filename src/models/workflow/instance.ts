@@ -10,7 +10,7 @@ export default () => {
     ipWorkflow,
   );
 
-  const startInstance = async (workflowId: string, data: any): Promise<any> => {
+  const startInstance = async (workflowId: string, data: Parameters<typeof StartInstance>[1]): Promise<any> => {
     setLoading(true);
     try {
       const response = await StartInstance(workflowId, data);
