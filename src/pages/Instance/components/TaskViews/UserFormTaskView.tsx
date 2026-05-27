@@ -322,12 +322,6 @@ export const UserFormTaskView: React.FC<TaskRendererProps> = ({
 							</Form.Item>
 						))
 					)}
-					<Form.Item
-						name='ghiChu'
-						label={intl.formatMessage({ id: 'workflow.instance.detail.field.note' })}
-					>
-						<Input.TextArea rows={4} placeholder={intl.formatMessage({ id: 'workflow.instance.detail.field.note' })} />
-					</Form.Item>
 				</>
 			)}
 			<div className='form-footer'>

@@ -1,17 +1,11 @@
 import TableBase from '@/components/Table';
 import ButtonExtend from '@/components/Table/ButtonExtend';
 import { IColumn } from '@/components/Table/typing';
-import { ExportInstanceSpecialistMe } from '@/services/Instance';
 import { useInstanceStepHelpers } from '@/hooks/useInstanceStepHelpers';
-import {
-	ETrangThaiInstanceTask,
-	MapTrangThaiInstanceTask,
-	MapTrangThaiInstanceTaskColor,
-} from '@/services/Instance/constance';
+import { ExportInstanceSpecialistMe } from '@/services/Instance';
 import dayjs from '@/utils/dayjs';
 import { DownloadOutlined } from '@ant-design/icons';
 import { history, useIntl, useModel } from '@umijs/max';
-import { Tag } from 'antd';
 import fileDownload from 'js-file-download';
 import { useCallback, useEffect } from 'react';
 
@@ -25,9 +19,7 @@ const TableInstanceMe = (props: IProps) => {
 	const { initialState } = useModel('@@initialState');
 	const instanceMeModel = useModel('workflow.instanceMe');
 	const { limit, page, setPage, getInstaceMe, getInstanceSpecialistMe, loading, setLoading } = instanceMeModel;
-	const { getCurrentStepLabel, getAssigneesForCurrentStep, getNoteForCurrentStep } = useInstanceStepHelpers(
-		instanceMeModel?.danhSach ?? []
-	);
+	const { getCurrentStepLabel, getAssigneesForCurrentStep } = useInstanceStepHelpers(instanceMeModel?.danhSach ?? []);
 
 	useEffect(() => {
 		setPage(1);
@@ -68,6 +60,12 @@ const TableInstanceMe = (props: IProps) => {
 			render(value, record: any) {
 				return <>{record?.data?._userInfo?.hoTen ?? '-'}</>;
 			},
+			onCell,
+		},
+		{
+			title: 'Ghi chú xử lý',
+			width: 220,
+			ellipsis: true,
 			onCell,
 		},
 		{
@@ -112,27 +110,6 @@ const TableInstanceMe = (props: IProps) => {
 					>
 						{getCurrentStepLabel(record)}
 					</div>
-				);
-			},
-			onCell,
-		},
-		{
-			title: 'Ghi chú xử lý',
-			width: 220,
-			ellipsis: true,
-			render(_, record: any) {
-				const note = getNoteForCurrentStep(record);
-				if (!note) return '-';
-				return (
-					<div
-						dangerouslySetInnerHTML={{ __html: note }}
-						style={{
-							display: '-webkit-box',
-							WebkitLineClamp: 2,
-							WebkitBoxOrient: 'vertical',
-							overflow: 'hidden',
-						}}
-					/>
 				);
 			},
 			onCell,

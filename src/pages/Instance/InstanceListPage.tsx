@@ -1,22 +1,17 @@
 import TableBase from '@/components/Table';
 import { IColumn } from '@/components/Table/typing';
 import { useInstanceStepHelpers } from '@/hooks/useInstanceStepHelpers';
-import {
-	ETrangThaiInstanceTask,
-	MapTrangThaiInstanceTask,
-	MapTrangThaiInstanceTaskColor,
-} from '@/services/Instance/constance';
 import dayjs from '@/utils/dayjs';
 import { DeleteOutlined } from '@ant-design/icons';
 import { history, useIntl, useModel } from '@umijs/max';
-import { Button, Popconfirm, Tag, Tooltip } from 'antd';
+import { Button, Popconfirm, Tooltip } from 'antd';
 
 const InstanceListPage = () => {
 	const intl = useIntl();
 	const instanceModel = useModel('workflow.instance');
 	const { deleteModel, limit, page, getModel } = instanceModel;
-	const { getCurrentStepLabel, getAssigneesForCurrentStep, getNoteForCurrentStep } = useInstanceStepHelpers(
-		(instanceModel as any)?.danhSach ?? []
+	const { getCurrentStepLabel, getAssigneesForCurrentStep } = useInstanceStepHelpers(
+		(instanceModel as any)?.danhSach ?? [],
 	);
 
 	const getData = () => {
@@ -57,6 +52,7 @@ const InstanceListPage = () => {
 			},
 			onCell,
 		},
+
 		{
 			title: intl.formatMessage({ id: 'instances.workflowname' }),
 			dataIndex: ['workflow', 'ten'],
@@ -103,27 +99,6 @@ const InstanceListPage = () => {
 					>
 						{getCurrentStepLabel(record)}
 					</div>
-				);
-			},
-			onCell,
-		},
-		{
-			title: 'Ghi chú xử lý',
-			width: 220,
-			ellipsis: true,
-			render(_, record: any) {
-				const note = getNoteForCurrentStep(record);
-				if (!note) return '-';
-				return (
-					<div
-						dangerouslySetInnerHTML={{ __html: note }}
-						style={{
-							display: '-webkit-box',
-							WebkitLineClamp: 2,
-							WebkitBoxOrient: 'vertical',
-							overflow: 'hidden',
-						}}
-					/>
 				);
 			},
 			onCell,

@@ -48,13 +48,9 @@ export const UserActionTaskView: React.FC<TaskRendererProps> = ({
 
 	const workflowModel = useModel('workflow.workflow');
 	const instanceTaskModel = useModel('workflow.instancetask');
-	const [ghiChu, setGhiChu] = useState<string>('');
 
 	const handleActionClick = async (actionId: string) => {
 		const payload = TASK_RENDERER_REGISTRY['user.action'].buildSubmitPayload(actionId);
-		if (ghiChu) {
-			payload.outcome.ghiChu = ghiChu;
-		}
 		await onSubmit(payload);
 	};
 
@@ -168,15 +164,6 @@ export const UserActionTaskView: React.FC<TaskRendererProps> = ({
 							/>
 						) : (
 							<>
-								<div style={{ marginBottom: 16 }}>
-									<div style={{ marginBottom: 8 }}>{intl.formatMessage({ id: 'workflow.instance.detail.field.note' })}</div>
-									<Input.TextArea
-										rows={4}
-										value={ghiChu}
-										onChange={(e) => setGhiChu(e.target.value)}
-										placeholder={intl.formatMessage({ id: 'workflow.instance.detail.field.note' })}
-									/>
-								</div>
 								<Row gutter={6} justify='end'>
 									{actions.map((action) => (
 										<Col key={action.id}>
